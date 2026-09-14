@@ -1,0 +1,51 @@
+/* v46 — geometry-locked responsive world map
+   --------------------------------------------------------------------------
+   The camera viewport itself now has the exact atlas aspect ratio reconstructed
+   from the SVG geometry. This prevents a tall/wide CSS box from creating a
+   false empty strip that the user can mistake for clipped territory.
+
+   The OUTER #mapViewport remains the only clipping boundary. The two SVG layers
+   are full-size siblings and share the exact same viewBox + GPU matrix. */
+.map-panel{
+  overflow:visible!important;
+}
+#mapViewport.map-viewport{
+  position:relative!important;
+  box-sizing:border-box;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-width:100%;
+  max-height:none!important;
+  aspect-ratio:var(--samguk-world-aspect,1.00349)!important;
+  overflow:hidden!important;
+  clip-path:none!important;
+  contain:layout paint style;
+  isolation:isolate;
+  background:#183038;
+}
+#mapViewport>#map,
+#mapViewport>#mapUiOverlay{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  min-width:0!important;
+  min-height:0!important;
+  overflow:visible!important;
+  transform-origin:0 0!important;
+}
+#mapViewport>#map{overflow:visible!important}
+#mapViewport>#mapUiOverlay{overflow:visible!important}
+
+/* The panel no longer crops the atlas. Controls stay above the camera viewport. */
+.map-top,.map-controls,.map-status,.map-bottom{position:relative;z-index:5}
+
+@media(max-width:900px){
+  #mapViewport.map-viewport{width:100%!important;aspect-ratio:var(--samguk-world-aspect,1.00349)!important}
+}
+@media(max-width:560px){
+  #mapViewport.map-viewport{width:100%!important;aspect-ratio:var(--samguk-world-aspect,1.00349)!important}
+}

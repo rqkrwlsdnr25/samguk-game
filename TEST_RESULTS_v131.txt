@@ -1,0 +1,18 @@
+PASS Japan map data version = 131
+PASS 왜 시코쿠 absent from TERRITORIES
+PASS Shikoku stable IDs absent from TERRITORIES
+PASS 왜 시코쿠 absent from LAND_LINKS
+PASS 왜 시코쿠 absent from SEA_LINKS
+PASS manual removedTerritories metadata contains 왜 시코쿠
+PASS all non-Shikoku territory objects/coordinates unchanged
+PASS all non-Shikoku LAND_LINKS unchanged
+PASS all SEA_LINKS unchanged
+PASS land alpha changes confined to former Shikoku polygon + 1px antialias fringe
+PASS sea alpha changes confined to former Shikoku polygon + 1px antialias fringe
+PASS source color mask changes confined to former Shikoku polygon + 1px antialias fringe
+PASS former Shikoku center has zero land alpha
+PASS former Shikoku center is hard sea alpha
+PASS former Shikoku center is blue in source/debug mask
+PASS mask asset URLs bumped to v131 for cache safety
+PASS v130 -> v131 stable territoryId mapping preserves 5 post-Shikoku territories without ownership/index shift
+PASS former Shikoku old index 115 has no stable target and is safely discarded by existing v128+ restore migration

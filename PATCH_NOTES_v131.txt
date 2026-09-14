@@ -1,0 +1,30 @@
+[삼국쟁패 v131 패치 노트]
+기준 버전: v130
+목표: 왜 시코쿠 영토 노드 완전 삭제 + 해당 지역 바다 복원
+
+1. 완전 삭제
+- JapanMapDataV130.js에서 name='왜 시코쿠', id='wa_shikoku_expansion' 영토 객체 제거.
+- 왜 시코쿠를 참조하던 LAND_LINKS 2개 제거:
+  * 왜 동부 <-> 왜 시코쿠
+  * 왜 시코쿠 <-> 왜 기이
+- SEA_LINKS에는 원래 시코쿠 참조가 없으며 그대로 유지.
+
+2. 렌더링/마스크 바다 복원
+- world.landPath는 JapanMapData의 territories에서 재생성되므로 시코쿠 path가 더 이상 포함되지 않음.
+- v130 시코쿠 Polygon 영역을 v131 land alpha에서 완전히 제거.
+- 동일 영역을 v131 sea alpha에 100% 불투명 바다 마스크로 등록.
+- source/debug mask에서도 동일 영역을 BLUE로 변경.
+- 1px anti-alias fringe까지 제거하여 주황색/텍스처 잔상이 남지 않게 처리.
+
+3. 다른 왜 영토 무변경 보장
+- 왜 기이 / 왜 규슈 남부 / 왜 동북부 / 왜 극동부 / 왜 중부 동부 및 모든 섬 데이터는 v130 값 그대로 유지.
+- 다른 LAND_LINKS / 모든 SEA_LINKS는 v130과 동일.
+
+4. 저장 데이터 안전성
+- 기존 v128+ game.js의 stable territoryId 복원 로직을 그대로 사용.
+- v130 저장에서 wa_shikoku_expansion 행은 새 WORLD에 stable ID가 없으므로 폐기.
+- 시코쿠 뒤쪽 영토는 stable ID로 새 index를 찾아 재배치되므로 소유권/병력/건물 데이터가 한 칸 밀리지 않음.
+- 시코쿠에 배치되어 있던 장수 territoryId는 기존 복원 로직에서 안전하게 null 처리됨.
+
+5. 캐시 안전성
+- 마스크 파일명을 *_v131.png로 갱신하여 브라우저가 v130 이미지를 캐시 재사용하지 않도록 함.

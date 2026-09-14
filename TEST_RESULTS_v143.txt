@@ -1,0 +1,12 @@
+[TEST RESULTS v143]
+PASS - EumnuMapDataV143.json parse
+PASS - MapExpansionV125.js syntax
+PASS - map.js syntax
+PASS - 숙신 고토 polygon valid
+PASS - 연해주 북부 polygon valid
+PASS - 숙신 고토 ↔ 연해주 북부 overlap area = 0
+PASS - 좌측 호수 original geometry fully assigned to 숙신 고토
+PASS - 상단 수로 original geometry fully assigned to 숙신 고토/연해주 북부
+PASS - reclaimed channel has no unassigned area
+PASS - base GEOGRAPHY.rivers filter removes exactly source subpaths #21 and #54
+PASS - territory hit-test remains path-based and uses rebuilt v143 coordinates

@@ -1,0 +1,25 @@
+삼국쟁패 v84 정적/수치 검증 결과
+
+[PASS] game.js node --check
+[PASS] TurnEconomyManager.js node --check
+[PASS] CityTechTreeManager.js node --check
+[PASS] CapitalUpgradeSystem.js node --check
+[PASS] city_agriculture.png 존재
+[PASS] city_commerce.png 존재
+[PASS] city_military.png 존재
+[PASS] city_port.png 존재
+[PASS] capital_lv3.png 교체
+[PASS] capital_lv5.png 교체
+[PASS] 기존 city_*.webp 참조 제거
+[PASS] 항구도시 실제 증축 함수 COASTAL 재검사
+[PASS] AI 항구도시 선택은 COASTAL 기반
+[PASS] 항구도시 수입 Lv.I/II/III +25/+35/+50%
+[PASS] 항구도시 병량 Lv.I/II/III +25/+35/+50%
+[PASS] 겨울 seasonMultiplier=0일 때 항구도시 병량 추가 생산도 0
+[PASS] 기존 regions snapshot 저장 구조로 cityType='port', cityLevel 유지 가능
+
+TurnEconomy 샘플 검증 (5개 영토: 일반 2 + 항구 Lv1/Lv2/Lv3 각 1)
+- 봄: 기본 40 + 항구 보너스 9 = 49
+- 여름: 기본 120 + 항구 보너스 26 = 146
+- 가을: 기본 40 + 항구 보너스 9 = 49
+- 겨울: 0

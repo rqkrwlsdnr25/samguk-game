@@ -1,0 +1,17 @@
+삼국쟁패 v87 전쟁 안개/시야 패치 검증
+
+PASS - 전체 로컬 JavaScript node --check 문법 검사
+PASS - index.html 로컬 script/css/image 참조 파일 존재 검사
+PASS - VISIBLE: 자국 영토 / 자국 인접 영토 판정
+PASS - 동맹국 영토 VISIBLE 판정
+PASS - HIDDEN: 미정찰 먼 타국 영토 판정
+PASS - scoutTerritory(): SCOUTED 적용 및 scoutRemainingTurns 기록
+PASS - updateTurnVisibility(): 2턴 -> 1턴 -> 만료 후 HIDDEN 복귀
+PASS - LOD 임계값: zoom < 2.5 상세 자원 비활성화
+PASS - map.js HIDDEN 조기 return: city layout/badge/resource DOM 생성 전 skip
+PASS - FactionLabelSprite Canvas: HIDDEN/SCOUTED 중심좌표 계산 및 drawImage 전 skip
+PASS - TerritoryCityUIManager Canvas: HIDDEN draw skip / SCOUTED 병력 ? 처리
+PASS - 기존 정찰 scoutUntil/scoutBy 연동
+PASS - 턴 증가 시 visibility tick 연결
+PASS - 외교 동맹 성공 시 updateAllianceVision 연결
+PASS - 저장/불러오기: regions snapshot에 visibility/scout 필드 자동 포함

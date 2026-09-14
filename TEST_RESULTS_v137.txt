@@ -1,0 +1,21 @@
+[TEST RESULTS v137]
+PASS DongjinMapDataV137.js syntax
+PASS MapExpansionV125.js syntax
+PASS map.js syntax
+PASS index.html begins as HTML and loads DongjinMapDataV137.js before MapExpansionV125.js
+PASS runtime map expansion metadata version = 137
+PASS WORLD.territories length == WORLD.neighbors length
+PASS 동진 내륙 / 동진 연안 / 동진 남부 / 동진 남동 base overrides applied
+PASS 동진 강남 서부 / 동진 강남 동부 expansion nodes present
+PASS 동진 강남 중부 absent
+PASS 동진 남해 서부 absent
+PASS 동진 남해 중부 absent
+PASS 동진 남해 동부 absent
+PASS requested six Dongjin polygons are valid
+PASS pairwise polygon interior overlap = 0
+PASS reconstructed six-region union symmetric-difference ~= 0 against precomputed guide partition
+PASS blue east-coast cut excluded from Dongjin land union
+PASS new river path exported via SAMGUK_MAP_EXPANSION_V125.dongjinRiver
+PASS new river SVG uses river-land clipPath + pointer-events:none
+PASS Dongjin labels use updated territory x/y centers
+PASS existing sea routes remain available

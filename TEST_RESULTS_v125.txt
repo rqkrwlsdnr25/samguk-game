@@ -1,0 +1,24 @@
+삼국쟁패 v125 정적/데이터 검증 결과
+
+PASS 1. MapExpansionV125.js node --check
+PASS 2. game.js node --check
+PASS 3. map.js node --check
+PASS 4. terrain-rules-data.js node --check
+PASS 5. WORLD.territories: 102 -> 121
+PASS 6. WORLD.neighbors: 121 슬롯
+PASS 7. TERRAIN_RULES_DATA.areas: 121 슬롯
+PASS 8. 신규 영토 19개 모두 owner/home 유효
+PASS 9. 대마도 기존 ID 100 유지
+PASS 10. canMoveSeaRoute 데이터 검증
+ - 대마도 <-> 이키섬: true
+ - 우산 <-> 오키섬: true
+ - 탐라 <-> 오도열도: true
+ - 오키섬 <-> 왜 동북부: true
+PASS 11. 신규 섬은 WORLD.territories 정식 polygon이므로 기존 SVG hit test / selection 경로 재사용
+PASS 12. 신규 seaRoutes는 neighbors에도 동시에 등록되어 공격/이동 대상 후보에 포함
+PASS 13. WorldMapBoundsController는 territory path geometry 기반이므로 동/남 확장 범위를 자동 감지
+PASS 14. v124 저장본 102-region -> v125 121-region 보충 migration 코드 적용
+
+주의:
+- 첨부된 파란/핑크 가이드 이미지는 설계 가이드이므로 실제 신규 polygon은 기존 좌표계에 맞춘 게임용 경계입니다.
+- 실측 행정/역사 국경이 아니라 플레이용 거점 분할입니다.

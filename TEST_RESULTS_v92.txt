@@ -1,0 +1,20 @@
+삼국쟁패 v92 검증 결과
+
+[PASS] CharacterDataModel.js Node syntax check
+[PASS] game.js Node syntax check
+[PASS] StartingRosterGenerator.js Node syntax check
+[PASS] 장수 기본 데이터 생성 시 authority 자동 생성 확인
+[PASS] 군주 녹봉 0(직할) / 일반 장수 녹봉 자동 계산 확인
+[PASS] age 자동 생성 범위 24~50 확인
+[PASS] title / salary / age / traits / portraitUrl 스키마 필드 추가 확인
+[PASS] renderOfficerDetailModal(officer) 함수 추가 확인
+[PASS] 5대 능력치 게이지 통솔/무력/지력/매력/권위 렌더 확인
+[PASS] 기존 data-officer-modal-close 닫기 이벤트 유지
+[PASS] 기존 data-officer-assignment 보직 변경 이벤트 유지
+[PASS] 기존 data-officer-scheme 계략 실행 이벤트 유지
+[PASS] 포로/전사 territoryId=-1 상태에서 상세 렌더 보조 함수가 안전하게 처리되도록 방어 확인
+[PASS] 전략 저장 serialize v3에 stats/age/salary/title/traits/portraitUrl 포함
+[PASS] hydrate가 v1/v2/v3 저장 데이터를 모두 수용하도록 호환 유지
+[PASS] 부상 시 authority 포함 주요 스탯 50% 감소/회복 데이터 경로 확인
+
+비고: 기존 지도, 전쟁, 도시, 외교, 병량, 산맥, 전쟁 안개, 장수 카드 목록 UI 구조는 수정하지 않음.

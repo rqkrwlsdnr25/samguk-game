@@ -1,0 +1,21 @@
+[TEST RESULTS v132]
+PASS JapanMapData version = 132
+PASS merged territory '시고쿠' exists exactly once
+PASS legacy base '왜 동부' inactive tombstone
+PASS legacy base '왜 동부 북부' inactive tombstone
+PASS expansion nodes '왜 기이' / '왜 중부 동부' removed from JapanMapData
+PASS Shikoku merged polygon generated from 4 legacy regions
+PASS Shikoku center inside restored land mask
+PASS why north-west / north split centers updated
+PASS why northeast / far-east split polygons updated
+PASS Kyushu west-east / south boundary paths updated
+PASS Odo Islands relocated to x=650, y=1161
+PASS old Odo mask location restored to sea
+PASS no Japan LAND_LINK reference to merged legacy node names
+PASS Map expansion metadata version = 132
+PASS sea routes remain intact
+PASS node --check JapanBaseTerritoryPatchV132.js
+PASS node --check JapanMapDataV132.js
+PASS node --check MapExpansionV125.js
+PASS node --check JapanTerrainMaskCanvas.js
+PASS node --check map.js

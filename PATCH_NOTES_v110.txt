@@ -1,0 +1,14 @@
+삼국쟁패 v110 침략/턴종료 복구 핫픽스
+
+교체 파일: game.js
+
+수정 핵심
+- v109의 별도 침략 상태 머신/capture 로직 제거
+- 기존 v108 침략 엔진 setAction("attack") 재사용
+- endTurn 기존 transactional 엔진을 1회만 호출
+- render 예외를 전투/턴 실패로 오인하지 않도록 격리
+- stale busy 자동 복구
+- 공격 대상/포위 대상 계산 Guard Clause 강화
+- marchLand 예외 시 snapshot 복구 + busy 해제
+- #end / 침략하기 버튼 이벤트 중복 없이 재바인딩
+- 디버그 로그 prefix: [삼국쟁패][v110]

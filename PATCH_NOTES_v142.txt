@@ -1,0 +1,17 @@
+[v142 긴급 수정] 읍루/연해주 Polygon 좌표 직접 재계산
+
+이번 패치는 v141처럼 라벨 좌표만 움직이는 방식이 아닙니다.
+업로드된 색상 마스크 이미지를 5개 클래스(숙신 고토/연해주 남부/연해주 북부/읍루 동해안/Sea)로 직접 벡터화하여 coordinates 배열을 새로 생성했습니다.
+
+핵심
+1. 숙신 고토 / 연해주 남부 / 연해주 북부 / 읍루 동해안의 coordinates 전체 재작성.
+2. MapExpansionV125.js에 pathFromCoordinates() 추가.
+   - base territory override도 coordinates -> SVG path로 매번 재구성.
+   - expansion territory도 coordinates -> SVG path를 우선 사용.
+   - 따라서 과거 stale path가 남아 있어도 라벨만 움직이고 폴리곤이 유지되는 문제가 재발하지 않음.
+3. 파란색 Blue Mask를 별도 Sea polygon으로 벡터화.
+   - 4개 Land polygon과 Sea polygon을 같은 coverage에서 동시에 단순화.
+   - 검증 결과 Land/Sea 면적 교집합 = 0.
+4. 인접 영토는 coverage_simplify 방식으로 shared edge를 함께 단순화하여 경계 gap/겹침을 방지.
+5. world.landPath는 새로 재계산된 base/expansion path만 사용하므로 해안 절삭이 실제 지형 silhouette에 반영됨.
+6. 기존 map.js 클릭 판정은 territory.path를 사용하므로 새 coordinates에서 생성된 path와 동일한 경계로 작동.

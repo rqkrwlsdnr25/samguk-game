@@ -1,0 +1,24 @@
+PASS runtime metadata version = 135
+PASS Eumnu data version = 135
+PASS 읍루 극동 북부 deleted from WORLD.territories
+PASS 읍루 동북 해안 deleted from WORLD.territories
+PASS 읍루 극동 중부 deleted from WORLD.territories
+PASS eumnu_far_northeast stable id deleted
+PASS eumnu_far_east_north stable id deleted
+PASS eumnu_far_east_central stable id deleted
+PASS 읍루 동해안 remains as the sole far-east expansion node
+PASS 연해주 북부 label center updated
+PASS 숙신 고토 label center updated
+PASS 연해주 남부 label center updated
+PASS 읍루 동해안 graph links rebuilt to three real touching base territories
+PASS WORLD.neighbors length matches WORLD.territories
+PASS rebuilt world.landPath uses clipped 연해주 남부 geometry
+PASS v134 Japan map data remains loaded/unchanged
+INFO territory count 116
+PASS 연해주 북부 polygon valid
+PASS 숙신 고토 polygon valid
+PASS 연해주 남부 polygon valid
+PASS 읍루 동해안 polygon valid
+PASS patched northeast polygons have zero area overlap / no duplicate fill seams
+PASS representative blue-mask coast points are pure sea
+PASS MapExpansionV125.js syntax check

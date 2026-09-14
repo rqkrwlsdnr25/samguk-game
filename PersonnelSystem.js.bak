@@ -1,0 +1,136 @@
+'use strict';
+(function(global){
+  const COST=50;
+  const RATES=Object.freeze([
+    Object.freeze({id:'human',label:'인(人)급',rate:68.9,rawRequested:70,className:'human',main:[58,70],sub:[34,68],glow:'기본'}),
+    Object.freeze({id:'earth',label:'지(地)급',rate:20,className:'earth',main:[76,83],sub:[45,74],glow:'약한 반짝임'}),
+    Object.freeze({id:'heaven',label:'천(天)급',rate:10,className:'heaven',main:[87,92],sub:[55,84],glow:'강한 반짝임'}),
+    Object.freeze({id:'divine',label:'신(神)급',rate:1,className:'divine',main:[93,97],sub:[65,91],glow:'황금 빛무리'}),
+    Object.freeze({id:'immortal',label:'선인(仙人)급',rate:.1,className:'immortal',main:[98,100],sub:[80,97],glow:'오로라 컷인'})
+  ]);
+  const SURNAME=['강','고','김','나','남','노','류','마','문','민','박','백','서','석','선','성','소','송','신','안','양','여','연','오','우','원','유','윤','이','임','장','전','정','조','진','차','채','최','하','한','허','홍','황'];
+  const GIVEN_A=['건','경','광','규','근','기','길','남','대','덕','도','동','명','무','민','범','병','보','상','석','성','세','수','승','시','신','영','용','우','웅','원','유','윤','율','재','정','종','주','준','지','진','찬','창','태','현','형','호','환','효'];
+  const GIVEN_B=['강','건','경','광','구','국','근','길','남','담','덕','도','동','락','명','무','민','범','병','복','상','석','성','수','승','신','영','용','우','원','유','윤','재','정','종','주','준','지','진','찬','창','태','현','호','환','효'];
+  const SPECIALTY=Object.freeze([
+    {key:'war',role:'무관',className:'martial',office:'recruited-martial'},
+    {key:'leadership',role:'무관',className:'martial',office:'recruited-martial'},
+    {key:'intelligence',role:'문관',className:'civil',office:'recruited-civil'},
+    {key:'charisma',role:'문관',className:'civil',office:'recruited-civil'}
+  ]);
+  const STAT_LABEL={war:'무력',leadership:'통솔',intelligence:'지력',charisma:'매력'};
+  let runtime=null, sort={key:'name',dir:1}, seq=0;
+
+  function clamp(v,min,max){v=Number(v);return Math.max(min,Math.min(max,Number.isFinite(v)?v:min))}
+  function rng(){try{if(global.crypto?.getRandomValues){const a=new Uint32Array(1);global.crypto.getRandomValues(a);return a[0]/4294967296}}catch{}return Math.random()}
+  function randInt(min,max){return Math.floor(clamp(rng(),0,.999999999999)*(max-min+1))+min}
+  function choose(list){return list[randInt(0,list.length-1)]}
+  function sampleTier(){const roll=rng()*100;let acc=0;for(const tier of RATES){acc+=tier.rate;if(roll<acc)return tier}return RATES[0]}
+  function uniqueName(){const used=new Set((runtime?.getOfficers?.()||[]).map(o=>o.name));for(let n=0;n<64;n++){const name=choose(SURNAME)+choose(GIVEN_A)+choose(GIVEN_B);if(!used.has(name))return name}return choose(SURNAME)+choose(GIVEN_A)+choose(GIVEN_B)+String(++seq)}
+  function aptitudeFor(tier,specialty){const idx=RATES.findIndex(x=>x.id===tier.id),grade=['C','B','A','S','S'][Math.max(0,idx)];const base={spear:'C',cavalry:'C',archery:'C'};if(specialty.key==='war'||specialty.key==='leadership'){base.spear=grade;base.cavalry=idx>=3?'S':idx>=2?'A':'B';base.archery=idx>=2?'B':'C'}else{base.archery=grade;base.spear=idx>=3?'A':'C';base.cavalry=idx>=4?'A':'C'}return base}
+  function generate(territoryId,nationId){
+    const model=global.SAMGUK_CHARACTER_MODEL;if(!model)throw new Error('SAMGUK_CHARACTER_MODEL missing');
+    const tier=sampleTier(), specialty=choose(SPECIALTY), stats={};
+    for(const k of ['war','leadership','intelligence','charisma'])stats[k]=randInt(tier.sub[0],tier.sub[1]);
+    stats[specialty.key]=randInt(tier.main[0],tier.main[1]);
+    if(tier.id==='human')stats[specialty.key]=Math.min(70,stats[specialty.key]);
+    const id=`recruit-${Date.now().toString(36)}-${(++seq).toString(36)}-${randInt(1000,9999)}`;
+    const data=model.makeBase({id,name:uniqueName(),role:specialty.role,office:specialty.office,characterClass:specialty.className,territoryId,nationId,loyalty:randInt(76,96),stats,aptitude:aptitudeFor(tier,specialty),skills:[]});
+    data.recruitGrade=tier.id;data.recruitGradeLabel=tier.label;data.recruitMainStat=specialty.key;data.recruited=true;
+    return {tier,specialty,data};
+  }
+  function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function ensureDom(){
+    if(document.getElementById('personnelListDialog'))return;
+    document.body.insertAdjacentHTML('beforeend',`<dialog id="personnelListDialog" class="personnel-dialog personnel-owned-dialog"><div class="personnel-shell"><div class="personnel-head personnel-owned-head"><div><span>人事 · MY OFFICERS</span><h2>내정 - 아군 인재 관리</h2><p>현재 플레이어 세력에 실제 소속된 장수만 표시합니다.</p></div><button type="button" data-personnel-close="list">닫기</button></div><div id="personnelListBody" class="personnel-owned-body"></div></div></dialog><dialog id="personnelResultDialog" class="personnel-dialog personnel-result"><div id="personnelResultBody"></div></dialog>`);
+    const list=document.getElementById('personnelListDialog'), result=document.getElementById('personnelResultDialog');
+    list.addEventListener('click',e=>{const close=e.target.closest('[data-personnel-close]');if(close){list.close();return}const card=e.target.closest('[data-personnel-officer]');if(card){list.close();runtime?.openOfficerDetail?.(card.dataset.personnelOfficer)}});
+    result.addEventListener('click',e=>{if(e.target.closest('[data-personnel-result-close]')||e.target===result)closeResult()});
+  }
+  function owned(){
+    const direct=runtime?.getPlayerOfficers?.();
+    if(Array.isArray(direct))return direct.filter(Boolean);
+    const p=runtime?.getPlayer?.();
+    return (runtime?.getOfficers?.()||[]).filter(o=>runtime?.officerOwner?.(o)===p);
+  }
+  function officeLabel(o){
+    const office=String(o?.office||'');
+    if(office==='king')return '군주';
+    if(office==='general')return '대장군';
+    if(office==='chancellor')return '재상';
+    if(office==='guard')return '수비장';
+    return String(o?.role||'장수');
+  }
+  function troopBadge(o){
+    const apt=o?.aptitude||{};
+    const rank={S:4,A:3,B:2,C:1};
+    const rows=[
+      {key:'cavalry',icon:'騎',label:'기병'},
+      {key:'archery',icon:'弓',label:'궁병'},
+      {key:'spear',icon:'槍',label:'창병'}
+    ];
+    rows.sort((a,b)=>(rank[String(apt[b.key]||'C')]||0)-(rank[String(apt[a.key]||'C')]||0));
+    return rows[0];
+  }
+  function portraitMarkup(o){
+    try{
+      const html=runtime?.renderOfficerPortrait?.(o,420);
+      if(html)return String(html).replace('<svg ','<svg preserveAspectRatio="xMidYMid slice" ');
+    }catch(err){console.warn('[삼국쟁패][인사] 장수 초상 렌더 fallback',err)}
+    const initial=esc(String(o?.name||'將').slice(0,1));
+    return `<div class="my-officer-fallback-portrait"><b>${initial}</b><span>${esc(officeLabel(o))}</span></div>`;
+  }
+  function officerCardMarkup(o){
+    const badge=troopBadge(o),stats=o?.stats||{},region=runtime?.getRegionName?.(o?.territoryId)||'소속 영지';
+    return `<button type="button" class="my-officer-card" data-personnel-officer="${esc(o?.id)}" aria-label="${esc(o?.name)} 상세 보기"><div class="my-officer-card-layers"><div class="my-officer-portrait">${portraitMarkup(o)}</div><img class="my-officer-frame" src="hero_frame.png" alt="" draggable="false"><div class="my-officer-info"><div class="my-officer-troop-icon" title="주 병과 · ${badge.label}"><span>${badge.icon}</span></div><div class="my-officer-info-bottom"><small class="my-officer-office">${esc(officeLabel(o))}</small><strong class="my-officer-name">${esc(o?.name||'무명 장수')}</strong><span class="my-officer-region">${esc(region)}</span><div class="my-officer-stats"><span>무력 <b>${Number(stats.war)||0}</b></span><span>지력 <b>${Number(stats.intelligence)||0}</b></span><span>통솔 <b>${Number(stats.leadership)||0}</b></span><span>매력 <b>${Number(stats.charisma)||0}</b></span></div></div></div></div></button>`;
+  }
+  function renderMyOfficerGrid(officerList){
+    ensureDom();
+    const rows=(Array.isArray(officerList)?officerList:owned()).filter(Boolean);
+    const factionName=runtime?.getPlayerFactionName?.()||'아군';
+    const body=document.getElementById('personnelListBody');
+    if(!body)return rows;
+    body.innerHTML=`<div class="my-officer-summary"><div><span>所持 武將</span><b>${esc(factionName)} 인재 ${rows.length}명</b></div><small>타국 장수와 미등용 인재는 표시하지 않습니다. 카드를 누르면 상세 정보가 열립니다.</small></div>${rows.length?`<div class="my-officer-grid">${rows.map(officerCardMarkup).join('')}</div>`:'<div class="my-officer-empty">현재 세력에 소속된 인재가 없습니다.</div>'}`;
+    return rows;
+  }
+  async function loadMyOfficerList(){
+    const url=global.SAMGUK_MY_OFFICER_API_URL;
+    if(!url)return owned();
+    try{
+      const response=await fetch(url,{method:'GET',headers:{Accept:'application/json'},credentials:'same-origin'});
+      if(!response.ok)throw new Error(`HTTP ${response.status}`);
+      const payload=await response.json();
+      const rows=Array.isArray(payload)?payload:Array.isArray(payload?.officers)?payload.officers:[];
+      return rows;
+    }catch(err){
+      console.warn('[삼국쟁패][인사] 백엔드 인재 목록을 읽지 못해 현재 세션 데이터를 사용합니다.',err);
+      return owned();
+    }
+  }
+  async function openList(){
+    ensureDom();
+    const d=document.getElementById('personnelListDialog'),body=document.getElementById('personnelListBody');
+    if(body)body.innerHTML='<div class="my-officer-loading">아군 인재 명부를 불러오는 중…</div>';
+    if(!d.open)d.showModal();
+    const rows=await loadMyOfficerList();
+    renderMyOfficerGrid(rows);
+    return rows;
+  }
+  function openMyOfficerListUI(event){
+    event?.preventDefault?.();event?.stopPropagation?.();
+    openList();
+    return false;
+  }
+  global.openMyOfficerListUI=openMyOfficerListUI;
+  function rateText(){return RATES.map(x=>`${x.label} ${x.rate}%`).join(' · ')}
+  function renderSubmenu(territoryId){const has=!!runtime?.hasRecruitOffice?.(territoryId);return `<section class="personnel-submenu"><div class="personnel-submenu-head"><div><span>人事</span><h3>인사 관리</h3></div><small>${esc(runtime?.getRegionName?.(territoryId)||'')}</small></div><div class="personnel-actions"><button type="button" data-personnel-action="list" onclick="return openMyOfficerListUI(event)"><b>① 인재 목록</b><small>내 국가 소속 장수만 · 4열 카드 명부</small></button><button type="button" data-personnel-action="search" class="personnel-search-btn ${has?'ready':'locked'}"><b>② 인재 찾기 · 50금</b><small>${has?'인재소 운영 중 · 새로운 인재를 탐색합니다.':'🔒 이 영지에 인재소가 필요합니다.'}</small></button></div><div class="personnel-rates"><b>등급 확률</b><br>${rateText()}<br><small>요청값 합계가 101.1%여서 희귀 등급 확률을 보존하고 인급만 68.9%로 보정했습니다.</small></div></section>`}
+  function resultMarkup(candidate){const {tier,specialty,data}=candidate,s=data.stats;return `<div class="personnel-result-card grade-${tier.id}"><div class="personnel-cutin-aura"></div><div class="personnel-grade">${tier.label}</div><div class="personnel-name">${esc(data.name)}</div><div class="personnel-role">${esc(data.role)} · 주특기 ${STAT_LABEL[specialty.key]}</div><div class="personnel-main-stat">${STAT_LABEL[specialty.key]} <b>${s[specialty.key]}</b></div><div class="personnel-result-stats"><span>무력<b>${s.war}</b></span><span>통솔<b>${s.leadership}</b></span><span>지력<b>${s.intelligence}</b></span><span>매력<b>${s.charisma}</b></span></div><p>${esc(runtime?.getRegionName?.(data.territoryId)||'')}에 새 인재가 합류했습니다.</p><button type="button" data-personnel-result-close="1">확인</button></div>`}
+  function closeResult(){const d=document.getElementById('personnelResultDialog');if(d?.open)d.close();document.body.classList.remove('personnel-screen-shake','personnel-immortal-dim')}
+  function showResult(candidate){ensureDom();const d=document.getElementById('personnelResultDialog');document.getElementById('personnelResultBody').innerHTML=resultMarkup(candidate);d.className=`personnel-dialog personnel-result tier-${candidate.tier.id}`;if(candidate.tier.id==='divine'){document.body.classList.add('personnel-screen-shake');setTimeout(()=>document.body.classList.remove('personnel-screen-shake'),650)}if(candidate.tier.id==='immortal'){document.body.classList.add('personnel-immortal-dim');document.dispatchEvent(new CustomEvent('samguk:personnel-sfx',{detail:{tier:'immortal',cue:'immortal-recruit'}}))}if(!d.open)d.showModal()}
+  function search(territoryId){
+    if(!runtime)return false;territoryId=Number(territoryId);const p=runtime.getPlayer?.();if(!runtime.hasRecruitOffice?.(territoryId)){runtime.notify?.('인재소가 필요합니다.');return false}const gold=Number(runtime.getGold?.()||0);if(gold<COST){runtime.notify?.(`인재 찾기에 ${COST}금이 필요합니다.`);return false}
+    const candidate=generate(territoryId,p);runtime.setGold?.(gold-COST);let added=false;try{added=!!runtime.addOfficer?.(candidate.data)}catch(err){console.error('[삼국쟁패][인사] 인재 추가 실패',err)}if(!added){runtime.setGold?.(gold);runtime.notify?.('인재 등록에 실패해 비용을 환불했습니다.');return false}
+    runtime.log?.(`${runtime.getRegionName?.(territoryId)||'영지'} 인재 탐색 · 50금 · ${candidate.tier.label} ${candidate.data.name} 등용`);runtime.render?.();showResult(candidate);return true
+  }
+  function configureRuntime(api){runtime={...api};ensureDom();return true}
+  global.SAMGUK_PERSONNEL_SYSTEM={version:2,COST,RATES,configureRuntime,renderSubmenu,openList,openMyOfficerListUI,renderMyOfficerGrid,search,generate,sampleTier,getRuntime:()=>runtime};
+})(window);

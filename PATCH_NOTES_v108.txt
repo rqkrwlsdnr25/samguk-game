@@ -1,0 +1,19 @@
+삼국쟁패 v108 — 내정 / 모병 / 건설 먹통 복구 핫픽스
+
+원인
+1) v107 선택 핫픽스가 아군 영토 클릭 시 actionMode를 기존 domestic이 아니라 inspect로 강제 변경해 기존 내정 진입 흐름이 회귀했습니다.
+2) 내정 UI 이벤트가 #orders / #detail의 단일 onclick 속성에 의존해, 패널 재렌더나 다른 UI 코드가 onclick을 덮어쓸 경우 모병/건설 탭과 버튼이 무반응이 될 수 있었습니다.
+3) v107 game.js / map.js가 v106 STEPPE 통합 이전 베이스를 사용해, 초원/대흥안령 남부 렌더 및 일부 STEPPE 로직이 함께 롤백된 상태였습니다.
+
+수정
+- 아군 영토 선택 즉시 domestic 모드 복구.
+- 선택 테두리를 UI 렌더보다 먼저 갱신하고, 렌더 오류와 독립 유지.
+- selected / territory / owner / domestic / buildings Guard Clause 강화.
+- 내정하기 / 모병 / 건설 탭 / 모집 / 건설 버튼에 document capture 이벤트 브리지 추가.
+- innerHTML 재생성이나 onclick 덮어쓰기 후에도 핵심 내정 버튼이 계속 작동.
+- v106 STEPPE 통합 game.js 복구.
+- v106 STEPPE 마스크(7px / 0.45 opacity) + 대흥안령 산맥 남부 텍스처 map.js 복구.
+- v107의 선택 강조(노란 3px + 어두운 5px 외곽선) 병합 유지.
+
+적용
+압축을 풀고 game.js, map.js를 기존 게임 폴더의 동일 파일에 덮어쓰세요.

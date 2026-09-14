@@ -1,0 +1,28 @@
+삼국쟁패 v109 - 침략하기 / 턴 종료 안정화 핫픽스
+
+[진단]
+1. 플레이어 marchLand()가 busy=true 이후 animateMarch(), fight(), showBattleResult() 등 비동기/후속 처리에서 예외가 발생하면 기존 코드에는 try/finally가 없어 busy가 true로 남을 수 있었습니다.
+2. render()는 busy=true일 때 '침략하기'와 '#end 턴 종료'를 모두 disabled 처리하므로 한 번의 전투 처리 오류가 두 기능을 동시에 먹통처럼 만들 수 있습니다.
+3. 침략 버튼은 #orders.onclick 단일 위임 핸들러에, 턴 종료는 오래된 $('end').onclick 참조에 의존해 패널 재구성/후속 패치와 충돌할 여지가 있었습니다.
+
+[수정]
+- game.js 한 파일 교체.
+- handleAttack(attackerCountry, defenderCountry) 추가.
+- handleEndTurn() 추가.
+- DOMContentLoaded 뒤 침략/턴종료 이벤트를 중복 없이 재바인딩.
+- 침략 버튼은 document capture delegation으로 직접 연결.
+- 턴 종료는 기존 onclick을 제거하고 addEventListener로 최신 핸들러 연결.
+- marchLand() 예외 시 전투 직전 snapshot 복구 + busy 잠금 해제 + UI 재렌더.
+- 기존 AI, 전투 공식, 자원/내정/턴 경제, 대규모 전투 공식은 그대로 재사용.
+- 버튼/전투/턴 단계에 [삼국쟁패][v109] console.log / warn / error 로그 추가.
+
+[디버그]
+콘솔에서 다음 API를 사용할 수 있습니다.
+- SAMGUK_COMBAT_TURN_HOTFIX.getState()
+- handleAttack(player, null)
+- handleEndTurn()
+- SAMGUK_COMBAT_TURN_HOTFIX.recoverUiLock()  // turnProcessing 중이 아닐 때만 busy UI 잠금 수동 복구
+
+[적용]
+압축의 game.js를 기존 게임 폴더의 game.js에 덮어쓰세요.
+기준: v108 내정/모병/건설 복구 패치가 적용된 game.js.

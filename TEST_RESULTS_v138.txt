@@ -1,0 +1,17 @@
+[v138 TEST RESULTS]
+base=v137_build
+
+PASS - JS syntax parse :: DongjinMapDataV137.js evaluated successfully in VM context
+PASS - Version bump :: version=138
+PASS - Geometry revision tag :: v138-dongjin-color-guide-river-split-gap-fill-sea-cut
+PASS - baseTerritoryOverrides contains 동진 내륙 :: present
+PASS - baseTerritoryOverrides contains 동진 연안 :: present
+PASS - baseTerritoryOverrides contains 동진 남부 :: present
+PASS - baseTerritoryOverrides contains 동진 남동 :: present
+PASS - expansionTerritories contains 동진 강남 서부 :: dongjin_jiangnan_west
+PASS - expansionTerritories contains 동진 강남 동부 :: dongjin_jiangnan_east
+PASS - River path present :: M61,1142 C82,1138 99,1143 118,1148 C138,1153 157,1158 176,1165 C192,1171 208,1174 225,1178
+PASS - 동진 강남 동부 path non-empty :: M66,1145.5L106.15,1145.3L122,1150L150,1160L176,1170L194,1178L225,1178L225,1260L4
+PASS - 동진 강남 서부 path non-empty :: M-180,1122L-120,1120L-90,1128L-40,1127L-14.5,1120.62L-4,1118L-4,1172L-1,1186L6,1
+
+OVERALL: PASS

@@ -1,0 +1,118 @@
+/* v78 - Internal affairs panel readability / resource relocation polish */
+:root{
+  --action-military:#a45249;
+  --action-military-hi:#dc7669;
+  --action-domestic:#b6924a;
+  --action-domestic-hi:#e7c56f;
+  --action-info:#55789d;
+  --action-info-hi:#84aad2;
+  --action-intel:#75639d;
+  --action-intel-hi:#a790d2;
+}
+
+/* 1. Action groups: communicate intent through restrained borders, not loud fills. */
+#orders .territory-actions button{
+  position:relative;
+  transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease,color .16s ease,transform .16s ease;
+}
+#orders .territory-actions button[data-mode="support"],
+#orders .territory-actions button[data-mode="attack"]{
+  border-color:color-mix(in srgb,var(--action-military) 78%,#586267);
+}
+#orders .territory-actions button[data-mode="domestic"],
+#orders .territory-actions button[data-mode="city"],
+#orders .territory-actions button[data-mode="capital"]{
+  border-color:color-mix(in srgb,var(--action-domestic) 82%,#586267);
+}
+#orders .territory-actions button[data-mode="personnel"]{
+  border-color:color-mix(in srgb,var(--action-info) 80%,#586267);
+}
+#orders .territory-actions button[data-strategy-espionage-open]{
+  border-color:color-mix(in srgb,var(--action-intel) 84%,#586267);
+}
+#orders .territory-actions button[data-mode="support"]:hover:not(:disabled),
+#orders .territory-actions button[data-mode="attack"]:hover:not(:disabled){border-color:var(--action-military-hi);box-shadow:inset 0 0 0 1px #da756633,0 0 10px #b14c4024;background:#342b29}
+#orders .territory-actions button[data-mode="domestic"]:hover:not(:disabled),
+#orders .territory-actions button[data-mode="city"]:hover:not(:disabled),
+#orders .territory-actions button[data-mode="capital"]:hover:not(:disabled){border-color:var(--action-domestic-hi);box-shadow:inset 0 0 0 1px #e8c56d33,0 0 10px #c59c4124;background:#363328}
+#orders .territory-actions button[data-mode="personnel"]:hover:not(:disabled){border-color:var(--action-info-hi);box-shadow:inset 0 0 0 1px #86add333,0 0 10px #537da824;background:#29333a}
+#orders .territory-actions button[data-strategy-espionage-open]:hover:not(:disabled){border-color:var(--action-intel-hi);box-shadow:inset 0 0 0 1px #aa91d533,0 0 10px #7b62a824;background:#302d39}
+#orders .territory-actions button[data-mode="support"][aria-pressed="true"],
+#orders .territory-actions button[data-mode="attack"][aria-pressed="true"]{background:#6b3834;color:#fff0e8;border-color:var(--action-military-hi);box-shadow:inset 0 0 0 1px #f39b8b66}
+#orders .territory-actions button[data-mode="domestic"][aria-pressed="true"],
+#orders .territory-actions button[data-mode="city"][aria-pressed="true"],
+#orders .territory-actions button[data-mode="capital"][aria-pressed="true"]{background:#71603b;color:#fff0c1;border-color:var(--action-domestic-hi);box-shadow:inset 0 0 0 1px #ffe19b66}
+#orders .territory-actions button[data-mode="personnel"][aria-pressed="true"]{background:#39536a;color:#e9f5ff;border-color:var(--action-info-hi)}
+
+/* 2. Recruitment becomes a compact alternating bar / one-line note stack. */
+#orders .domestic-mode-title{margin-bottom:8px}
+#orders .recruit-compact-list{display:grid;grid-template-columns:minmax(0,1fr);gap:0;margin:0 0 12px}
+#orders .recruit-compact-list .recruit-slot{
+  min-height:34px;
+  padding:6px 10px;
+  margin:0;
+  border-radius:3px;
+  font-size:12px;
+  line-height:1.2;
+  font-weight:700;
+  text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+}
+#orders .recruit-compact-list .recruit-slot span{font-size:11px;font-weight:500;opacity:.82}
+#orders .recruit-slot-desc{
+  margin:3px 4px 7px;
+  min-width:0;
+  color:#94a39e;
+  font-size:10.5px;
+  line-height:1.35;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  text-align:left;
+}
+#orders .recruit-compact-list .unique-unit{border-color:#ad7188}
+#orders .recruit-compact-list .unique-unit+.recruit-slot-desc{color:#bda7b0}
+
+/* 3. Resource card lives only in the selected-territory information column. */
+#detail .territory-resource-card{
+  position:relative;
+  overflow:hidden;
+  margin:12px 0 10px;
+  padding:11px 12px;
+  border:1px solid #8b7948;
+  border-radius:5px;
+  background:linear-gradient(145deg,#17221bf2,#20291ef0);
+  box-shadow:inset 0 0 18px #d2b25c0a,0 0 0 1px #0006;
+  animation:territoryResourceGlow 3.2s ease-in-out infinite;
+}
+#detail .territory-resource-card:before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  pointer-events:none;
+  border-radius:inherit;
+  background:linear-gradient(115deg,transparent 12%,#ffe09c1a 42%,transparent 64%);
+  transform:translateX(-70%);
+  animation:territoryResourceSweep 5.2s ease-in-out infinite;
+}
+#detail .resource-card-head{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
+#detail .resource-card-head>strong{color:#ead49a;font-size:13px;letter-spacing:.04em}
+#detail .resource-chip-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+#detail .resource-chip{display:inline-flex;align-items:center;gap:3px;padding:3px 6px;border:1px solid #59654e;border-radius:999px;background:#111a13;color:#dbe0cb;font-size:10px}
+#detail .resource-chip b{font-size:12px}
+#detail .resource-empty{font-size:10px;color:#7f897c}
+#detail .resource-effects{position:relative;display:grid;gap:3px}
+#detail .resource-effects small{display:block;color:#aeb7a7;font-size:10px;line-height:1.45}
+#detail .resource-palace-action{position:relative;width:100%;margin-top:8px;padding:7px 8px;border:1px solid #6f775d;background:#31382e;color:#e8dec1;border-radius:3px;font-size:11px}
+#detail .resource-palace-note{position:relative;display:block;margin-top:4px;color:#8d9789;font-size:9px}
+#detail .territory-geo-summary{margin-top:9px}
+@keyframes territoryResourceGlow{0%,100%{border-color:#736742;box-shadow:inset 0 0 18px #d2b25c08,0 0 0 1px #0006}50%{border-color:#b79a52;box-shadow:inset 0 0 22px #e5c66b10,0 0 11px #d3aa4b1c}}
+@keyframes territoryResourceSweep{0%,70%,100%{transform:translateX(-75%);opacity:0}82%{opacity:.65}94%{transform:translateX(75%);opacity:0}}
+@media(prefers-reduced-motion:reduce){#detail .territory-resource-card,#detail .territory-resource-card:before{animation:none!important}}
+
+@media(max-width:650px){
+  #orders .recruit-slot-desc{white-space:normal}
+}

@@ -1,0 +1,14 @@
+삼국쟁패 v107 영토 선택 / 내정 TypeError 핫픽스
+
+교체 파일
+- game.js
+- map.js
+
+수정
+1. 영토 선택 직후 updateMapDynamicState()를 먼저 실행해 UI 패널 오류와 무관하게 선택 테두리를 즉시 표시.
+2. 선택 테두리 3px 노란색 + 5px 어두운 외곽 halo. vector-effect=non-scaling-stroke 유지.
+3. 아군 영토 클릭 시 자동 내정 진입을 제거하고 inspect 상태에서 '내정하기' 버튼으로만 진입.
+4. 내정 실행 전 selected / regions / isActiveTerritory / owner 검증 Guard Clause 추가.
+5. territory.domestic, territory.buildings가 없거나 잘못된 형식이면 안전 객체로 초기화.
+6. renderDomesticPanel / 내정 탭 전환 TypeError 보호.
+7. render() 오류가 발생해도 finally에서 선택 테두리 재동기화.

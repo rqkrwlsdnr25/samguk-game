@@ -1,0 +1,13 @@
+[TEST RESULTS v129]
+PASS metadata version 129
+PASS removed blue-mask names absent from appended territories
+PASS remaining Japanese brown-mask territories present
+PASS v129 왜 동북부 polygon applied
+PASS v129 왜 극동부 polygon applied
+PASS v129 왜 중부 동부 polygon applied
+PASS 왜 동북부 center updated
+PASS 왜 극동부 center updated
+PASS 왜 중부 동부 center updated
+PASS canMoveSeaRoute exported
+PASS sea routes intact
+PASS node --check / MapExpansionV125.js syntax valid

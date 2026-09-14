@@ -1,0 +1,17 @@
+[v143] 숙신 고토 호수/상단 수로 제거 및 영토 병합
+
+1) 숙신 고토 좌측 호수
+- GEOGRAPHY.rivers 원본의 호수 subpath #54를 제거.
+- 같은 수역을 숙신 고토 coordinates에 실제 union하여 클릭 가능한 육지로 편입.
+
+2) 찰하-연해주 북부 사이 상단 수로
+- GEOGRAPHY.rivers 원본 수로 subpath #21을 제거.
+- x=952.0 중심 경계를 기준으로 좌측 절반은 숙신 고토, 우측 절반은 연해주 북부에 편입.
+- 하나의 수로 폴리곤을 먼저 분할한 뒤 union하므로 중복/빈 구멍 없이 배정.
+
+3) 렌더링
+- map.js의 기본 river layer에서 위 2개 water subpath만 bbox 기반으로 제외.
+- 다른 하천/호수는 그대로 유지.
+
+4) 클릭 판정
+- MapExpansionV125.js가 새 coordinates를 SVG path로 재생성하므로 새 매립 영역도 영토 클릭/선택 판정에 포함.

@@ -1,0 +1,18 @@
+v128 파란 마스크 노드 완전 삭제 패치
+
+핵심 변경
+- 왜 기내 동부 / 왜 남부 / 왜 남동부: Polygon 수정이 아니라 WORLD 영토 배열에 아예 추가하지 않음.
+- 관련 LAND_LINKS / SEA_LINKS 제거.
+- WORLD 영토 수 121 -> 118.
+- 남아 있는 왜 동북부 / 왜 극동부 / 왜 중부 동부는 v127 red-boundary clip 경계 유지.
+- 모든 기존 '왜 ...' 본토 영토에 mountain_terrain_texture.png를 visual-only로 적용.
+- 텍스처는 전투/병량 산악 판정에는 추가되지 않음.
+- v127 세이브에서 추가 영토 인덱스가 3칸 당겨지는 문제를 stable territoryId 기반으로 마이그레이션.
+
+덮어쓰기 파일
+- MapExpansionV125.js
+- map.js
+- game.js
+- game.js.bak
+- APPLY_PATCH_v128.txt
+- TEST_RESULTS_v128.txt

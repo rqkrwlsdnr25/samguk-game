@@ -1,0 +1,19 @@
+삼국쟁패 v114 — 도시증축 / 인사 완전 복구
+
+[원인]
+1. v108/v111 내정 document-capture 이벤트가 data-city-type 버튼까지 먼저 선점하고 stopImmediatePropagation()을 호출해 최신 도시 이벤트 라우터와 충돌했습니다.
+2. #orders innerHTML 재렌더와 여러 버전 onclick/capture 라우터가 혼재해 도시/인사 탭의 이벤트 경로가 일관되지 않았습니다.
+3. Personnel runtime 또는 패널 렌더 한 부분에서 예외가 나면 인사 메뉴 전체가 보이지 않는 구조였습니다.
+
+[수정]
+- v111 내정 capture가 도시증축/인사 버튼을 더 이상 가로채지 않도록 분리.
+- v114 단일 capture 라우터에서 도시증축/인사/도시종류/인사액션을 처리.
+- 도시증축: 농업/상업/군사/해상(항구) 4종 복구. 해상도시는 해안 영토 전용, 초원 농업도시 제한 유지.
+- 기존 도시 I/II/III 비용/AP/효과 및 upgradeCity 엔진 재사용.
+- 인사: 인재 목록 / 인재 등용(50금, 인재소 필요) / 포로 관리 복구.
+- Personnel runtime 재연결 + 패널 예외 격리 + fallback UI 추가.
+- 턴 종료 v113 안정화 로직은 변경하지 않음.
+
+[덮어쓰기 파일]
+- game.js
+- PersonnelSystem.js

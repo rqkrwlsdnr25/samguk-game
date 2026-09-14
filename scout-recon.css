@@ -1,0 +1,138 @@
+/* 삼국쟁패 v82 - 정찰 지도 선택 Spotlight / Confirm / Canvas VFX */
+#mapViewport .scout-recon-canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:26;
+  pointer-events:none;
+  opacity:1;
+}
+#mapViewport .scout-recon-canvas[hidden]{display:none!important}
+
+body.scout-target-mode #mapViewport{cursor:crosshair!important}
+body.scout-target-mode #mapViewport>#map,
+body.scout-target-mode #mapViewport>#mapUiOverlay{
+  /* 카메라 줌/팬은 그대로 허용하되 일반 선택 느낌은 제거 */
+  user-select:none;
+}
+#map .territory-shape.scout-target-candidate path{
+  cursor:crosshair;
+}
+#map .territory-shape.scout-spotlight-territory path{
+  filter:brightness(1.30) saturate(1.16)
+         drop-shadow(0 0 2px rgba(255,229,153,.95))
+         drop-shadow(0 0 8px rgba(89,214,220,.78))!important;
+  stroke:#ffe49a!important;
+  stroke-width:2.4!important;
+  fill-opacity:.88!important;
+}
+
+#mapViewport .scout-recon-hud{
+  position:absolute;
+  z-index:29;
+  left:50%;
+  top:14px;
+  transform:translateX(-50%);
+  width:min(720px,calc(100% - 28px));
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:10px 12px 10px 15px;
+  border:1px solid rgba(226,194,112,.66);
+  background:linear-gradient(180deg,rgba(11,21,25,.96),rgba(7,14,18,.91));
+  box-shadow:0 8px 30px rgba(0,0,0,.55),0 0 18px rgba(217,181,84,.12);
+  backdrop-filter:blur(8px);
+  color:#eee5cf;
+  pointer-events:auto;
+  border-radius:5px;
+}
+#mapViewport .scout-recon-hud[hidden]{display:none!important}
+.scout-recon-hud-copy{min-width:0;display:flex;align-items:baseline;gap:13px;flex-wrap:wrap}
+.scout-recon-hud-copy strong{font-family:serif;font-size:17px;letter-spacing:.5px;color:#f3d78e;white-space:nowrap}
+.scout-recon-hud-copy span{font-size:11px;color:#b8c7c5;line-height:1.45;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scout-recon-hud button{
+  flex:0 0 auto;
+  border:1px solid #7c6e4e;
+  background:#1b2423;
+  color:#e7dcc2;
+  padding:7px 12px;
+  border-radius:3px;
+}
+.scout-recon-hud button:hover{border-color:#dfbd78;background:#2a261b;color:#ffe5a7}
+.scout-recon-hud.is-success{
+  border-color:#6edbd7;
+  box-shadow:0 8px 30px #0009,0 0 24px rgba(92,219,216,.28);
+}
+.scout-recon-hud.is-success .scout-recon-hud-copy strong{color:#9ef0ec}
+
+#scoutReconConfirm.scout-recon-confirm{
+  width:min(520px,calc(100vw - 30px));
+  max-width:520px;
+  border:1px solid #88764d;
+  border-radius:7px;
+  padding:0;
+  overflow:hidden;
+  color:#eee6d4;
+  background:
+    linear-gradient(180deg,rgba(24,32,31,.985),rgba(9,17,20,.99));
+  box-shadow:0 32px 100px rgba(0,0,0,.82),0 0 26px rgba(207,170,77,.16);
+}
+#scoutReconConfirm::backdrop{
+  background:rgba(3,8,11,.52);
+  backdrop-filter:blur(2px);
+}
+.scout-recon-confirm-inner{padding:24px 24px 20px}
+.scout-recon-confirm-eyebrow{font-size:11px;color:#bca96f;letter-spacing:1.2px;font-weight:700}
+.scout-recon-confirm h2{font-family:serif;font-size:27px;color:#f0d28b;margin:7px 0 9px;line-height:1.35}
+.scout-recon-confirm p{margin:0;color:#aebcb8;font-size:12px;line-height:1.7}
+.scout-recon-confirm p b{color:#ece2c9}
+.scout-recon-confirm-stats{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:7px;
+  margin-top:17px;
+}
+.scout-recon-confirm-stats span{
+  min-width:0;
+  padding:10px 9px;
+  background:#0d1719;
+  border:1px solid #334243;
+  text-align:center;
+}
+.scout-recon-confirm-stats small{display:block;color:#82928f;font-size:9px;margin-bottom:5px}
+.scout-recon-confirm-stats strong{display:block;color:#e7d49c;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scout-recon-confirm-actions{display:grid;grid-template-columns:1fr 1.25fr;gap:9px;margin-top:18px}
+.scout-recon-confirm-actions button{
+  min-height:42px;
+  border:1px solid #586662;
+  background:#172220;
+  color:#d9ded8;
+  border-radius:3px;
+  font-weight:700;
+}
+.scout-recon-confirm-actions button:hover{border-color:#8e9e96;background:#202e2b}
+.scout-recon-confirm-actions .primary{
+  margin:0;
+  width:auto;
+  border-color:#d5ae58;
+  background:linear-gradient(180deg,#e1c170,#bd9141);
+  color:#201a10;
+}
+.scout-recon-confirm-actions .primary:hover{filter:brightness(1.08)}
+
+@media(max-width:720px){
+  #mapViewport .scout-recon-hud{top:8px;padding:8px 9px 8px 11px;gap:8px}
+  .scout-recon-hud-copy{display:block}
+  .scout-recon-hud-copy strong{display:block;font-size:15px}
+  .scout-recon-hud-copy span{display:block;max-width:70vw;margin-top:3px;font-size:10px}
+  .scout-recon-hud button{padding:6px 9px;font-size:11px}
+  .scout-recon-confirm-inner{padding:20px 17px 16px}
+  .scout-recon-confirm h2{font-size:22px}
+  .scout-recon-confirm-stats{grid-template-columns:1fr}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #map .territory-shape.scout-spotlight-territory path{transition:none!important}
+}

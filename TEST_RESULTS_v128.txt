@@ -1,0 +1,31 @@
+삼국쟁패 v128 검증 결과
+========================
+
+PASS  MapExpansionV125.js node --check
+PASS  map.js node --check
+PASS  game.js node --check
+PASS  game.js.bak 동일 구문 검사
+PASS  WORLD.territories.length = 118 (v127 121 -> 파란 마스크 노드 3개 실제 삭제)
+PASS  WORLD.neighbors.length = 118
+PASS  expansion API version = 128
+PASS  geometryRevision = v128-blue-mask-node-removal
+PASS  삭제 노드 '왜 기내 동부' WORLD.territories에 존재하지 않음
+PASS  삭제 노드 '왜 남부' WORLD.territories에 존재하지 않음
+PASS  삭제 노드 '왜 남동부' WORLD.territories에 존재하지 않음
+PASS  삭제 노드가 LAND_LINKS / SEA_LINKS에 연결되지 않음
+PASS  왜 동북부 Polygon valid / center inside
+PASS  왜 극동부 Polygon valid / center inside
+PASS  왜 중부 동부 Polygon valid / center inside
+PASS  위 3개 Polygon은 v127에서 검증한 red-boundary clipping을 그대로 유지 (blue-mask overlap 0)
+PASS  이키섬 / 오도열도 / 오키섬 해상 노드 유지
+PASS  모든 neighbor index가 0..117 범위 내
+PASS  왜 본토 모든 '왜 ...' 영토에 visual-only 황토/산악 texture override 적용
+PASS  visual texture는 MOUNTAIN_TEXTURE_TERRITORY_SET에 추가하지 않아 산악 게임 규칙을 강제하지 않음
+PASS  v127 저장본 로드시 stable territoryId 기반 인덱스 재매핑 적용
+PASS  삭제된 확장 영토에 배치된 장수는 잘못된 새 인덱스로 이동하지 않도록 territoryId=null 방어 처리
+
+판정:
+- 파란색 마스크 영역의 왜 기내 동부 / 왜 남부 / 왜 남동부 노드는 배열에서 실제 제거됨.
+- 해당 남쪽/기내 마스크 영역은 world.landPath에 추가되지 않아 순수 바다로 유지됨.
+- 남아 있는 왜 동북부 / 왜 극동부 / 왜 중부 동부는 기존 red-boundary clipping을 유지함.
+- 왜 본토 텍스처는 시각 전용으로 복원됨.

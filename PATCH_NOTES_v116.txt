@@ -1,0 +1,10 @@
+삼국쟁패 v116 — 침략 경로 노란선 중복 제거
+
+수정 파일
+- map.js
+
+수정 내용
+1. lightweight 침략 모드(actionMode=attack, active=true)에서 기존 plannedRouteMarkup()의 노란 selected -> target 점선을 렌더링하지 않음.
+2. 빨간 공격선은 game.js의 invasion-route-fx-layer가 그대로 담당.
+3. 지원군 노란선은 기존처럼 유지. 침략 모드의 지원 후보선은 지원 영토 -> 공격 시작점으로 유지되며, 실제 지원 이동(actionMode=support)의 planned-route도 유지됨.
+4. 해상/일반 이동 및 침략 모드 밖의 planned-route에는 영향 없음.

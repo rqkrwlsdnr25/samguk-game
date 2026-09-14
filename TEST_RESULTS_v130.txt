@@ -1,0 +1,31 @@
+[삼국쟁패 v130 검증 결과]
+PASS JavaScript syntax: JapanMapDataV130.js
+PASS JavaScript syntax: MapExpansionV125.js
+PASS JavaScript syntax: JapanTerrainMaskCanvas.js
+PASS JavaScript syntax: map.js
+PASS WORLD.territories = 121
+PASS WORLD.neighbors = 121
+PASS expansion metadata version = 130
+PASS BLUE node removed: 왜 기내 동부
+PASS BLUE node removed: 왜 남부
+PASS BLUE node removed: 왜 남동부
+PASS RED land node: 왜 동북부
+PASS RED land node: 왜 극동부
+PASS RED land node: 왜 중부 동부
+PASS RED land node: 왜 시코쿠
+PASS RED land node: 왜 기이
+PASS RED land node: 왜 규슈 남부
+PASS sea edge: 오도열도 <-> 왜 규슈 남부
+PASS polygon raster / BLUE mask overlap = 0 px: wa_northeast_expansion
+PASS polygon raster / BLUE mask overlap = 0 px: wa_far_east_expansion
+PASS polygon raster / BLUE mask overlap = 0 px: wa_central_east_expansion
+PASS polygon raster / BLUE mask overlap = 0 px: wa_shikoku_expansion
+PASS polygon raster / BLUE mask overlap = 0 px: wa_kii_expansion
+PASS polygon raster / BLUE mask overlap = 0 px: wa_kyushu_south_expansion
+PASS all local index.html file references exist
+PASS Canvas renderer uses ctx.clip() + cached bitmap mask
+
+MASK SHA256
+f9442cf1ccaf6eecaf8d226a4c5945e9296ccc7d6edbb35b03ecf51eda41308e  japan_red_blue_mask_v130.png
+c1f380fe8b477af9ca4f30a1b7dfc70243eb099230a86f3bade523c098be6b07  japan_land_alpha_v130.png
+70d49b231e7c79bde8f3ea46af915ce1912f3390e121cee7d220e4e4ba5ae1ff  japan_sea_alpha_v130.png

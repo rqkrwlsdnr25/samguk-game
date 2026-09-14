@@ -1,0 +1,21 @@
+[TEST RESULTS v136]
+
+PASS MapExpansionV125.js syntax valid (node --check)
+PASS EumnuMapDataV136.js syntax valid (node --check)
+PASS EumnuMapDataV135.js compatibility module syntax valid
+PASS 연해주 북부 polygon valid
+PASS 연해주 북부 label center remains inside polygon
+PASS 연해주 북부 north/top fill added: +525.25 world² compared with v135
+PASS 주황 가이드 top gap now closed by (1065,0) -> (969.5,0) -> (969.5,11)
+PASS 읍루 동해안 polygon valid
+PASS 읍루 동해안 label center remains inside polygon
+PASS 빨간 가이드 land removal: 3009.00 world² removed from v135 읍루 동해안
+PASS no new land was added into the red-cut region (added difference = 0.00 world²)
+PASS 읍루 동해안 max southern extent reduced from y=300 to y=220
+PASS 연해주 북부 ↔ 읍루 동해안 adjacency retained
+PASS 숙신 고토 ↔ 읍루 동해안 adjacency retained
+PASS 연해주 남부 ↔ 읍루 동해안 land link removed after sea cut
+PASS new 연해주 북부 / 숙신 고토 / 연해주 남부 / 읍루 동해안 polygons have zero area overlap
+PASS 숙신 고토 geometry unchanged from v135
+PASS 연해주 남부 geometry unchanged from v135
+PASS Japan and Dongjin expansion definitions are not modified by this patch

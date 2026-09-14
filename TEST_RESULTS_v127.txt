@@ -1,0 +1,18 @@
+삼국쟁패 v127 검증 결과
+========================
+
+PASS  MapExpansionV125.js node --check
+PASS  world.territories.length = 121
+PASS  world.neighbors.length = 121
+PASS  expansion API version = 127
+PASS  geometryRevision = v127-blue-mask-coastline-clip
+PASS  왜 동북부 polygon valid / center inside / blue-mask overlap 0
+PASS  왜 극동부 polygon valid / center inside / blue-mask overlap 0
+PASS  왜 중부 동부 polygon valid / center inside / blue-mask overlap 0
+PASS  왜 기내 동부 polygon valid / center inside / blue-mask overlap 0
+PASS  왜 남부 polygon valid / center inside / blue-mask overlap 0
+PASS  왜 남동부 polygon valid / center inside / blue-mask overlap 0
+PASS  existing island/sea-route graph retained
+PASS  removed land links no longer cross restored blue-sea area
+
+판정: 사용자 가이드의 파란 마스킹 영역은 확장 왜 영토 Polygon과 겹치지 않으며 바다로 복원됨.

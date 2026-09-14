@@ -1,0 +1,10 @@
+PASS JS syntax: MapExpansionV125.js
+PASS JS syntax: WorldMapBoundsController.js
+PASS JS syntax: map.js
+PASS territory count: 121
+PASS neighbor array synchronized: 121
+PASS expansion version: 126
+PASS required sea routes
+PASS compact expanded bounds: 1120.75 x 1260.75
+PASS no giant rectangular expansion tiles: max bbox 281.0 x 215.0; biggest-area ('왜 남부', 281.0, 117.0)
+PASS default camera keeps legacy atlas scale: [-181.25, -1.25, 1151.5, 1147.5]

@@ -1,0 +1,50 @@
+삼국쟁패 v111 — 내정 / 모병 / 건설 통합 복구
+================================================
+
+[확인된 원인]
+1. v106의 #orders.onclick 이벤트와 v108의 document capture 이벤트가 동시에 존재했습니다.
+   v108은 stopImmediatePropagation()까지 사용하므로 DOM 재렌더 이후 일부 버튼이 구형 핸들러까지 도달하지 못하거나,
+   반대로 특정 경로에서는 중복 실행될 여지가 있었습니다.
+
+2. 건설 행동력 계산은 담당관 능력에 따라 실제 0.6~1.0까지 내려가는데,
+   UI와 기존 실행 가드는 ap < 1을 기준으로 막고 있었습니다.
+   그래서 실제 필요 AP가 0.6~0.9여도 버튼이 비활성화되는 상태 불일치가 있었습니다.
+
+3. 모병/기병/특수병/건설 함수 일부는 조건 불충족 시 안내 없이 return했습니다.
+   사용자는 버튼이 눌렸는데 아무 반응이 없는 '먹통'으로 보게 되는 구조였습니다.
+
+4. 침략/이동 뒤 target, attackType이 남은 상태에서 내정 행동으로 넘어가면
+   건설 함수의 target !== null 방어 조건과 충돌할 가능성이 있었습니다.
+
+5. 구형 저장 데이터의 buildings 객체는 현재 BuildingDataSheet의 전체 키를 갖지 않는 경우가 있습니다.
+   recruitmentCost / TurnEconomy / 건설 UI가 같은 턴에 서로 다른 buildings 형태를 읽으면서
+   undefined 접근 또는 잘못된 잠금 판정을 만들 수 있었습니다.
+
+6. 후속 건설 시스템에서 canBuildAt()이 재정의되며 산해관 같은 관문 영토의
+   '건설 불가' 규칙이 일부 경로에서 빠진 회귀가 있었습니다.
+
+[v111 수정]
+- v108 capture 핸들러 최상단에서 SAMGUK_DOMESTIC_V111 단일 브리지로 우선 위임합니다.
+- 내정 진입 / 모병 탭 / 건설 탭 / 보병 / 기병 / 특수병 / 건설 버튼을 같은 이벤트 경로로 처리합니다.
+- DOM innerHTML 재생성 후에도 document capture 브리지가 유지됩니다.
+- 국내 행동 진입 시 stale target / attackType / 침략 상태를 정리합니다.
+- 건설 버튼 disabled 조건과 실제 소모 AP를 constructionActionCost()로 완전히 통일했습니다.
+- 건설 실행은 performBuild() 기존 코어를 재사용하므로 왕권/권위 보너스 등 기존 후속 훅을 유지합니다.
+- 건설/모병 실행 도중 예외가 발생하면 금/병량/AP/병력/건물 상태를 가능한 범위에서 복구합니다.
+- 모병 불가 원인을 금/병량/AP/해금/모집량 기준으로 명시적으로 안내합니다.
+- 구형 buildings 객체를 SAMGUK_BUILDING_DATA.createInitialState()와 병합하고 타입을 정규화합니다.
+- validateTurnState() 직전에도 모든 영토 buildings 스키마를 자동 보정합니다.
+- 산해관 등 관문 영토의 건설/도시증축 차단을 최종 판정에 다시 적용했습니다.
+- 기존 내정 UI CSS 클래스/DOM 구조를 유지하여 레이아웃 회귀를 방지했습니다.
+- console 로그 prefix: [삼국쟁패][v111]
+
+[적용]
+패치 ZIP: game.js만 기존 게임 폴더의 game.js에 덮어쓰기.
+전체 ZIP: 압축 해제 후 index.html 실행.
+
+[검증]
+- node --check game.js 통과
+- node --check map.js 통과
+- index.html의 로컬 script src 55개 존재 여부 확인 완료
+- v111 브리지가 v108 stopImmediatePropagation 이전에 실행되는지 정적 검증 완료
+- 최종 buildBuilding/renderDomesticPanel/recruit 함수가 v111 구현으로 덮어써지는지 검증 완료

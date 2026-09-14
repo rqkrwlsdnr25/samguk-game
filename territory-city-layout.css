@@ -1,0 +1,65 @@
+/* v34 unified territory/capital image hierarchy */
+.city-image-slot{pointer-events:none;transform-box:fill-box;transform-origin:center;will-change:transform,opacity}
+.city-image-slot .territory-city-image{opacity:.98;filter:drop-shadow(0 4px 4px rgba(3,12,16,.52)) drop-shadow(0 0 1px rgba(255,239,187,.46));image-rendering:auto}
+.city-image-slot.city-kind-capital .territory-city-image{opacity:.96;filter:drop-shadow(0 3px 3px rgba(3,12,16,.48))}
+.city-image-slot .city-image-fallback-frame{fill:#152c34;stroke:#e3c47f;stroke-width:1.5;opacity:0}
+.city-image-slot .city-image-fallback-glyph{font:700 15px serif;text-anchor:middle;fill:#f3d58b;stroke:#102733;stroke-width:1.6px;paint-order:stroke fill;opacity:0}
+.city-image-slot.asset-error .city-image-fallback-frame,.city-image-slot.asset-error .city-image-fallback-glyph{opacity:.95}
+.city-image-slot.is-spawn{animation:cityInlineSpawn 760ms cubic-bezier(.18,.84,.28,1.08) both;animation-delay:var(--city-spawn-delay,0ms)}
+@keyframes cityInlineSpawn{0%{opacity:0;scale:.72}58%{opacity:1;scale:1.065}80%{opacity:1;scale:.99}100%{opacity:1;scale:1}}
+/* same SVG group: city image is emitted before label text, so labels always paint on top */
+#territory-labels .place-name,#territory-labels .troop{paint-order:stroke fill;stroke:#102733;stroke-width:2.4px;stroke-linejoin:round}
+#territory-labels .troop{stroke-width:2px}
+.officer-map-icon-layer{isolation:isolate}
+@media (prefers-reduced-motion:reduce){.city-image-slot.is-spawn{animation:none;opacity:1;scale:1}}
+
+/* v59 — unified city base size + camera-linked scaling ----------------------
+   The outer territory-screen-space group cancels map zoom so labels stay crisp.
+   City art intentionally opts back into a controlled zoom curve through ONE
+   global CSS variable written by GpuMapCamera. */
+#mapUiOverlay .minimal-label.has-city-visual .city-image-slot{
+  transform:translateY(var(--city-icon-extra-half-y,0px)) scale(var(--city-icon-zoom-scale,1));
+  transform-origin:center center;
+}
+#mapUiOverlay .minimal-label.has-city-visual.is-compact .city-image-slot{
+  transform:scale(var(--city-icon-zoom-scale,1));
+}
+/* Shift only content below the icon, so region names never move or fade. */
+#mapUiOverlay .minimal-label.has-city-visual:not(.is-compact) .resource-icons,
+#mapUiOverlay .minimal-label.has-city-visual:not(.is-compact) .faction-troop-hud{
+  transform:translateY(var(--city-icon-extra-y,0px));
+}
+#mapUiOverlay .minimal-label.has-city-visual.is-compact .resource-icons,
+#mapUiOverlay .minimal-label.has-city-visual.is-compact .faction-troop-hud{
+  transform:translateY(var(--city-icon-extra-half-y,0px));
+}
+
+
+/* v61 — compact high-zoom composite stack.
+   The marker stays on the polygon centroid, while the whole visible stack is
+   lifted in screen pixels. One CSS variable is updated by the camera, so no
+   per-territory style writes are needed during wheel/pan animation. */
+#mapUiOverlay .minimal-label.has-city-visual:not(.is-compact) .territory-composite-lift{
+  transform:translateY(var(--region-composite-offset-y,0px));
+  transform-origin:0 0;
+  transform-box:view-box;
+}
+
+
+/* v68 — island settlement scale override (Tamra / Usan / Tsushima).
+   The SVG width/height is already 50%; these rules only correct the camera-linked
+   growth offset and dependent HUD spacing so the smaller castle stays visually attached. */
+#mapUiOverlay .minimal-label.is-island-city .city-image-slot{
+  transform:translateY(var(--island-city-icon-extra-half-y,0px)) scale(var(--city-icon-zoom-scale,1));
+}
+#mapUiOverlay .minimal-label.is-island-city:not(.is-compact) .resource-icons,
+#mapUiOverlay .minimal-label.is-island-city:not(.is-compact) .faction-troop-hud{
+  transform:translateY(var(--island-city-icon-extra-y,0px));
+}
+#mapUiOverlay .minimal-label.is-island-city.is-compact .resource-icons,
+#mapUiOverlay .minimal-label.is-island-city.is-compact .faction-troop-hud{
+  transform:translateY(var(--island-city-icon-extra-half-y,0px));
+}
+#mapUiOverlay .minimal-label.is-island-city:not(.is-compact) .territory-composite-lift{
+  transform:translateY(var(--island-region-composite-offset-y,0px));
+}

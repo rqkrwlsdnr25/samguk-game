@@ -1,0 +1,18 @@
+[v139 TEST RESULTS]
+base=v138
+
+PASS - 동진 남부 polygon valid :: area=11025.65
+PASS - 동진 연안 polygon valid :: area=16273.01
+PASS - 동진 남동 polygon valid :: area=9870.04
+PASS - 동진 강남 서부 polygon valid :: area=13342.62
+PASS - 동진 강남 동부 polygon valid :: area=16961.38
+PASS - pairwise polygon overlap = 0 :: max_overlap=0.00000000
+PASS - five territories form one continuous coverage :: union_type=Polygon
+PASS - coverage has no unassigned interior gap :: holes=0
+PASS - v139 data version :: version=139
+PASS - river path present :: dongjin_boundary_river_v139
+PASS - solid-guide polygon match IoU >= 0.98 :: IoU=0.9955
+PASS - former mint-gap sample points assigned to territories :: covered=4/4
+
+STATIC SYNTAX: node --check passed for DongjinMapDataV137.js / MapExpansionV125.js / map.js
+OVERALL: PASS

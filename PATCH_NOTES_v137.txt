@@ -1,0 +1,33 @@
+삼국쟁패 v137 — 동진 남부/강남 지형 재분할 + 해안 절삭 + 신규 하천 패치
+
+기준 버전: v136
+
+적용 내용
+1. 동진 기본 영토 재분할
+- 동진 내륙: 기존 외곽 유지, 공유 경계 정렬
+- 동진 연안: 신규 하천 북쪽 연안 영역으로 확장/정리
+- 동진 남부: 빨간 가이드 상단/서측 기준으로 재분할
+- 동진 남동: 빨간 세로 경계 기준으로 재분할
+
+2. 강남 영토 정리
+- 동진 강남 서부 / 동진 강남 동부 2개 영토로 정리
+- 동진 강남 중부 / 동진 남해 서부 / 동진 남해 중부 / 동진 남해 동부 확장 노드는 v137에서 생성하지 않음
+- 기존 확장 영토의 전체 육지 union을 두 강남 영토에 빈틈 없이 재배분
+
+3. 우측 하단 파란 영역 Sea 복원
+- 강남 동부 동쪽 해안 wedge를 Polygon 자체에서 제거
+- 바다색 덮기 방식이 아니라 WORLD.landPath에서 실제 육지를 제거
+
+4. 신규 하천
+- DongjinMapDataV137.js의 river.path를 데이터 소스로 사용
+- 밝은 물빛 halo + 청색 본선의 2중 SVG stroke
+- 기존 river-land clipPath 사용, pointer-events:none
+
+5. 데이터 구조
+- DongjinMapDataV137.js / DongjinMapDataV137.json으로 동진 geometry 독립 관리
+- MapExpansionV125.js는 해당 데이터를 로드해 WORLD.territories에 적용
+- 기존 일본 v134 및 읍루/연해주 v136 데이터는 유지
+
+적용 방법
+- ZIP 내부 파일을 현재 v136 게임 폴더에 폴더 구조 그대로 덮어쓰기
+- index.html 포함: DongjinMapDataV137.js가 MapExpansionV125.js보다 먼저 로드되도록 함

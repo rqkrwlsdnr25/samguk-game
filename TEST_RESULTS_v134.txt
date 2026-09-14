@@ -1,0 +1,14 @@
+[삼국쟁패 v134 TEST RESULTS]
+PASS JapanMapData version == 134
+PASS 시고쿠 내부 x≈969.5/969.86 장거리 세로 절편 없음
+PASS 왜 동북부 내부 x≈1021.94/1022.5 장거리 세로 절편 없음
+PASS 왜 극동부 내부 x≈1021.94/1022.5 장거리 세로 절편 없음
+PASS seamlessFillGroups = [왜 북부 서부+왜 동북부], [왜 북부+왜 극동부]
+PASS true divider: 왜 북부 서부 ↔ 왜 북부 산맥 가로선 등록
+PASS true divider: 왜 동북부 ↔ 왜 극동부 가로선 등록
+PASS map.js seamless owner-fill renderer 존재
+PASS map.js artifact vertical-border filter 존재
+PASS map.js dynamic owner-change 시 seamless layer 재계산 로직 존재
+PASS JapanMapDataV132.js node --check
+PASS JapanBaseTerritoryPatchV132.js node --check
+PASS map.js node --check

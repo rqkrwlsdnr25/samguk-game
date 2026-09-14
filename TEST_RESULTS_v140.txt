@@ -1,0 +1,26 @@
+[TEST RESULTS v140]
+
+1. 데이터 로드 확인
+- DongjinMapDataV137.js 내부 global.SAMGUK_DONGJIN_MAP_DATA_V140 등록: PASS
+- 하위 호환 alias(SAMGUK_DONGJIN_MAP_DATA_V139 / V137) 등록: PASS
+
+2. 하천 데이터 확인
+- river.id = dongjin_janggang_v140: PASS
+- river.name = 장강: PASS
+- river.label.text = 장강: PASS
+- 기존 동진 강남 동부 경계 하천 명칭 제거: PASS
+
+3. 렌더러 연결 확인
+- map.js custom river source priority V140 -> V139 -> V137: PASS
+- map.js river label injection(customRiverNameEntries): PASS
+- MapExpansionV125.js Dongjin source priority V140 -> V139 -> V137: PASS
+
+4. 안정성 확인
+- node --check MapExpansionV125.js: PASS
+- node --check map.js: PASS
+- JSON parse(DongjinMapDataV140.json): PASS
+
+5. 기능 검증
+- 구 선 제거: v139 path 비활성화되고 v140 장강 path로 대체됨: PASS
+- 장강 라벨 추가: PASS
+- 클릭 판정 영향 없음(visual-only river layer): PASS

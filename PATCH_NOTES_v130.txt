@@ -1,0 +1,37 @@
+삼국쟁패 v130 — RED ADD / BLUE REMOVE 일본 지형 마스크 + Canvas/GitHub 모듈화
+
+기준 버전: v129
+
+1. 색상 마스크 규칙
+- RED: 신규 육지로 사용.
+- BLUE: 강제 바다. 아래 노드는 계속 완전 삭제: 왜 기내 동부 / 왜 남부 / 왜 남동부.
+- 사용자 마스크에서 직접 추출한 812x786 비트맵을 원본 데이터로 보존.
+- BLUE 주변은 2px 안전 여백을 둔 후 polygon 단순화하여 blue overlap 0px 검증.
+
+2. 신규/재정의 왜 영토
+- 왜 동북부
+- 왜 극동부
+- 왜 중부 동부
+- 왜 시코쿠
+- 왜 기이
+- 왜 규슈 남부
+- 이키섬 / 오도열도 / 오키섬 유지
+
+3. Canvas 최적화
+- JapanTerrainMaskCanvas.js 추가.
+- 빨간 land alpha mask + terrain texture를 Offscreen-like cached canvas에 1회 합성.
+- 매 카메라 프레임에는 cached bitmap drawImage만 수행.
+- ctx.clip()으로 일본 마스크 bounds 외 paint를 제한.
+- BLUE sea alpha bitmap은 #9ecbd0로 강제 복원하여 SVG 아래에 남은 픽셀도 시각적으로 제거.
+- BLUE 영역 클릭은 capture hit guard로 차단하여 영토 선택이 되지 않음.
+
+4. GitHub 관리 구조
+- JapanMapDataV130.js: 일본 노드/Polygon/route/mask transform을 독립 모듈로 분리.
+- MapExpansionV125.js: 일본 데이터를 위 모듈에서 주입받음.
+- JapanTerrainMaskCanvas.js: 렌더/마스크 전용 모듈.
+- assets/map/: 마스크 bitmap 자산 분리.
+
+5. 호환성
+- 기존 world.js 원본 0..101 좌표는 재스케일하지 않음.
+- 최종 WORLD.territories / neighbors = 121 / 121.
+- stable territoryId 기반 세이브 마이그레이션(v128 game.js)과 호환.

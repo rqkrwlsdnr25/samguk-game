@@ -1,0 +1,10 @@
+[PASS] game.js JavaScript syntax check
+[PASS] TurnEconomyManager.js JavaScript syntax check
+[PASS] CharacterDataModel.js JavaScript syntax check
+[PASS] 군주 salary=0 / 일반 장수 salary=10 데이터 모델 검증
+[PASS] 총병력 1,000 -> armyFoodUpkeep 100 검증
+[PASS] 일반 인물 녹봉 30 -> upkeepGold 30 검증
+[PASS] 5영토 봄 기본 병량 생산 40 유지
+[PASS] 병량 부족 시 foodAfter=0 및 shortage hook 호출 검증
+[PASS] 명산 UI 연 1회 안내 문구 존재
+[PASS] 공격 장수 검증이 setAction/open modal/march/fight/large battle/AI에 연결됨

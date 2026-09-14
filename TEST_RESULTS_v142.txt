@@ -1,0 +1,24 @@
+[TEST RESULTS v142]
+
+Source: uploaded color mask 493248ae-69a9-43c6-ad53-c097225ec885.png
+Vectorization: 5-class RGB raster -> polygon coverage -> Shapely coverage_simplify(tolerance=2px)
+
+PASS - EUMNU_DATA version == 142
+PASS - 숙신 고토 coordinates regenerated
+PASS - 연해주 남부 coordinates regenerated
+PASS - 연해주 북부 coordinates regenerated
+PASS - 읍루 동해안 coordinates regenerated
+PASS - All land polygons valid
+PASS - Land/Sea overlap exactly zero
+PASS - Land/Land area overlap exactly zero
+PASS - Map loader rebuilds path from coordinates
+PASS - Raycast source is territory.path rebuilt from new coordinates
+
+Vertex counts:
+- 연해주 북부: 63 vertices
+- 숙신 고토: 190 vertices
+- 연해주 남부: 163 vertices
+- 읍루 동해안: 43 vertices
+- Sea cut: 131 vertices
+
+OVERALL: PASS

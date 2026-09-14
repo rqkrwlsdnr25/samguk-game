@@ -1,0 +1,20 @@
+[v140] 동진 남부 구 강선 제거 + 신규 장강 하천 추가
+
+수정 파일
+- DongjinMapDataV137.js
+- DongjinMapDataV140.json
+- DongjinMapDataV139.json (동일 데이터 호환본)
+- MapExpansionV125.js
+- map.js
+
+핵심 변경
+1) 기존 동진 남부 내부/경계에 남아 있던 구 강선 렌더링용 path를 제거했습니다.
+   - v139 커스텀 하천 path를 더 이상 사용하지 않습니다.
+2) 신규 하천 객체 `장강`을 추가했습니다.
+   - 적용 경계: 동진 연안 ↔ 동진 강남 동부
+   - 적용 경계: 동진 강남 동부 ↔ 동진 남동
+   - 적용 경계: 동진 강남 동부 ↔ 동진 강남 서부
+3) `장강` 라벨을 회수와 동일한 river label 스타일로 렌더링하도록 map.js를 갱신했습니다.
+4) 기존 동진 영토 폴리곤과 클릭 판정 로직은 유지했습니다.
+   - 영토 경계는 v139 coverage 데이터를 그대로 사용
+   - 하천은 visual layer only 이므로 territory raycast/pixel hit와 충돌하지 않습니다.

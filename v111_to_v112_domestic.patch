@@ -1,0 +1,200 @@
+--- /mnt/data/111_game.js	2026-09-14 04:04:50.691642925 +0000
++++ /mnt/data/112_game.js	2026-09-14 04:16:18.927422337 +0000
+@@ -2086,7 +2086,7 @@
+     try{
+       if(window.SAMGUK_DOMESTIC_V111?.captureClick?.(e,button,host))return;
+     }catch(v111BridgeError){
+-      console.error('[삼국쟁패][v111] v108 브리지 위임 오류',v111BridgeError);
++      console.error('[삼국쟁패][v112] v108 브리지 위임 오류',v111BridgeError);
+     }
+ 
+     const isDomesticMain=button.dataset?.mode==='domestic';
+@@ -2219,7 +2219,8 @@
+     }catch(error){
+       console.error(`${PREFIX}[RENDER] UI 렌더 예외 격리`,error,v110State());
+       try{
+-        const id=Number(selected);
++        const hasSelection=selected!==null&&selected!==undefined&&selected!=='';
++        const id=hasSelection?Number(selected):NaN;
+         if(Number.isInteger(id)&&regions?.[id]&&typeof renderTerritorySelectionFallback==='function'){
+           renderTerritorySelectionFallback(id,error);
+         }else{
+@@ -2288,7 +2289,8 @@
+     console.log(`${PREFIX}[ATTACK] click`,v110State({attackerCountry,defenderCountry}));
+     if(!playing){v110Notify('먼저 게임을 시작해 주세요.');return false}
+     if(busy||(typeof turnProcessing!=='undefined'&&turnProcessing)){v110Notify('현재 다른 처리가 진행 중입니다.');return false}
+-    const sourceId=Number(selected);
++    const hasSource=selected!==null&&selected!==undefined&&selected!=='';
++    const sourceId=hasSource?Number(selected):NaN;
+     if(!Number.isInteger(sourceId)||!regions?.[sourceId]||regions[sourceId].owner!==player){v110Notify('침략을 시작할 아군 영토를 먼저 선택해 주세요.');return false}
+     if(Number(attackerCountry)!==Number(player)){v110Notify('현재 플레이어 국가에서만 직접 침략할 수 있습니다.');return false}
+     try{
+@@ -2403,7 +2405,7 @@
+   };
+ })();
+ // ============================================================================
+-// v111 HOTFIX — 내정 / 모병 / 건설 통합 복구
++// v112 HOTFIX — 내정 / 모병 / 건설 통합 복구 + 상태/이벤트 감사
+ // - v106/v108 이벤트 중첩을 단일 브리지로 통합
+ // - 건설 AP 실제 비용(0.6~1.0)과 UI disabled 조건 동기화
+ // - 모병/건설 silent return 제거, 명시적 사유 표시
+@@ -2413,8 +2415,8 @@
+ // ============================================================================
+ (function installDomesticRecruitBuildV111(){
+   'use strict';
+-  const VERSION='v111';
+-  const PREFIX='[삼국쟁패][v111]';
++  const VERSION='v112';
++  const PREFIX='[삼국쟁패][v112]';
+ 
+   const notifyV111=(msg)=>{try{notify(String(msg))}catch(_e){console.warn(PREFIX,msg)}};
+   const n=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
+@@ -2451,6 +2453,9 @@
+   function selectedContextV111({owned=true,notifyOnFail=false}={}){
+     const fail=(m)=>{if(notifyOnFail)notifyV111(m);return null};
+     if(!playing)return fail('먼저 게임을 시작해 주세요.');
++    // v112: Number(null) === 0 때문에 미선택 상태가 0번 영토로 오인되던 버그 차단.
++    const hasSelection=selected!==null&&selected!==undefined&&selected!=='';
++    if(!hasSelection)return fail('영토를 먼저 선택해 주세요.');
+     const id=Number(selected);
+     if(!Number.isInteger(id)||!regions?.[id])return fail('영토를 먼저 선택해 주세요.');
+     if(typeof isActiveTerritory==='function'&&!isActiveTerritory(id))return fail('선택한 영토는 현재 사용할 수 없습니다.');
+@@ -2464,18 +2469,28 @@
+     attackType=null;
+     try{activeExpeditionOfficerId=null}catch(_e){}
+     try{
++      if(typeof clearLightweightInvasionClasses==='function')clearLightweightInvasionClasses();
+       if(typeof lightweightInvasionState==='object'&&lightweightInvasionState){
+         lightweightInvasionState.active=false;
+         lightweightInvasionState.launching=false;
+         lightweightInvasionState.supporting=false;
++        lightweightInvasionState.targets=[];
++        lightweightInvasionState.targetId=null;
++        lightweightInvasionState.sourceId=null;
+       }
+     }catch(_e){}
+   }
+ 
+   function safeRenderV111(reason='UI 갱신'){
+     normalizeAllRegionsV111();
++    // v112: 오래된 저장/실패한 액션이 남긴 잘못된 domestic 상태를 렌더 전에 정리한다.
++    const hasSelection=selected!==null&&selected!==undefined&&selected!=='';
++    const sid=hasSelection?Number(selected):NaN;
++    if(actionMode==='domestic'&&(!Number.isInteger(sid)||!regions?.[sid]||regions[sid].owner!==player)){
++      actionMode='inspect';target=null;attackType=null;
++    }
+     try{return render()}
+-    catch(error){console.error(`${PREFIX}[RENDER] ${reason}`,error);try{updateMapDynamicState?.({force:true})}catch(_e){};return false}
++    catch(error){console.error(`${PREFIX}[RENDER] ${reason}`,error);try{if(typeof updateMapDynamicState==='function')updateMapDynamicState({force:true})}catch(_e){};return false}
+   }
+ 
+   // ------------------------------------------------------------------------
+@@ -2596,6 +2611,7 @@
+     actionMode='domestic';
+     const {id,territory:r}=ctx;
+     const key=String(type||'');
++    if(!key||!BUILDINGS?.[key]){notifyV111('알 수 없는 건설 항목입니다.');safeRenderV111('건설 항목 검증');return false}
+     const reason=buildingReasonV111(id,key);
+     if(reason){notifyV111(reason);safeRenderV111('건설 조건 표시');return false}
+     if(!performBuildCurrentV111){notifyV111('건설 처리 함수를 찾지 못했습니다.');return false}
+@@ -2604,7 +2620,7 @@
+     let committed=false;
+     try{
+       const ok=performBuildCurrentV111(id,key,player,1);
+-      if(!ok){notifyV111('건설 조건이 충족되지 않았습니다.');return false}
++      if(!ok){notifyV111('건설 조건이 충족되지 않았습니다.');safeRenderV111('건설 미실행');return false}
+       ap=Math.max(0,Math.round((n(ap)-actionCost)*100)/100);
+       committed=true;
+     }catch(error){
+@@ -2690,7 +2706,9 @@
+   renderBuildingPanelV106=function renderBuildingPanelV111(i){return `<section class="domestic-subpanel" id="domesticBuildPanel">${renderBuildings(i)}</section>`};
+ 
+   renderDomesticPanel=function renderDomesticPanelV111(i){
+-    const id=Number(i),r=normalizeRegionV111(regions?.[id]);
++    const id=Number(i);
++    if(!Number.isInteger(id)||!regions?.[id]||(typeof isActiveTerritory==='function'&&!isActiveTerritory(id)))return '';
++    const r=normalizeRegionV111(regions[id]);
+     if(!r||r.owner!==player)return '';
+     const tab=domesticPanelTabV106==='build'?'build':'recruit';
+     return `<section id="domesticPanelRoot" class="domestic-panel-singleton" data-domestic-panel="1"><div class="domestic-panel-head"><h3 class="mode-title domestic-mode-title">내정 · 모병 · 건설</h3><div class="domestic-subtabs" role="tablist"><button type="button" data-domestic-tab="recruit" aria-pressed="${tab==='recruit'}">⚔ 모병</button><button type="button" data-domestic-tab="build" aria-pressed="${tab==='build'}">🏗 건설</button></div></div><div id="domesticSubmenuRoot">${tab==='recruit'?renderRecruitPanelV106(id):renderBuildingPanelV106(id)}</div></section>`;
+@@ -2728,6 +2746,8 @@
+       const changed=n(ctx.territory.troops)!==before.troops||n(ap)!==before.ap||n(gold)!==before.gold||n(countryFood(player))!==before.food;
+       if(!changed){notifyV111('모병이 실행되지 않았습니다. 현재 영토/자원/해금 조건을 확인해 주세요.');safeRenderV111('모병 미실행');return false}
+       console.log(PREFIX,'모병 완료',{territory:ctx.id,type:spec.key,before,after:{troops:ctx.territory.troops,ap,gold,food:countryFood(player)}});
++      // 코어 렌더가 이전 래퍼에서 격리되었더라도 최종 상태를 한 번 확정 렌더한다.
++      safeRenderV111('모병 완료');
+       return out===false?false:true;
+     }catch(error){
+       console.error(PREFIX,'모병 실행 오류',error,{id:ctx.id,type});
+@@ -2738,9 +2758,19 @@
+     }
+   }
+ 
+-  if(recruitCoreV111)recruit=function recruitV111(){return executeRecruitV111('infantry',()=>recruitCoreV111())};
+-  if(cavalryCoreV111)recruitCavalry=function recruitCavalryV111(){return executeRecruitV111('cavalry',()=>cavalryCoreV111())};
+-  if(specialCoreV111)recruitSpecial=function recruitSpecialV111(type){const key=String(type||'');return executeRecruitV111(key,()=>specialCoreV111(key))};
++  if(recruitCoreV111)recruit=function recruitV111(){
++    if(!selectedContextV111({owned:true,notifyOnFail:true}))return false;
++    return executeRecruitV111('infantry',()=>recruitCoreV111())
++  };
++  if(cavalryCoreV111)recruitCavalry=function recruitCavalryV111(){
++    if(!selectedContextV111({owned:true,notifyOnFail:true}))return false;
++    return executeRecruitV111('cavalry',()=>cavalryCoreV111())
++  };
++  if(specialCoreV111)recruitSpecial=function recruitSpecialV111(type){
++    if(!selectedContextV111({owned:true,notifyOnFail:true}))return false;
++    const key=String(type||'');if(!key){notifyV111('모병할 병과를 선택해 주세요.');return false}
++    return executeRecruitV111(key,()=>specialCoreV111(key))
++  };
+ 
+   // ------------------------------------------------------------------------
+   // 4) 국내 UI 이벤트를 v108 capture의 첫 단계에서 위임받는다.
+@@ -2765,21 +2795,35 @@
+ 
+     try{
+       if(isMain){domesticPanelTabV106='recruit';actionMode='domestic';safeRenderV111('내정 진입');return true}
+-      if(tab){actionMode='domestic';domesticPanelTabV106=tab==='build'?'build':'recruit';safeRenderV111(`내정 ${domesticPanelTabV106} 탭`);return true}
++      if(tab){
++        if(!['recruit','build'].includes(tab)){notifyV111('알 수 없는 내정 탭입니다.');return true}
++        actionMode='domestic';domesticPanelTabV106=tab;safeRenderV111(`내정 ${domesticPanelTabV106} 탭`);return true
++      }
+       if(buildKey){actionMode='domestic';buildBuilding(buildKey);return true}
+       if(special){actionMode='domestic';recruitSpecial(special);return true}
+       if(cavalry){actionMode='domestic';recruitCavalry();return true}
+       if(infantry){actionMode='domestic';recruit();return true}
+-      if(cityType){actionMode='cityUpgrade';try{upgradeCity(cityType)}catch(error){console.error(PREFIX,'도시 증축 오류',error);notifyV111('도시 증축 처리 중 오류가 발생했습니다.');safeRenderV111('도시 증축 오류')}return true}
+-      if(capitalUpgrade){actionMode='capitalUpgrade';try{upgradeCapital()}catch(error){console.error(PREFIX,'수도 증축 오류',error);notifyV111('수도 증축 처리 중 오류가 발생했습니다.');safeRenderV111('수도 증축 오류')}return true}
++      if(cityType){
++        // v112: render()가 인식하지 못하는 'cityUpgrade' 상태를 만들지 않는다.
++        actionMode='city';
++        try{const ok=upgradeCity(cityType);if(ok===false)safeRenderV111('도시 증축 조건 표시')}catch(error){console.error(PREFIX,'도시 증축 오류',error);notifyV111('도시 증축 처리 중 오류가 발생했습니다.');safeRenderV111('도시 증축 오류')}
++        return true
++      }
++      if(capitalUpgrade){
++        // v112: 유효 actionMode는 기존 렌더 계약의 'capital'을 유지한다.
++        actionMode='capital';
++        try{const ok=upgradeCapital();if(ok===false)safeRenderV111('수도 증축 조건 표시')}catch(error){console.error(PREFIX,'수도 증축 오류',error);notifyV111('수도 증축 처리 중 오류가 발생했습니다.');safeRenderV111('수도 증축 오류')}
++        return true
++      }
+     }catch(error){console.error(PREFIX,'내정 이벤트 처리 오류',error);notifyV111('내정 처리 중 오류가 발생했습니다.');safeRenderV111('내정 이벤트 오류')}
+     return true;
+   }
+ 
+   // 프로그램 방식으로 탭을 여는 구형 코드도 동일 경로로 통합한다.
+   setDomesticTabV106=function setDomesticTabV111(tab){
++    if(!['recruit','build'].includes(tab)){notifyV111('알 수 없는 내정 탭입니다.');return false}
+     const ctx=selectedContextV111({owned:true,notifyOnFail:true});if(!ctx)return false;
+-    clearCombatSelectionV111();actionMode='domestic';domesticPanelTabV106=tab==='build'?'build':'recruit';safeRenderV111(`내정 ${domesticPanelTabV106} 탭`);return true;
++    clearCombatSelectionV111();actionMode='domestic';domesticPanelTabV106=tab;safeRenderV111(`내정 ${domesticPanelTabV106} 탭`);return true;
+   };
+ 
+   // 턴 시작/AI 처리 전에 오래된 buildings 상태를 최신 스키마로 맞춰
+@@ -2797,6 +2841,8 @@
+     render:safeRenderV111,
+     state:()=>({playing,busy,selected,target,actionMode,tab:domesticPanelTabV106,ap,gold,food:typeof countryFood==='function'?countryFood(player):null})
+   };
++  // v108 브리지와의 하위호환을 위해 V111 이름을 유지하고, 최신 명시적 별칭도 제공한다.
++  window.SAMGUK_DOMESTIC_V112=window.SAMGUK_DOMESTIC_V111;
+ 
+   // v108이 없는 환경에서도 작동하도록 fallback capture를 설치한다.
+   if(document.documentElement.dataset.v111DomesticFallback!=='1'){

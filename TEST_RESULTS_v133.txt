@@ -1,0 +1,9 @@
+[TEST RESULTS v133]
+PASS index.html begins with <!doctype html>
+PASS index.html contains <html>, <head>, <body>
+PASS index.html no longer begins with (function(global){
+PASS JapanBaseTerritoryPatchV132.js script reference exists
+PASS JapanMapDataV132.js script reference exists
+PASS MapExpansionV125.js loads after JapanMapDataV132.js
+PASS JapanTerrainMaskCanvas.js loads after MapExpansionV125.js
+PASS closing </html> exists

@@ -1,0 +1,25 @@
+[TEST RESULTS v141]
+
+1. 데이터 로드
+- MapExpansionV125.js 내 EUMNU_DATA.version = 141: PASS
+- global.SAMGUK_EUMNU_MAP_DATA_V141 export: PASS
+- v136/v135 alias to v141: PASS
+
+2. 영토 재분할
+- 연해주 북부 path 갱신: PASS
+- 숙신 고토 path 갱신: PASS
+- 연해주 남부 path 갱신: PASS
+- 읍루 동해안 expansion path 갱신: PASS
+
+3. 연결 그래프
+- landLinks updated to new adjacency set: PASS
+- removed expansion ids preserved: PASS
+
+4. 문법/형식
+- node --check MapExpansionV125.js: PASS
+- JSON parse(EumnuMapDataV141.json): PASS
+
+5. 기능 점검
+- blue coast cut reflected in 연해주 남부/읍루 동해안 geometry: PASS
+- 숙신 고토 central shared-stroke residue removed by single unified path: PASS
+- no additional rendering code changes required; raycast uses updated paths: PASS
