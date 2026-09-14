@@ -1,0 +1,114 @@
+/* v40 — GPU compositor camera
+   -------------------------------------------------------------------------
+   Layout/Paint를 매 휠 프레임마다 다시 실행하지 않는다.
+   #map / #mapUiOverlay는 고정 크기 compositor layer이며 카메라 움직임은
+   오직 transform: matrix3d(...)만 변경한다. transform/opacity는 브라우저가
+   별도 합성 레이어로 승격할 수 있어 대부분 Composite 단계에서 처리된다. */
+#mapViewport.map-viewport{
+  position:relative;
+  width:100%;
+  aspect-ratio:1150/1146;
+  min-height:0;
+  overflow:hidden;
+  background:#183038;
+  contain:layout paint style;
+  isolation:isolate;
+  touch-action:none;
+  cursor:grab;
+}
+#mapViewport.map-viewport:active{cursor:grabbing}
+#mapViewport>#map,
+#mapViewport>#mapUiOverlay{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-width:none!important;
+  aspect-ratio:auto!important;
+  margin:0!important;
+  transform-origin:0 0;
+  /* v51: static state must NOT be permanently promoted to a low-res texture. */
+  will-change:auto;
+  backface-visibility:visible;
+  -webkit-backface-visibility:visible;
+  contain:none;
+}
+#mapViewport>#map{
+  z-index:1;
+  touch-action:none;
+}
+#mapViewport>#mapUiOverlay{
+  z-index:3;
+  pointer-events:none;
+  overflow:visible;
+}
+
+/* The world and UI are detached compositor layers. UI is not rebuilt during
+   smooth zoom; it only follows the same global camera matrix. */
+#mapUiOverlay #territory-labels{pointer-events:none}
+
+/* Prevent CSS transitions from fighting the rAF camera/interpolator. */
+#mapViewport>#map,
+#mapViewport>#mapUiOverlay{transition:none!important}
+
+@media(max-width:800px){
+  #mapViewport.map-viewport{aspect-ratio:1150/1146;height:auto;min-height:0}
+}
+@media(prefers-reduced-motion:reduce){
+  #mapViewport>#map,#mapViewport>#mapUiOverlay{will-change:auto}
+}
+
+/* Every territory marker keeps its world-position on the outer <g>, while this
+   inner group consumes ONE global inverse camera scale. No per-label JS loop. */
+#mapUiOverlay .territory-screen-space{
+  transform:scale(var(--map-ui-world-unit,1));
+  transform-origin:0 0;
+  transform-box:view-box;
+  will-change:transform;
+}
+
+
+/* v51 — Hybrid sharp/compositor rendering ----------------------------------
+   During wheel/pan animation, GPU transform keeps motion smooth.
+   As soon as the camera settles, JS commits the camera to SVG viewBox and
+   removes the transform so Chrome repaints at the final scale. */
+#mapViewport.is-camera-compositing>#map,
+#mapViewport.is-camera-compositing>#mapUiOverlay{
+  will-change:transform;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  contain:paint style;
+}
+
+#mapViewport.is-camera-sharp>#map,
+#mapViewport.is-camera-sharp>#mapUiOverlay{
+  transform:none!important;
+  will-change:auto!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+  contain:none!important;
+}
+
+/* Illustrated landmarks/textures are not pixel art. Let the browser perform
+   normal high-quality filtering from the original asset. */
+#mapViewport>#map image,
+#mapViewport>#mapUiOverlay image{
+  image-rendering:auto!important;
+}
+
+#mapViewport>#map path,
+#mapViewport>#mapUiOverlay path{
+  shape-rendering:geometricPrecision;
+}
+#mapViewport>#map text,
+#mapViewport>#mapUiOverlay text{
+  text-rendering:geometricPrecision;
+}
+
+/* Keep v50 deep-zoom readability. */
+#mapUiOverlay .territory-label-stack>.place-name{
+  transform:scale(var(--territory-label-zoom-scale,1));
+  transform-box:fill-box;
+  transform-origin:center center;
+}

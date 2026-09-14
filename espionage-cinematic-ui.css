@@ -1,0 +1,269 @@
+/* 삼국쟁패 v81 - 첩보/계략 시네마틱 와이드 슬롯 UI */
+#strategyEspionageModal.strategy-espionage-cinematic-modal{
+  width:min(1080px,calc(100vw - 40px))!important;
+  max-width:none!important;
+  max-height:92vh!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border:1px solid color-mix(in srgb,var(--spy-faction-glow,#d4af37) 52%,#6f6755)!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#0d171df7,#081116f7)!important;
+  box-shadow:0 28px 90px #000e,0 0 32px color-mix(in srgb,var(--spy-faction-glow,#d4af37) 18%,transparent)!important;
+  color:#f2ecdc!important;
+}
+#strategyEspionageModal.strategy-espionage-cinematic-modal::backdrop{
+  background:radial-gradient(circle at 50% 42%,#13242dbd 0,#050a0ddc 62%,#020405ed 100%)!important;
+  backdrop-filter:blur(4px) saturate(.8);
+}
+#strategyEspionageModal .strategy-espionage-wrap{
+  box-sizing:border-box;
+  max-height:92vh;
+  overflow-y:auto;
+  padding:0 18px 20px!important;
+  scrollbar-width:thin;
+  scrollbar-color:#8b7650 #0b1419;
+}
+#strategyEspionageModal .strategy-espionage-head{
+  position:sticky;
+  top:0;
+  z-index:20;
+  margin:0 -18px 14px;
+  padding:16px 18px 13px!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:18px!important;
+  border-bottom:1px solid color-mix(in srgb,var(--spy-faction-glow,#d4af37) 36%,#4b4a43)!important;
+  background:linear-gradient(180deg,rgba(9,17,21,.98),rgba(9,17,21,.91));
+  backdrop-filter:blur(14px);
+  box-shadow:0 12px 26px #0007;
+}
+#strategyEspionageModal .strategy-espionage-head h2{
+  margin:2px 0 5px!important;
+  font-family:"Noto Serif KR","Nanum Myeongjo",serif;
+  font-size:27px!important;
+  letter-spacing:.035em;
+  color:#f2d89b!important;
+  text-shadow:0 1px 12px #000;
+}
+#strategyEspionageModal .strategy-espionage-head .subtext{
+  margin:0;
+  color:#9eaaa6;
+  font-size:11px;
+  line-height:1.5;
+}
+#strategyEspionageModal .strategy-espionage-head .officer-modal-close{
+  flex:0 0 auto;
+  min-width:58px!important;
+  border:1px solid #736a55!important;
+  background:linear-gradient(180deg,#273238,#182228)!important;
+  color:#eee4cf!important;
+  box-shadow:inset 0 1px 0 #ffffff10;
+}
+
+/* 기존 2열 카드 → 1열 시네마틱 와이드 슬롯 */
+#strategyEspionageModal .strategy-espionage-actions{
+  display:flex!important;
+  flex-direction:column!important;
+  grid-template-columns:none!important;
+  gap:10px!important;
+  margin:0!important;
+}
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot{
+  --slot-height:128px;
+  position:relative!important;
+  isolation:isolate;
+  box-sizing:border-box;
+  width:100%!important;
+  height:var(--slot-height)!important;
+  min-height:var(--slot-height)!important;
+  overflow:hidden!important;
+  display:block!important;
+  padding:0!important;
+  border:1px solid #667177!important;
+  border-radius:7px!important;
+  background:#10191e!important;
+  color:#fff!important;
+  text-align:left!important;
+  cursor:pointer;
+  box-shadow:inset 0 0 0 1px #0009,0 5px 18px #0007;
+  transition:border-color .3s ease,box-shadow .3s ease,transform .3s ease!important;
+  transform:translateZ(0);
+}
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  z-index:-3;
+  background-image:var(--espionage-bg-image);
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  filter:brightness(.58) saturate(.82) contrast(1.04);
+  transform:scale(1.001);
+  transform-origin:center;
+  transition:transform .3s cubic-bezier(.2,.7,.2,1),filter .3s ease;
+  will-change:transform,filter;
+}
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(3,7,9,.94) 0%,rgba(3,7,9,.84) 25%,rgba(3,7,9,.50) 52%,rgba(3,7,9,.08) 84%,rgba(3,7,9,.18) 100%),
+    linear-gradient(180deg,rgba(0,0,0,.20),transparent 35%,rgba(0,0,0,.28));
+  transition:opacity .3s ease;
+}
+#strategyEspionageModal .strategy-espionage-action-copy{
+  position:absolute;
+  z-index:3;
+  inset:0 auto 0 0;
+  width:min(82%,820px);
+  display:flex!important;
+  align-items:center;
+  gap:22px;
+  padding:0 28px;
+  box-sizing:border-box;
+  pointer-events:none;
+  text-shadow:0 2px 8px #000,0 1px 2px #000;
+}
+#strategyEspionageModal .strategy-espionage-action-copy strong{
+  display:flex!important;
+  align-items:center;
+  flex:0 0 245px;
+  min-width:0;
+  gap:10px;
+  color:#f2d28c!important;
+  font-size:22px!important;
+  line-height:1.15;
+  letter-spacing:.025em;
+  font-family:"Noto Serif KR","Nanum Myeongjo",serif;
+  white-space:nowrap;
+}
+#strategyEspionageModal .strategy-espionage-action-icon{
+  display:inline-grid;
+  place-items:center;
+  width:30px;
+  height:30px;
+  flex:0 0 30px;
+  font-family:system-ui,sans-serif;
+  font-size:20px;
+  border:1px solid #e6c87366;
+  border-radius:50%;
+  background:#080b0da8;
+  box-shadow:inset 0 0 10px #000b,0 0 10px #0008;
+}
+#strategyEspionageModal .strategy-espionage-action-copy small{
+  display:block!important;
+  margin:0!important;
+  color:#eef2ee!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+  letter-spacing:.015em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#strategyEspionageModal .strategy-espionage-action-sheen{
+  position:absolute;
+  z-index:1;
+  right:-18%;
+  top:-80%;
+  width:42%;
+  height:260%;
+  opacity:0;
+  pointer-events:none;
+  transform:rotate(14deg) translateX(-40%);
+  background:linear-gradient(90deg,transparent,#ffffff13,transparent);
+  transition:opacity .3s ease,transform .55s ease;
+}
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot:hover:not(:disabled),
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot:focus-visible:not(:disabled){
+  border-color:var(--spy-faction-glow,#d4af37)!important;
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--spy-faction-glow,#d4af37) 45%,transparent),0 0 22px color-mix(in srgb,var(--spy-faction-glow,#d4af37) 55%,transparent),0 12px 30px #000b!important;
+  transform:translateY(-1px) translateZ(0)!important;
+  outline:none;
+}
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot:hover:not(:disabled)::before,
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot:focus-visible:not(:disabled)::before{
+  transform:scale(1.03);
+  filter:brightness(1.2) saturate(1.05) contrast(1.02);
+}
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot:hover:not(:disabled)::after,
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot:focus-visible:not(:disabled)::after{
+  opacity:.86;
+}
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot:hover .strategy-espionage-action-sheen{
+  opacity:1;
+  transform:rotate(14deg) translateX(70%);
+}
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot[aria-pressed="true"]{
+  border-color:#e2be67!important;
+  box-shadow:inset 4px 0 0 #edca72,inset 0 0 0 1px #ffe7a52d,0 0 22px color-mix(in srgb,var(--spy-faction-glow,#d4af37) 42%,transparent)!important;
+}
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot[aria-pressed="true"]::before{
+  filter:brightness(.93) saturate(1.02);
+}
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot:disabled{
+  opacity:.46!important;
+  cursor:not-allowed!important;
+  filter:none!important;
+}
+#strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot:disabled::before{
+  filter:brightness(.42) saturate(.45) grayscale(.28);
+}
+
+/* 대상 선택부는 정보 밀도를 위해 기존 카드형 유지하되 시네마틱 패널에 맞춰 정돈 */
+#strategyEspionageModal .mode-title{
+  margin:18px 0 8px;
+  color:#e5cb8f;
+  font-size:13px;
+  letter-spacing:.04em;
+}
+#strategyEspionageModal .strategy-espionage-targets{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+  margin-top:0!important;
+}
+#strategyEspionageModal .strategy-espionage-targets button{
+  min-height:62px;
+  padding:10px 12px!important;
+  border:1px solid #48575c!important;
+  border-radius:5px!important;
+  background:linear-gradient(180deg,#16252bcf,#101b20e8)!important;
+  transition:border-color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+#strategyEspionageModal .strategy-espionage-targets button:hover{
+  border-color:var(--spy-faction-glow,#d4af37)!important;
+  background:linear-gradient(180deg,#20343cca,#14242ae8)!important;
+  box-shadow:0 0 12px color-mix(in srgb,var(--spy-faction-glow,#d4af37) 24%,transparent);
+}
+#strategyEspionageModal .strategy-scout-report{
+  margin-top:12px!important;
+  padding:11px 13px!important;
+  background:#091217e8!important;
+  border:1px solid #425158!important;
+  border-radius:5px!important;
+}
+
+@media(max-width:760px){
+  #strategyEspionageModal.strategy-espionage-cinematic-modal{width:calc(100vw - 16px)!important;max-height:94vh!important}
+  #strategyEspionageModal .strategy-espionage-wrap{padding:0 10px 14px!important;max-height:94vh}
+  #strategyEspionageModal .strategy-espionage-head{margin:0 -10px 10px;padding:12px 10px 10px!important}
+  #strategyEspionageModal .strategy-espionage-head h2{font-size:22px!important}
+  #strategyEspionageModal .strategy-espionage-actions .strategy-espionage-action-slot{--slot-height:104px}
+  #strategyEspionageModal .strategy-espionage-action-copy{width:92%;display:block!important;padding:20px 18px}
+  #strategyEspionageModal .strategy-espionage-action-copy strong{font-size:18px!important;display:flex!important;margin-bottom:7px;white-space:normal}
+  #strategyEspionageModal .strategy-espionage-action-copy small{font-size:11px!important;white-space:normal;display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  #strategyEspionageModal .strategy-espionage-action-icon{width:26px;height:26px;flex-basis:26px;font-size:17px}
+  #strategyEspionageModal .strategy-espionage-targets{grid-template-columns:1fr!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #strategyEspionageModal .strategy-espionage-action-slot,
+  #strategyEspionageModal .strategy-espionage-action-slot::before,
+  #strategyEspionageModal .strategy-espionage-action-sheen{transition:none!important}
+}

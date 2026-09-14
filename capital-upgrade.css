@@ -1,0 +1,18 @@
+/* v63 — capital-only global tech tree. */
+.capital-upgrade-panel{display:grid;gap:10px;padding:12px;border:1px solid #9b7b34;background:linear-gradient(180deg,#1d1b13,#111712);box-shadow:inset 0 0 0 1px #d5b65918;border-radius:5px}
+.capital-upgrade-head{display:flex;justify-content:space-between;gap:12px;align-items:center;color:#e7c96f;font-weight:800;font-size:14px}.capital-upgrade-head b{color:#f3e8c7;font-size:12px}
+.capital-level-row{display:flex;justify-content:space-between;gap:10px;align-items:end}.capital-level-row strong{font:800 20px/1 Georgia,'Noto Serif KR',serif;color:#ffe49a}.capital-level-row span{font-size:11px;color:#aeb9ae}
+.capital-level-track{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.capital-level-track i{height:6px;border-radius:5px;background:#2e352f;border:1px solid #4b554c}.capital-level-track i.on{background:#d2a83d;border-color:#f2d77e;box-shadow:0 0 8px #d6a93855}
+.capital-upgrade-next{padding:10px;border:1px solid #5f563b;background:#0c1210}.capital-upgrade-next>b{color:#efd58b}.capital-upgrade-next p{margin:6px 0;font-size:11px;line-height:1.55;color:#bac4bb}.capital-upgrade-next .capital-cost{color:#e6c466;font-weight:700}.capital-upgrade-button{width:100%;margin-top:3px;border-color:#b78e32!important;background:linear-gradient(180deg,#71541a,#3a2b10)!important;color:#fff2bf!important}.capital-max{padding:12px;text-align:center;border:1px solid #a57d2e;background:#2a210f;color:#ffe69a;font-weight:800}
+.capital-tier-lv3 .territory-composite-lift{transform:translateY(calc(var(--region-composite-offset-y,0px) - 8px))!important}.capital-tier-lv5 .territory-composite-lift{transform:translateY(calc(var(--region-composite-offset-y,0px) - 12px))!important}
+#mapUiOverlay .minimal-label.capital-tier-lv3 .city-image-slot{transform:translateY(var(--capital-lv3-extra-half-y,var(--city-icon-extra-half-y,0px))) scale(var(--city-icon-zoom-scale,1))}
+#mapUiOverlay .minimal-label.capital-tier-lv5 .city-image-slot{transform:translateY(var(--capital-lv5-extra-half-y,var(--city-icon-extra-half-y,0px))) scale(var(--city-icon-zoom-scale,1))}
+#mapUiOverlay .minimal-label.capital-tier-lv3:not(.is-compact) .resource-icons,#mapUiOverlay .minimal-label.capital-tier-lv3:not(.is-compact) .faction-troop-hud{transform:translateY(var(--capital-lv3-extra-y,var(--city-icon-extra-y,0px)))}
+#mapUiOverlay .minimal-label.capital-tier-lv5:not(.is-compact) .resource-icons,#mapUiOverlay .minimal-label.capital-tier-lv5:not(.is-compact) .faction-troop-hud{transform:translateY(var(--capital-lv5-extra-y,var(--city-icon-extra-y,0px)))}
+
+
+/* v68 — capital tier growth correction for 50%-scale island capitals. */
+#mapUiOverlay .minimal-label.is-island-city.capital-tier-lv3 .city-image-slot{transform:translateY(var(--island-capital-lv3-extra-half-y,var(--island-city-icon-extra-half-y,0px))) scale(var(--city-icon-zoom-scale,1))}
+#mapUiOverlay .minimal-label.is-island-city.capital-tier-lv5 .city-image-slot{transform:translateY(var(--island-capital-lv5-extra-half-y,var(--island-city-icon-extra-half-y,0px))) scale(var(--city-icon-zoom-scale,1))}
+#mapUiOverlay .minimal-label.is-island-city.capital-tier-lv3:not(.is-compact) .resource-icons,#mapUiOverlay .minimal-label.is-island-city.capital-tier-lv3:not(.is-compact) .faction-troop-hud{transform:translateY(var(--island-capital-lv3-extra-y,var(--island-city-icon-extra-y,0px)))}
+#mapUiOverlay .minimal-label.is-island-city.capital-tier-lv5:not(.is-compact) .resource-icons,#mapUiOverlay .minimal-label.is-island-city.capital-tier-lv5:not(.is-compact) .faction-troop-hud{transform:translateY(var(--island-capital-lv5-extra-y,var(--island-city-icon-extra-y,0px)))}

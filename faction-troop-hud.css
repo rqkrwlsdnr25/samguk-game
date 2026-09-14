@@ -1,0 +1,86 @@
+/* v42 — ROTK13-inspired faction flag + troop badge
+   --------------------------------------------------------------------------
+   The outer territory-screen-space group already consumes the inverse global
+   camera scale. This badge therefore stays crisp in screen pixels while the
+   map itself is moved by the GPU compositor. Only ONE global CSS variable
+   (--map-camera-scale) changes during zoom; no per-territory JS resize loop. */
+#mapUiOverlay .faction-troop-hud,
+#map .faction-troop-hud{
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+#mapUiOverlay .faction-troop-hud-visual{
+  transform-box:fill-box;
+  transform-origin:center;
+  /* Gentle ROTK-style zoom response on top of screen-space clamping.
+     Since --map-camera-scale is written once per rAF by GpuMapCamera,
+     this remains smooth without child layout/reflow work. */
+  transform:scale(.92); /* fallback */
+  transform:scale(var(--faction-hud-scale,.92));
+}
+
+.faction-troop-bar{
+  fill:rgba(0,0,0,.55);
+  stroke:#0a1015;
+  stroke-width:1.45;
+  vector-effect:non-scaling-stroke;
+}
+.faction-troop-bar-edge{
+  fill:none;
+  stroke:rgba(235,240,238,.58);
+  stroke-width:.55;
+  vector-effect:non-scaling-stroke;
+}
+.faction-troop-flag{
+  stroke:#101820;
+  stroke-width:1.35;
+  vector-effect:non-scaling-stroke;
+}
+.faction-troop-flag-highlight{
+  fill:none;
+  stroke:rgba(255,255,255,.28);
+  stroke-width:.55;
+  vector-effect:non-scaling-stroke;
+}
+.faction-troop-symbol,
+.faction-troop-count{
+  fill:#fff;
+  dominant-baseline:middle;
+  text-anchor:middle;
+  paint-order:stroke fill;
+  stroke:#0a1015;
+  stroke-linejoin:round;
+  font-family:'Noto Sans KR','Malgun Gothic',sans-serif;
+  font-weight:800;
+  letter-spacing:-.2px;
+}
+.faction-troop-symbol{font-size:12.5px;stroke-width:1.5px}
+.faction-troop-count{font-size:11.5px;stroke-width:1.35px;font-variant-numeric:tabular-nums}
+.faction-troop-hud-visual{filter:drop-shadow(0 2px 1.5px rgba(0,0,0,.55))}
+
+/* Selected territory gets a thin gold accent, while faction color remains. */
+.chosen .faction-troop-flag{stroke:#ffe0a0;stroke-width:1.8}
+.chosen .faction-troop-bar-edge{stroke:#ffe0a0;stroke-width:.8}
+
+/* Marching units reuse exactly the same component. The existing standard scale
+   already follows camera zoom, so no second inverse-scale compensation here. */
+#map .faction-troop-hud-army .faction-troop-hud-visual{transform:none}
+
+@media(prefers-reduced-motion:reduce){
+  #mapUiOverlay .faction-troop-hud-visual{transform:scale(1)}
+}
+
+
+/* v80 — Territory troop-label readability
+   Keep the number/flag crisp, but let the map show through the black oval.
+   Scope this to stationary territory HUDs so marching-unit styling is unchanged. */
+#mapUiOverlay .faction-troop-hud-territory .faction-troop-bar,
+#map .faction-troop-hud-territory .faction-troop-bar{
+  fill:rgba(0,0,0,.50);
+}
+#mapUiOverlay .faction-troop-hud-territory .faction-troop-hud-visual,
+#map .faction-troop-hud-territory .faction-troop-hud-visual{
+  filter:none;
+}

@@ -1,0 +1,26 @@
+{
+  "name": "samguk-v92-totalwar-officer-detail-ui",
+  "base": "samguk-v91-officer-card-ui-patch",
+  "version": "v92",
+  "entry": "index.html",
+  "modified_files": [
+    "CharacterDataModel.js",
+    "game.js",
+    "MANIFEST.json"
+  ],
+  "new_files": [
+    "PATCH_NOTES_v92.txt",
+    "TEST_RESULTS_v92.txt"
+  ],
+  "removed_files": [],
+  "changes": [
+    "Officer detail modal rebuilt with a large left portrait and Total War inspired dark oriental layout",
+    "Officer stats schema expanded with authority while preserving the existing four-stat gameplay systems",
+    "Officer schema now supports title, salary, age, traits and portraitUrl",
+    "Detail modal now shows five gauges: leadership, war, intelligence, charisma and authority",
+    "Old calculation-heavy lower layout replaced by trait/effect cards",
+    "Existing skill effects, captive temperament modifiers and governor effects are reused as trait descriptions",
+    "Assignment controls and scheme commands remain available in a compact command section",
+    "New officer metadata and stats are included in strategy serialization v3 with backward hydration for v1/v2"
+  ]
+}

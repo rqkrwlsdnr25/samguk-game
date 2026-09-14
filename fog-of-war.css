@@ -1,0 +1,5 @@
+/* 삼국쟁패 v88 - 지도 전체 공개. 전쟁 안개 색상/명도 필터를 사용하지 않는다. */
+#map .territory-shape.vision-hidden>path,
+#map .territory-shape.vision-scouted>path,
+#map .territory-shape.vision-visible>path{filter:none!important;}
+#mapUiOverlay .vision-unknown{display:none!important;}

@@ -1,0 +1,14 @@
+/* v58 — single-canvas faction label sprite layer */
+#mapViewport>#factionLabelCanvas.faction-label-sprite-layer{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:4;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-select:none;
+  background:transparent;
+  transform:none!important;
+  contain:strict;
+}

@@ -1,0 +1,3 @@
+7c0e40f847387d9c977cdcd28fe638b47b95222deba96af79571652ef5b194f5  /mnt/data/v132_work/assets/map/japan_land_alpha_v132.png
+936f0f47e0c466a126b97a099b492b4259f0514030db198a393e59d0602802e5  /mnt/data/v132_work/assets/map/japan_red_blue_mask_v132.png
+f247c7c6e660a22915390f306dffcdcd0777196b1087f55b113a60bd6290f7a2  /mnt/data/v132_work/assets/map/japan_sea_alpha_v132.png

@@ -1,0 +1,45 @@
+/* v44 — zoom-level troop HUD culling + GSAP transition state
+   -------------------------------------------------------------------------
+   Performance model:
+   - GSAP animates only TWO custom properties on #mapViewport.
+   - Every badge reads the same compositor-friendly opacity/transform values.
+   - Once the zoom-out animation ends, .faction-hud-badge-hidden applies
+     display:none to the number subtree, removing text, stroke and glass-bar
+     painting from the SVG render tree. Flags remain visible.
+   - No per-territory wheel listener and no per-marker GSAP tween exists. */
+#mapViewport{
+  --troop-badge-opacity:1;
+  --troop-badge-shift:0px;
+}
+
+.faction-troop-number-badge{
+  opacity:var(--troop-badge-opacity,1);
+  transform:translate3d(var(--troop-badge-shift,0px),0,0);
+  transform-origin:left center;
+  transform-box:fill-box;
+  /* Progressive glass enhancement. SVG engines that do not apply backdrop
+     filtering to <g> simply use the RGBA glass fill below with zero breakage. */
+  -webkit-backdrop-filter:blur(4px);
+  backdrop-filter:blur(4px);
+}
+
+/* After GSAP finishes hiding, the expensive glyph/path subtree is removed from
+   painting entirely. This is the actual full-map performance win. */
+#mapViewport.faction-hud-badge-hidden .faction-troop-number-badge{display:none!important}
+
+/* Full-map flag-only mode: remove decorative shadow work from hundreds of HUDs. */
+#mapViewport.faction-hud-compact .faction-troop-hud-visual{filter:none!important}
+#mapViewport.faction-hud-compact .faction-troop-flag-group{opacity:.96}
+
+/* During normal zoom, use a translucent glass-style bar. Unlike hundreds of
+   HTML foreignObjects, this keeps the existing lightweight SVG hierarchy. */
+.faction-troop-bar{
+  fill:rgba(0,0,0,.55)!important;
+}
+.faction-troop-bar-edge{
+  stroke:rgba(235,244,248,.62)!important;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .faction-troop-number-badge{transition:none!important;will-change:auto}
+}

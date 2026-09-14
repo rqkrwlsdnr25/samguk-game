@@ -1,0 +1,178 @@
+/* 삼국쟁패 v62 — 인물 중심 외교 + 우측 60% 외교 지도 모드 */
+:root{--tw-diplomacy-panel-w:40vw;--tw-diplomacy-map-w:60vw}
+body.tw-diplomacy-strategic-open{overflow:hidden!important}
+
+/* 외교 중 월드맵 자체를 우측 60%의 독립 viewport로 승격한다. */
+body.tw-diplomacy-strategic-open .map-panel{
+  position:fixed!important;
+  left:var(--tw-diplomacy-panel-w)!important;
+  right:0!important;
+  top:0!important;
+  bottom:0!important;
+  width:auto!important;
+  height:100vh!important;
+  max-width:none!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  z-index:3440!important;
+  display:block!important;
+  background:#14262a!important;
+  overflow:hidden!important;
+  box-shadow:inset 18px 0 32px rgba(0,0,0,.28)!important;
+}
+body.tw-diplomacy-strategic-open .map-panel>.map-top,
+body.tw-diplomacy-strategic-open .map-panel>.map-bottom{display:none!important}
+body.tw-diplomacy-strategic-open #mapViewport{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  aspect-ratio:auto!important;
+  contain:layout paint style!important;
+}
+body.tw-diplomacy-strategic-open .map-controls{
+  position:fixed!important;
+  top:16px!important;
+  left:calc(var(--tw-diplomacy-panel-w) + 16px)!important;
+  right:auto!important;
+  z-index:3492!important;
+  margin:0!important;
+}
+body.tw-diplomacy-strategic-open .workspace>aside{visibility:hidden!important}
+
+/* 외교 DOM은 좌측 40%만 이벤트를 소유하고, 우측은 실제 지도에 이벤트를 통과시킨다. */
+#twDiplomacyOverlay.tw-dip-strategic{
+  position:fixed!important;
+  inset:0!important;
+  z-index:3500!important;
+  display:none;
+  pointer-events:none!important;
+  color:#eee6d4;
+  font-family:inherit;
+}
+#twDiplomacyOverlay.tw-dip-strategic.open{display:block!important}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-vignette{display:none!important}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-shell{display:contents!important}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-left-panel{
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:var(--tw-diplomacy-panel-w);
+  min-width:0;
+  box-sizing:border-box;
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto;
+  background:
+    linear-gradient(90deg,rgba(7,10,10,.99),rgba(15,18,16,.985)),
+    radial-gradient(circle at 22% 28%,rgba(187,147,66,.11),transparent 38%);
+  border-right:1px solid #9b8249;
+  box-shadow:16px 0 44px rgba(0,0,0,.58),inset -1px 0 #211c13;
+  pointer-events:auto;
+  overflow:hidden;
+}
+.tw-dip-strategic-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  min-height:58px;padding:10px 14px;border-bottom:1px solid #665a3b;
+  background:linear-gradient(180deg,#292217,#111715);
+}
+.tw-dip-strategic-head .tw-dip-title{display:flex;align-items:center;gap:9px;min-width:0}
+.tw-dip-strategic-head .tw-dip-title b{display:block;color:#ead596;font-size:18px;letter-spacing:.08em}
+.tw-dip-strategic-head .tw-dip-title small{display:block;color:#8da29a;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tw-dip-close{border:1px solid #806d43!important;background:#171713!important;color:#e7d8ad!important;padding:7px 10px!important;flex:0 0 auto}
+
+.tw-dip-strategic-body{
+  min-height:0;display:grid;grid-template-columns:minmax(168px,38%) minmax(0,62%);
+  border-bottom:1px solid #51462f;
+}
+.tw-dip-ruler-column{
+  position:relative;min-width:0;padding:18px 12px 14px;
+  display:flex;flex-direction:column;align-items:center;
+  border-right:1px solid #49412d;
+  background:radial-gradient(circle at 50% 20%,var(--faction-glow,#b99a52) 0,transparent 40%),linear-gradient(180deg,#151b19,#0d1110);
+  overflow:hidden;
+}
+.tw-dip-ruler-portrait{
+  width:min(92%,220px);height:min(46vh,300px);min-height:190px;
+  display:flex;align-items:flex-end;justify-content:center;
+  border:1px solid #8a7443;background:linear-gradient(180deg,#1e2825,#090d0c);
+  box-shadow:inset 0 0 35px #000,0 8px 30px #0008;overflow:hidden;
+}
+.tw-dip-ruler-portrait .officer-svg{width:100%!important;height:100%!important;max-width:220px;max-height:290px;filter:drop-shadow(0 12px 10px #0009)}
+.tw-dip-ruler-fallback{font:900 86px/1 serif;color:#f3df9d;text-shadow:0 0 15px var(--faction-glow,#d4af37)}
+.tw-dip-ruler-column h3{margin:12px 0 3px;color:#f2dfa7;font-family:serif;font-size:20px;text-align:center}
+.tw-dip-ruler-column p{margin:0;color:#93a39d;font-size:10px;line-height:1.55;text-align:center}
+.tw-dip-ruler-stats{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:12px}
+.tw-dip-ruler-stats span{padding:6px;border:1px solid #3f463e;background:#0c1110;color:#aeb9b3;font-size:9px;text-align:center}
+.tw-dip-ruler-stats b{display:block;color:#e8d598;font-size:13px;margin-top:2px}
+
+.tw-dip-negotiation-column{min-width:0;min-height:0;display:grid;grid-template-rows:minmax(105px,33%) minmax(0,1fr);background:#0e1312}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-faction-strip{
+  display:grid!important;grid-template-columns:1fr 1fr;align-content:start;gap:5px;
+  margin:0!important;padding:9px!important;height:auto!important;min-height:0!important;
+  overflow:auto!important;border:0!important;border-bottom:1px solid #49412f!important;background:#101614!important;
+}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-faction{
+  min-width:0!important;padding:7px 8px!important;border:1px solid #354039!important;background:#151c1a!important;color:#ccd5cf!important;text-align:left!important
+}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-faction.active{border-color:#d4af37!important;background:#302817!important;box-shadow:0 0 9px #d4af3738}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-faction strong{display:block;font-size:11px}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-faction small{display:block;margin-top:2px;color:#87978f;font-size:8px;line-height:1.35}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-panel{
+  min-height:0!important;overflow:auto!important;padding:10px!important;border:0!important;background:linear-gradient(180deg,#161a17,#090d0c)!important;box-shadow:none!important
+}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-relation{padding:7px!important;margin-bottom:8px!important}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-options{grid-template-columns:1fr 1fr!important;gap:6px!important}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-option{min-height:67px!important;padding:8px!important}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-option small{font-size:8px!important}
+.tw-dip-player-compact{padding:8px 12px;border-top:1px solid #39372b;background:#0b100f;color:#899a93;font-size:9px;line-height:1.45}
+.tw-dip-player-compact b{color:#d8c384}
+
+/* 우측 지도 전용 범례. 패널은 가리지 않고 클릭도 차단하지 않는다. */
+.tw-dip-map-legend{
+  position:fixed;right:16px;bottom:18px;z-index:3493;display:flex;align-items:center;gap:10px;
+  padding:7px 10px;border:1px solid #4f554d;background:#080d0ccc;color:#bbc7c2;font-size:9px;pointer-events:none
+}
+.tw-dip-map-legend span{display:inline-flex;align-items:center;gap:4px}.tw-dip-map-legend i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.tw-dip-map-legend .hostile i{background:#c62828}.tw-dip-map-legend .neutral i{background:#d1d5db}.tw-dip-map-legend .friendly i{background:#22c55e}
+.tw-dip-map-hint{position:fixed;left:70vw;transform:translateX(-50%);bottom:18px;z-index:3493;padding:6px 10px;background:#07100fbb;border:1px solid #4c5a53;color:#91aaa0;font-size:9px;pointer-events:none}
+
+/* 외교 판도 모드는 영토 path만 재색칠한다. 도시/성/지역명/병력 HUD는 원래 색 유지. */
+body.tw-diplomacy-strategic-open.tw-diplomacy-map-focus #map [data-id]{opacity:1!important;filter:none!important}
+body.tw-diplomacy-strategic-open #map .territory-shape>path{
+  fill:var(--tw-dip-fill,#d1d5db)!important;
+  fill-opacity:.86!important;
+  transition:fill .12s linear,fill-opacity .12s linear!important;
+  filter:none!important;
+}
+body.tw-diplomacy-strategic-open #map .territory-shape.tw-dip-perspective>path{
+  stroke:#f1d57c!important;stroke-width:1.8!important;fill-opacity:.97!important
+}
+body.tw-diplomacy-strategic-open #map .territory-shape.tw-dip-player-perspective>path{stroke:#72d7cb!important;stroke-width:1.35!important}
+body.tw-diplomacy-strategic-open #map #boundary-layer{opacity:.78}
+body.tw-diplomacy-strategic-open #map #atlas-labels{opacity:.12!important}
+
+/* 구버전 하단형 외교 오버라이드 무력화 */
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-bottom-tray{display:contents!important}
+#twDiplomacyOverlay.tw-dip-strategic .tw-dip-mapnote{display:none!important}
+
+/* 거래 UI는 좌측 협상 칸 안에서 2열로 압축 */
+#twDiplomacyOverlay.tw-dip-strategic .tw-deal-wrap{height:auto!important;min-height:100%;display:block!important}
+#twDiplomacyOverlay.tw-dip-strategic .tw-deal-head{align-items:flex-start!important;gap:6px!important}
+#twDiplomacyOverlay.tw-dip-strategic .tw-deal-grid{grid-template-columns:1fr!important;gap:6px!important;margin-top:7px}
+#twDiplomacyOverlay.tw-dip-strategic .tw-deal-center{order:3}
+#twDiplomacyOverlay.tw-dip-strategic .tw-deal-table{grid-template-columns:1fr 22px 1fr!important}
+#twDiplomacyOverlay.tw-dip-strategic .tw-deal-footer{margin-top:7px;grid-template-columns:1fr!important}
+
+@media(max-width:1100px){
+ .tw-dip-strategic-body{grid-template-columns:155px minmax(0,1fr)}
+ .tw-dip-ruler-portrait{height:min(39vh,250px)}
+}
+@media(max-width:820px){
+ .tw-dip-strategic-body{grid-template-columns:135px minmax(0,1fr)}
+ .tw-dip-ruler-column{padding:12px 8px}.tw-dip-ruler-portrait{min-height:160px;height:220px}
+}
+
+/* v67: 해상 연결 점선은 일반 지도 정보 레이어다. 외교 판도 모드에서는 숨겨 관계 색상 가독성을 보존한다. */
+body.tw-diplomacy-strategic-open #map #sea-route-network,
+body.tw-diplomacy-map-focus #map #sea-route-network{opacity:0!important;visibility:hidden!important}

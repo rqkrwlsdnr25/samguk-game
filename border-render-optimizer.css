@@ -1,0 +1,60 @@
+/* v56 — fixed-screen stroke weights + low-zoom border LOD.
+   SVG vector-effect avoids per-frame JS lineWidth writes and stays cheap after
+   the GPU camera commits a sharp viewBox. */
+
+#map .national-border-outer{
+  stroke-width:var(--national-border-outer,2)!important;
+  vector-effect:non-scaling-stroke;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+#map .national-border-inner{
+  stroke-width:var(--national-border-inner,.72)!important;
+  vector-effect:non-scaling-stroke;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+#map .province-border{
+  stroke-width:var(--province-border-width,.58)!important;
+  vector-effect:non-scaling-stroke;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+#map .selection-border{
+  stroke-width:var(--selection-border-width,2)!important;
+  vector-effect:non-scaling-stroke;
+}
+#map .map-rivers{
+  stroke-width:var(--river-border-width,.72)!important;
+  vector-effect:non-scaling-stroke;
+}
+#map .great-wall-border-outer{
+  stroke-width:var(--great-wall-outer-width,2.2)!important;
+  vector-effect:non-scaling-stroke;
+}
+#map .great-wall-border-inner{
+  stroke-width:var(--great-wall-inner-width,1.15)!important;
+  vector-effect:non-scaling-stroke;
+}
+
+/* At overview zooms, territory polygons keep their fill but do not each paint
+   a second, fully detailed outline. Shared simplified boundary paths provide
+   the same visual separation with far fewer rasterized segments. */
+#map.border-lod-ultra .territory-shape>path,
+#map.border-lod-low .territory-shape>path,
+#map.border-lod-medium .territory-shape>path{
+  stroke-opacity:0!important;
+}
+
+/* At the farthest overview, province subdivisions are deliberately omitted.
+   National borders stay visible; coastline remains supplied by the atlas land
+   layer. This is the strongest low-zoom performance branch. */
+#map.border-lod-ultra .province-border{
+  display:none;
+}
+
+/* The decorative inner highlight costs a second full border pass. At extreme
+   zoom-out keep a single, clean 2px national line. */
+#map.border-lod-ultra .national-border-inner{
+  display:none;
+}

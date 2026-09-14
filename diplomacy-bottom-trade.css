@@ -1,0 +1,97 @@
+/* 삼국쟁패 v53 - 하단형 Total War 외교 / 거래 UI / GPU 필터 경량화 */
+#twDiplomacyOverlay{z-index:3500!important}
+#twDiplomacyOverlay .tw-dip-vignette{
+  background:linear-gradient(180deg,rgba(4,7,7,.12) 0%,rgba(4,7,7,.10) 48%,rgba(2,4,4,.40) 72%,rgba(0,0,0,.70) 100%)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+#twDiplomacyOverlay .tw-dip-shell{
+  inset:52px 36px 22px!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  grid-template-rows:auto 1fr minmax(255px,32vh) auto!important;
+  gap:9px!important;
+}
+#twDiplomacyOverlay .tw-dip-topbar{grid-column:1!important;grid-row:1!important;z-index:4}
+#twDiplomacyOverlay .tw-dip-bottom-tray{
+  grid-column:1;grid-row:3;align-self:end;display:grid;
+  grid-template-columns:minmax(160px,220px) minmax(560px,1fr) minmax(160px,220px);
+  gap:10px;min-height:0;pointer-events:none;z-index:4
+}
+#twDiplomacyOverlay .tw-dip-side{
+  min-height:0!important;height:100%!important;padding:10px 9px 12px!important;
+  justify-content:flex-end!important;background:linear-gradient(180deg,rgba(15,21,20,.80),rgba(12,13,11,.96))!important;
+}
+#twDiplomacyOverlay .tw-dip-ruler-sigil{
+  width:82px!important;height:92px!important;margin:2px auto 7px!important;border-radius:42px 42px 14px 14px!important;font-size:42px!important
+}
+#twDiplomacyOverlay .tw-dip-side h3{font-size:15px!important}
+#twDiplomacyOverlay .tw-dip-side p{font-size:9px!important;line-height:1.35!important}
+#twDiplomacyOverlay .tw-dip-center{height:100%;min-height:0;align-self:stretch!important;display:grid!important;grid-template-rows:58px minmax(0,1fr);gap:8px!important;pointer-events:auto}
+#twDiplomacyOverlay .tw-dip-faction-strip{height:58px;box-sizing:border-box;padding:5px!important;overflow-x:auto;overflow-y:hidden}
+#twDiplomacyOverlay .tw-dip-faction{min-width:100px!important;padding:5px 8px!important}
+#twDiplomacyOverlay .tw-dip-panel{min-height:0;overflow:auto;padding:9px 10px!important}
+#twDiplomacyOverlay .tw-dip-relation{padding:4px 7px!important;margin-bottom:6px!important}
+#twDiplomacyOverlay .tw-dip-options{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:6px!important}
+#twDiplomacyOverlay .tw-dip-option{min-height:62px!important;padding:7px!important}
+#twDiplomacyOverlay .tw-dip-option small{font-size:9px!important}
+#twDiplomacyOverlay .tw-dip-mapnote{grid-column:1!important;grid-row:4!important;margin-top:-2px;z-index:4}
+#twDiplomacyArrowCanvas{position:fixed;inset:0;z-index:3501;pointer-events:none;display:none}
+#twDiplomacyOverlay.open~#twDiplomacyArrowCanvas,#twDiplomacyArrowCanvas.active{display:block}
+
+/* 거래창 */
+.tw-deal-wrap{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px;height:100%;min-height:0}
+.tw-deal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:6px;border-bottom:1px solid #5a4b2f}
+.tw-deal-head strong{color:#f0dca2}.tw-deal-head small{color:#91a39d}
+.tw-deal-back{border:1px solid #5d5849!important;background:#111715!important;color:#cfd7d0!important;padding:5px 9px!important}
+.tw-deal-grid{display:grid;grid-template-columns:minmax(180px,1fr) minmax(260px,1.3fr) minmax(180px,1fr);gap:8px;min-height:0}
+.tw-deal-side,.tw-deal-center{border:1px solid #45483d;background:#111715;padding:8px;min-height:0;overflow:auto}
+.tw-deal-side h4,.tw-deal-center h4{margin:0 0 7px;color:#e6cf91;font-size:12px}
+.tw-deal-picker{display:grid;grid-template-columns:1fr auto;gap:5px}.tw-deal-picker select{min-width:0;background:#0b1110;color:#e5dfcf;border:1px solid #586159;padding:7px}
+.tw-deal-add{border:1px solid #7c693f!important;background:#252015!important;color:#ead69d!important;padding:6px 9px!important}
+.tw-deal-list{display:flex;flex-direction:column;gap:5px;margin-top:7px}
+.tw-deal-item{display:flex;justify-content:space-between;gap:6px;align-items:center;border:1px solid #343b36;background:#0d1211;padding:6px 7px;color:#d8d3c7;font-size:10px}
+.tw-deal-item button{border:0!important;background:transparent!important;color:#b8786d!important;padding:0 2px!important}
+.tw-deal-empty{padding:16px 8px;text-align:center;color:#697974;font-size:10px}
+.tw-deal-table{display:grid;grid-template-columns:1fr 44px 1fr;gap:6px;align-items:start}
+.tw-deal-col-title{text-align:center;color:#aab8b1;font-size:9px;margin-bottom:5px}.tw-deal-arrow{text-align:center;color:#d2b966;font-size:20px;padding-top:25px}
+.tw-deal-footer{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border-top:1px solid #51462e;padding-top:7px}
+.tw-deal-score{font-size:10px;color:#aab8b1}.tw-deal-score b{font-size:15px;color:#7ad6cb;margin-left:5px}.tw-deal-submit{border:1px solid #9c7e3f!important;background:linear-gradient(#3b301d,#211a10)!important;color:#f4dda0!important;padding:8px 18px!important;font-weight:800}
+.tw-deal-submit:disabled{opacity:.35}
+.tw-dip-status-chip{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:2px 6px;border:1px solid #58615b;font-size:9px;color:#d7ded8}.tw-dip-status-dot{width:7px;height:7px;border-radius:50%;background:var(--status-color,#fff);box-shadow:0 0 7px var(--status-color,#fff)}
+
+@media(max-width:1100px){
+ #twDiplomacyOverlay .tw-dip-shell{inset:46px 14px 14px!important;grid-template-rows:auto 1fr minmax(270px,36vh) auto!important}
+ #twDiplomacyOverlay .tw-dip-bottom-tray{grid-template-columns:145px minmax(0,1fr) 145px}
+ #twDiplomacyOverlay .tw-dip-options{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .tw-deal-grid{grid-template-columns:1fr 1.2fr 1fr}
+}
+@media(max-width:760px){
+ #twDiplomacyOverlay .tw-dip-shell{grid-template-rows:auto 1fr minmax(330px,48vh) auto!important}
+ #twDiplomacyOverlay .tw-dip-bottom-tray{grid-template-columns:1fr}.tw-dip-player-side,.tw-dip-target-side{display:none!important}
+ #twDiplomacyOverlay .tw-dip-options{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .tw-deal-grid{grid-template-columns:1fr}.tw-deal-center{order:3}.tw-deal-arrow{display:none}.tw-deal-table{grid-template-columns:1fr 1fr}
+}
+
+/* v53 성능 패치: SVG 개별 filter 합성을 제거하고 opacity/stroke만 사용 */
+body.tw-diplomacy-map-focus #map [data-id]{
+  opacity:.22!important;
+  filter:none!important;
+  transition:opacity .16s ease!important;
+}
+body.tw-diplomacy-map-focus #map [data-id].tw-dip-target{
+  opacity:1!important;
+  filter:none!important;
+}
+body.tw-diplomacy-map-focus #map [data-id].tw-dip-player{
+  opacity:.72!important;
+  filter:none!important;
+}
+body.tw-diplomacy-map-focus #map [data-id].tw-dip-target>path{
+  stroke:#f9db7c!important;
+  stroke-width:2.2!important;
+}
+body.tw-diplomacy-map-focus #map [data-id].tw-dip-player>path{
+  stroke:#75d5cb!important;
+  stroke-width:1.55!important;
+}
