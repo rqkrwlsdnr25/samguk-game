@@ -1,0 +1,13 @@
+nation 0: territories=13 paths=58 boundaryEdges=1562 emitted=1562 closed=true
+nation 1: territories=11 paths=42 boundaryEdges=977 emitted=977 closed=true
+nation 2: territories=9 paths=5 boundaryEdges=254 emitted=254 closed=true
+nation 3: territories=5 paths=5 boundaryEdges=262 emitted=262 closed=true
+nation 4: territories=13 paths=34 boundaryEdges=635 emitted=635 closed=true
+nation 6: territories=6 paths=14 boundaryEdges=405 emitted=405 closed=true
+nation 7: territories=6 paths=19 boundaryEdges=401 emitted=401 closed=true
+nation 8: territories=10 paths=21 boundaryEdges=564 emitted=564 closed=true
+nation 9: territories=10 paths=20 boundaryEdges=676 emitted=676 closed=true
+nation 10: territories=8 paths=15 boundaryEdges=290 emitted=290 closed=true
+nation 11: territories=8 paths=25 boundaryEdges=822 emitted=822 closed=true
+nation 12: territories=2 paths=1 boundaryEdges=50 emitted=50 closed=true
+nation 13: territories=1 paths=1 boundaryEdges=10 emitted=10 closed=true

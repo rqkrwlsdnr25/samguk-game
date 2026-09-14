@@ -1,0 +1,39 @@
+삼국쟁패 v44 — 병력 HUD 줌 컬링 / GSAP 전환 최적화
+
+기준: v43 문무관 아이콘 완전삭제 전체본
+
+1) 전체 지도(full-map) HUD 컬링
+- 카메라 zoomRatio <= 1.25: 깃발 전용 Compact Mode 진입
+- zoomRatio >= 1.45: 병력 숫자 HUD 복귀
+- 서로 다른 진입/복귀 임계값(Hysteresis)으로 경계 떨림/트윈 중복 방지
+- 숨김 애니메이션 완료 후 숫자/검은 바 subtree에 display:none 적용
+
+2) GSAP 애니메이션
+- CDN: GSAP 3.15.0
+- 축소: 병력 숫자 캡슐이 우측 +12px 이동하며 opacity 0
+- 확대: +12px에서 0px로 복귀하며 opacity 1
+- gsap.killTweensOf + state guard로 중복 트윈 차단
+- CDN 미사용 환경에서도 CSS/RAF fallback으로 기능 유지
+
+3) 렌더 최적화
+- 영토별 개별 GSAP tween 없음
+- #mapViewport의 CSS custom property 2개만 GSAP가 갱신
+- Compact Mode 중 hidden troop text의 불필요한 textContent 갱신 생략
+- 복귀 시 1회만 병력 숫자 재동기화
+- Compact Mode에서는 HUD drop-shadow 비활성화
+
+4) Glass 스타일
+- 병력 캡슐: rgba(0,0,0,.55)
+- backdrop-filter: blur(4px) progressive enhancement
+- SVG 엔진에서 backdrop-filter 미지원 시 반투명 SVG fill이 안전 fallback
+- 성능을 악화시키는 HTML foreignObject 대량 생성은 사용하지 않음
+
+추가 파일
+- FactionHudGsapTransitions.js
+- FactionHudZoomModeController.js
+- faction-hud-zoom-mode.css
+
+수정 파일
+- FactionTroopHud.js
+- faction-troop-hud.css
+- index.html

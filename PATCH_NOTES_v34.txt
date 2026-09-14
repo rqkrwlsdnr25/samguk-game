@@ -1,0 +1,39 @@
+삼국쟁패 v34 · 전문도시 이미지 수도 동일 계층 통합 패치
+
+[근본 원인]
+1. v33 전문도시 이미지는 수도와 달리 별도 world-city-sprite-layer에서 렌더링됨.
+2. 전문도시 이미지는 cityLevel III에서만 assetKey가 생겨 I/II 단계에서는 이미지 DOM 자체가 생성되지 않았음.
+3. 별도 레이어의 줌 가시성 조건 때문에 III 단계에서도 특정 줌 상태에서는 보이지 않을 수 있었음.
+4. 지역명/병력과 다른 좌표 계산 경로를 사용해 수도와 계층/앵커가 일치하지 않았음.
+
+[v34 수정]
+- 수도와 전문도시 이미지를 모두 territoryLabels()의 동일 territory 그룹 안에서 렌더링.
+- 동일 SVG <image> 컴포넌트와 capital-image 클래스를 사용.
+- 일반 수도: capital.png.
+- 농업도시 I~III: city_agriculture.webp.
+- 상업도시 I~III: city_commerce.webp.
+- 군사도시 I~III: city_military.webp.
+- 전문도시는 I 단계가 반영되는 즉시 지도에 표시됨.
+- 지역명 텍스트 y=0을 기준으로 이미지 top을 label font size + 5px 아래에 고정.
+- 자원/병력 수치는 도시 이미지 아래로 자동 밀어 겹침 방지.
+- 이미지 markup을 텍스트보다 먼저 출력해 영토명/병력 텍스트가 항상 위에 페인트됨.
+- 문관/무관 아이콘은 기존처럼 map-rendered 이후 SVG 최상단 append 구조라 도시 이미지보다 항상 위에 유지.
+
+[Fail-Safe]
+- 에셋 preload 실패를 기록하고 console.warn 출력.
+- SVG image load error 시 수도 영토는 capital.png로 한 번 fallback.
+- 최종 로드 실패 시 city-image-slot 자체는 유지하고 '城' placeholder를 표시하여 UI 계층이 무너지지 않음.
+- city-upgraded 이벤트 수신 즉시 이미지 preload + spawn 상태 등록.
+
+[전환]
+- 증축 시 760ms fade/scale pop.
+- prefers-reduced-motion에서는 애니메이션 비활성화.
+
+[구조]
+- CityTechTreeManager.js: 증축 단계별 sprite switching / asset mapping.
+- TerritoryCityUIManager.js: 수도와 동일 hierarchy의 inline image 생성 + fail-safe.
+- territory-city-layout.css: 지역명 → 도시 이미지 → 자원/병력 수직 스택 및 spawn 스타일.
+- map.js: 별도 도시 sprite layer 제거, territoryLabels()로 통합.
+
+[호환]
+- v33 전문도시 월드맵 그래픽 패치 이후 버전.

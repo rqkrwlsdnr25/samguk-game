@@ -1,0 +1,58 @@
+삼국쟁패 v63 — 수도증축 글로벌 테크트리 패치
+================================================
+
+기준 버전
+- v62 인물중심 외교 / 판도지도 전체본
+
+1. 수도 전용 성장 데이터
+- 각 고정 수도 영토에 capitalLevel 1..5를 추가했습니다.
+- 일반 cityType / cityLevel과 완전히 분리합니다.
+- 해당 세력의 본국 수도만 수도증축할 수 있습니다.
+- 적 수도를 점령해도 그 수도를 자기 국가의 수도 테크로 승급할 수 없습니다.
+- 이미 달성한 수도 레벨의 국가 보너스는 K[faction].capitalLevel에 저장되어 영구적으로 유지됩니다.
+
+2. 글로벌 영구 보너스
+- Level 1: 행동 +0 / 모집·수입 ×1.00
+- Level 2: 행동 +1 / 모집·수입 ×1.30
+- Level 3: 행동 +2 / 모집·수입 ×1.69
+- Level 4: 행동 +3 / 모집·수입 ×2.197
+- Level 5: 행동 +4 / 모집·수입 ×2.8561
+- 모집/수입은 매 단계 이전값에 1.30을 곱하는 복리 방식입니다.
+- 행동력 증가는 현재 남은 행동을 즉시 회복시키지 않고 다음 턴의 최대 행동력에 반영됩니다.
+
+3. 승급 비용
+- Lv2: 180금
+- Lv3: 320금
+- Lv4: 520금
+- Lv5: 800금
+- 각 승급은 행동 1을 소비합니다.
+- 비용은 CapitalUpgradeSystem.js의 COSTS와 Java CapitalUpgradeService의 COSTS에서 조정할 수 있습니다.
+
+4. 수도 전용 UI
+- 본국 수도를 선택하면 일반 '도시증축 하기' 대신 '수도증축' 행동이 표시됩니다.
+- 전용 패널에서 현재 Level x/5, 현재 누적 배율, 다음 승급 비용, 행동 +1, 모집/수입 +30% 효과를 확인합니다.
+- 수도는 농업/상업/군사 전문도시 증축 대상에서 제외됩니다.
+
+5. 지도 이미지 단계 전환
+- Level 1~2: capital_lv1.png
+- Level 3~4: capital_lv3.png
+- Level 5: capital_lv5.png
+- 사용자 제공 이미지 중 lv3/lv5의 검은 매트 배경은 지도 오버레이에 검은 사각형이 생기지 않도록 외곽 연결 검정 영역만 투명화했습니다.
+- 기본 표시 박스: Lv1 40×40, Lv3 58×58, Lv5 84×48.
+- GpuMapCamera의 기존 도시 줌 곡선을 공유하되 각 단계의 실제 높이 기준으로 child HUD 오프셋을 계산합니다.
+- 이미지 레벨 변경은 map Dirty Update signature에 포함되어 전체 지도 geometry를 재생성하지 않고 오버레이만 갱신합니다.
+
+6. 에셋 프리로드
+- CapitalUpgradeSystem.js가 capital_lv1/lv3/lv5 각각 Image 객체 1개만 생성합니다.
+- 중복 preloadAll 호출은 Promise/Image 캐시를 재사용합니다.
+- CityTechTreeManager는 수도 이미지 로딩을 CapitalUpgradeSystem에 위임합니다.
+
+7. Canvas / Java API
+- window.drawCapitalCity(ctx, x, y, level, currentZoom)
+- window.SAMGUK_CAPITAL_UPGRADE
+- window.SAMGUK_CAPITAL_SYSTEM
+- Java 17: CapitalUpgradeService.upgradeCapitalLevel(Capital, Faction, int availableGold)
+
+주의
+- 현재 게임 본체의 월드맵은 순수 Canvas가 아니라 SVG + GPU 카메라 + Canvas HUD 혼합 구조입니다.
+  따라서 실제 실행 경로는 기존 SVG 오버레이 최적화를 유지하고, 요청한 drawCapitalCity()는 Canvas/Astra 렌더러 호환 API로 함께 제공합니다.

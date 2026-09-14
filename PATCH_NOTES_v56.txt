@@ -1,0 +1,64 @@
+삼국쟁패 v56 — 국경선 고정 두께 / 저배율 렌더링 최적화
+
+[실제 원인]
+현재 월드맵은 HTML5 Canvas가 아니라 SVG + GPU CSS transform/viewBox 카메라 구조다.
+기존 국가 경계는 동일 path를 4.2px 외곽선 + 1.2px 안쪽선으로 두 번 렌더링했고,
+전체 지도 수준까지 축소해도 non-scaling-stroke 때문에 화면에서 같은 굵기로 남아
+작아진 지도에 비해 국경선이 지나치게 두껍게 보였다.
+또 WORLD.borders 224개에 약 7,600개 이상의 선분이 있어 저배율에서도 세밀한 굴곡을 그대로 래스터라이즈했다.
+
+[수정]
+1. 국가 경계 고정 화면 두께
+- national outer: 2.0px
+- national inner: 0.72px
+- province shared border: 0.58px
+- river outline: 0.72px
+- selection outline: 2.0px
+- SVG vector-effect="non-scaling-stroke" 유지
+
+Canvas 렌더러용 공식도 함께 제공:
+ctx.lineWidth = screenPixels / currentZoom
+예: 2px / zoom
+
+2. Douglas-Peucker LOD
+zoomRatio <= 0.70 : ultra, epsilon 3.0
+zoomRatio <= 1.25 : low, epsilon 1.5
+zoomRatio <= 2.25 : medium, epsilon 0.75
+그 이상            : full 원본
+
+검증된 선분 수:
+full   7605
+medium 4012  (-47.2%)
+low    1336  (-82.4%)
+ultra   942  (-87.6%)
+
+3. 극저배율 분기
+zoomRatio <= 0.70에서는 province-border 렌더링을 생략한다.
+국가 경계와 해안선은 유지된다.
+
+4. 중복 stroke 제거
+ultra/low/medium에서는 각 territory polygon 자체의 상세 stroke를 숨기고,
+공유 boundary layer 하나가 경계를 그리도록 하여 동일 경계를 중복 rasterize하지 않는다.
+영토 fill, 클릭, hover 데이터, 라벨, 부대 HUD는 그대로 유지한다.
+
+5. GPU 줌 캐시 보존
+줌 애니메이션 중 samguk:map-view-changed가 매 프레임 발생해도 border path를 수정하지 않는다.
+GpuMapCamera가 renderMode="sharp"로 commit된 뒤 LOD bucket이 바뀐 경우에만 d path를 교체한다.
+따라서 CSS transform compositor 캐시를 매 프레임 무효화하지 않는다.
+
+6. 오프스크린 Canvas 예제
+현재 게임은 SVG라 실제 런타임에 별도 Canvas를 추가하지 않았다.
+BorderRenderOptimizer.js에 CanvasBorderCache / drawCountryBorders 예제를 제공한다.
+SVG 게임에서는 기존 GpuMapCamera compositor 구조가 사실상 offscreen 캐시 역할을 하므로
+별도의 Canvas 레이어를 강제로 추가해 좌표계/메모리 비용을 늘리지 않았다.
+
+[변경 파일]
+- index.html
+- map.js
+- BorderRenderOptimizer.js (신규)
+- border-render-optimizer.css (신규)
+- README.md
+- MANIFEST.json
+- PATCH_NOTES_v56.txt
+- TEST_RESULTS_v56.txt
+- APPLY_PATCH_v56.txt

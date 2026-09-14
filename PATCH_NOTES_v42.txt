@@ -1,0 +1,37 @@
+삼국쟁패 v42 — 삼국지13 스타일 세력/병력 HUD
+기준: v41 왜구 + 해상칸 통합 전체본
+
+[UI]
+- 영토의 기존 단독 병력 숫자를 '세력 깃발 + 병력 캡슐' 결합형 HUD로 교체.
+- 좌측 방패/오각형: 세력 고유색 + 세력 심볼 1글자.
+- 우측 캡슐: 반투명 흑색 배경 + 선명한 흰색 병력 숫자.
+- 선택 영토는 얇은 금색 테두리 강조.
+- 전체 지도(Compact)에서도 동일 컴포넌트를 축소 표시.
+
+[부대]
+- 진군 깃발 아래 숫자 상자를 같은 세력/병력 HUD 컴포넌트로 통일.
+- 영토/이동 부대가 동일 렌더러와 동일 세력 색/심볼 규칙을 사용.
+
+[줌/GPU]
+- 기존 v40 MapUiOverlay + territory-screen-space 구조를 재사용.
+- 영토 HUD는 개별 JS 리사이즈 없이 글로벌 --map-ui-world-unit 역스케일을 상속.
+- GpuMapCamera가 rAF에서 --faction-hud-scale 값 하나만 갱신.
+- 모든 영토 마커는 같은 전역 스칼라를 읽으므로 줌 중 개별 DOM 좌표/크기 계산 없음.
+- SVG stroke에는 vector-effect=non-scaling-stroke를 사용해 외곽선 선명도 유지.
+
+[데이터 바인딩]
+- FactionTroopHud.js 추가.
+- territoryMarkup(): 영토 ID, 세력 색/심볼, 병력 데이터를 SVG HUD로 생성.
+- armyMarkup(): 진군 부대 HUD 생성.
+- updateTerritory()/updateAllTerritories(): 전체 지도 재생성 없이 표시값을 갱신할 수 있는 API 제공.
+- game.js에서 기존 regions/K 데이터를 runtime getter로 연결.
+
+[수정 파일]
+- FactionTroopHud.js (신규)
+- faction-troop-hud.css (신규)
+- map.js
+- GpuMapCamera.js
+- game.js
+- index.html
+- README.md
+- MANIFEST.json

@@ -1,0 +1,36 @@
+삼국쟁패 v50 — 고배율 마우스 피벗 줌 확장
+
+참고 구현: GitHub 공개 pan/zoom 소스의 zoomAtPoint 비율 보정 패턴을 검토하되, 삼국쟁패의 targetView 보간/GPU matrix3d 구조에 맞춰 재작성.
+
+1. 최대 줌 상한 확대
+- 단일 설정원 MapZoomConfig.js의 maxZoom을 2.5 → 6.0으로 확대.
+- WorldMapBoundsController / SmoothMapZoomController / map.js fallback도 6.0으로 통일.
+
+2. 고속 휠 입력 시 마우스 피벗 드리프트 수정
+- SmoothMapZoomController.requestZoomAtClient() 추가.
+- 연속 휠 입력 중에는 현재 보간 프레임이 아니라 다음 targetView를 기준으로 마우스 화면 좌표를 월드 좌표로 역투영.
+- GpuMapCamera.clientToWorld(viewOverride)는 해당 view 자체의 PPU/letterbox offset을 재계산하도록 수정.
+- 결과: 큐에 쌓인 휠 입력에서도 커서 아래 월드 지점이 유지됨.
+
+3. 고배율 드래그 속도 보정
+- screenDeltaToWorld()가 pointerdown 당시 view의 PPU를 직접 계산.
+- 확대 배율이 높아져도 화면 1px 이동량이 정확히 1/PPU 월드 단위로 변환되어 드래그 점프/가속을 방지.
+
+4. 고배율 HUD 가독성
+- 1.45x 이후 병력 HUD와 영토명 크기가 점진적으로 증가.
+- 최대 6x에서 병력 HUD 약 1.42배, 영토명 약 1.28배까지 확대.
+
+5. 렌더링 선명도
+- SVG path/text: geometricPrecision.
+- SVG 내부 raster image: crisp-edges / WebKit optimize-contrast.
+- GPU matrix3d 카메라 구조는 유지.
+
+수정 파일
+- MapZoomConfig.js
+- WorldMapBoundsController.js
+- SmoothMapZoomController.js
+- GpuMapCamera.js
+- MapWheelRafController.js
+- map.js
+- gpu-map-camera.css
+- MANIFEST.json

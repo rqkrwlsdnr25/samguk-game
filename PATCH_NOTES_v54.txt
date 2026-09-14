@@ -1,0 +1,36 @@
+삼국쟁패 v54 — 영토 정중앙 Centroid 패치
+
+기준 버전
+- v53 렌더링 최적화 전체본
+
+핵심 변경
+1) RegionGeometry.js 신규
+- Shoelace 공식 기반 Polygon 질량 중심(Centroid) 계산
+- WORLD territory SVG path(M/L/Z 및 H/V/상대좌표 대응)에서 링을 파싱해 centroid 계산
+- 여러 sub-path가 있는 섬 영토도 면적 가중 중심으로 결합
+- 영토별 계산값 캐시: 렌더 프레임마다 재계산하지 않음
+- Canvas용 renderRegionLabels(ctx, region) 제공
+  - textAlign='center'
+  - textBaseline='middle'
+  - 지역명 중심 Y, 부대 라벨 centerY + offset 구조
+
+2) game.js
+- Region 런타임 객체 생성 시 center:{x,y} 저장
+- 게임 재시작 시에도 동일 geometry cache를 재사용
+
+3) map.js
+- 기존 수동 seed 좌표 대신 region.center를 지역 UI anchor로 사용
+- 지역명/부대 HUD/도시/자원 UI가 동일 centroid anchor hierarchy를 공유
+- 기존 LABEL_OFFSETS는 이번 정중앙 모드에서는 적용하지 않음
+- 지도 이동/전투 경로/인접/AI 등 gameplay seed 좌표는 변경하지 않음
+
+4) Java backend example
+- Point.java
+- PolygonCentroid.java
+- Region.java
+- Region.setVertices(...) 호출 시 center 자동 재계산
+
+안전성
+- 영토 polygon geometry 자체는 수정하지 않음
+- 전쟁/AI/이동/외교/보급/도시 수치 변경 없음
+- v53 Dirty Render/GPU 카메라 최적화 구조 유지

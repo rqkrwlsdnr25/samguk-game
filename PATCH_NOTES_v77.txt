@@ -1,0 +1,18 @@
+삼국쟁패 v77 - 왕권 UI 렌더 오류 핀포인트 복구
+
+원인
+- RANKS 원본 객체에는 index 필드가 없지만 renderAuthorityPanel()/progressFor()가 rank.index를 직접 참조함.
+- 왕권 버튼 클릭 후 paintAuthorityModal() -> renderAuthorityPanel()에서 next.threshold 접근 중 TypeError가 발생.
+- 예외 때문에 modal.classList.add('active')까지 도달하지 못해 클릭이 먹지 않는 것처럼 보였음.
+
+수정
+1. rankMeta(rank) 추가: 원본 RANKS 항목을 BY_ID의 index 포함 메타데이터로 안전하게 변환.
+2. progressFor()에 index fallback, next/threshold/span 방어 로직 추가.
+3. renderAuthorityPanel()이 raw rank.index 대신 rankMeta의 index를 사용하도록 수정.
+4. 잘못된 factionRank가 들어와도 PROVINCIAL_KING으로 안전 fallback.
+5. 기존 왕권 버튼, 다른 6개 내정 버튼, 권위 획득/승격 규칙은 변경하지 않음.
+
+검증
+- AuthoritySystem.js node --check 통과.
+- 권위 0/50/100/200/300/450/600 구간 renderAuthorityPanel() 예외 없음.
+- 지방왕/왕/대왕/황제 4단계 진행바 렌더 정상.

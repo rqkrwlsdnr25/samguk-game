@@ -1,0 +1,153 @@
+/* v49 — viewport-first map HUD layout
+   -------------------------------------------------------------------------
+   Goals
+   1) The deleted bottom help/status strip must consume ZERO layout height.
+   2) The world-map camera viewport expands to the visible browser bottom.
+   3) The map control bar is fixed flush against the browser's top edge.
+   4) The faction legend stays available as a small overlay, not a full-width bar.
+
+   Camera transforms remain on #map / #mapUiOverlay. This sheet only changes
+   layout chrome; it never resizes territory SVG nodes per camera frame. */
+
+:root{
+  --samguk-map-fill-height: min(78dvh, 920px);
+  --samguk-map-control-z: 2147483000;
+}
+
+/* map panel no longer reserves vertical space for header/footer chrome */
+.map-panel{
+  position:relative!important;
+  overflow:visible!important;
+  min-height:0!important;
+  padding:0!important;
+}
+
+/* Keep the title/hint available to game logic but detach it from layout flow. */
+.map-top{
+  position:absolute!important;
+  top:10px!important;
+  right:10px!important;
+  left:auto!important;
+  z-index:40!important;
+  width:min(430px,calc(100% - 20px));
+  min-height:0!important;
+  margin:0!important;
+  padding:7px 10px!important;
+  display:flex!important;
+  gap:10px!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  border:1px solid rgba(115,139,147,.38);
+  border-radius:6px;
+  background:rgba(9,26,35,.58)!important;
+  -webkit-backdrop-filter:blur(4px);
+  backdrop-filter:blur(4px);
+  pointer-events:none;
+  transform:translateZ(0);
+}
+
+/* Fixed to the physical browser top — no inherited margin/padding can move it. */
+.map-controls{
+  position:fixed!important;
+  top:0!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:auto!important;
+  z-index:var(--samguk-map-control-z)!important;
+  transform:translate3d(-50%,0,0)!important;
+  margin:0!important;
+  padding:5px!important;
+  max-width:100vw!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  gap:5px!important;
+  background:rgba(8,24,33,.94)!important;
+  border:1px solid rgba(102,127,137,.72)!important;
+  border-top:0!important;
+  border-radius:0 0 7px 7px!important;
+  box-shadow:0 6px 18px rgba(0,0,0,.3)!important;
+  will-change:transform;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  isolation:isolate;
+  pointer-events:auto;
+  touch-action:manipulation;
+}
+
+.map-controls button{
+  flex:0 0 auto;
+  margin:0!important;
+}
+
+/* mapStatus is intentionally deleted from HTML. Any stale copy from an old
+   cached DOM gets suppressed as a second fail-safe. */
+#mapStatus,.map-status{display:none!important}
+
+/* The viewport receives an exact px height calculated only on layout/resize,
+   not in the camera rAF loop. This fills the remaining visible screen height. */
+#mapViewport.map-viewport{
+  width:100%!important;
+  height:var(--samguk-map-fill-height)!important;
+  min-height:360px!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  margin:0!important;
+  overflow:hidden!important;
+}
+
+/* Old footer becomes a compact overlay solely for the faction legend. It no
+   longer occupies a flex row beneath the map and therefore steals no height. */
+.map-bottom.map-legend-overlay{
+  position:absolute!important;
+  left:10px!important;
+  bottom:10px!important;
+  right:auto!important;
+  top:auto!important;
+  z-index:35!important;
+  display:block!important;
+  width:auto!important;
+  max-width:min(92%,720px)!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:6px 8px!important;
+  border:1px solid rgba(85,110,119,.36)!important;
+  border-radius:6px!important;
+  background:rgba(8,24,33,.48)!important;
+  color:#d8e0e2!important;
+  -webkit-backdrop-filter:blur(4px);
+  backdrop-filter:blur(4px);
+  pointer-events:none;
+  transform:translateZ(0);
+}
+
+.map-bottom.map-legend-overlay #legend{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:5px 10px!important;
+  font-size:10px!important;
+  line-height:1.25!important;
+}
+.map-bottom.map-legend-overlay #legend span{white-space:nowrap}
+.map-bottom.map-legend-overlay #legend i{width:7px;height:7px;margin-right:4px}
+
+@media(max-width:720px){
+  .map-controls{
+    left:0!important;
+    right:0!important;
+    transform:translateZ(0)!important;
+    justify-content:center!important;
+    overflow-x:auto!important;
+    scrollbar-width:none;
+    border-radius:0!important;
+  }
+  .map-controls::-webkit-scrollbar{display:none}
+  .map-controls button{height:34px!important;padding:0 8px!important;font-size:12px!important}
+  .map-top{top:45px!important;right:6px!important;width:calc(100% - 12px);font-size:11px!important}
+  #mapViewport.map-viewport{min-height:320px!important}
+  .map-bottom.map-legend-overlay{left:6px!important;bottom:6px!important;max-width:calc(100% - 12px)!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .map-controls,.map-top,.map-bottom.map-legend-overlay{will-change:auto}
+}

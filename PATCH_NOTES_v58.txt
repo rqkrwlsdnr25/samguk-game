@@ -1,0 +1,33 @@
+삼국쟁패 v58 — 병력 라벨 Sprite Sheet Canvas 패치
+
+기준 버전
+- v57 고배율 줌 / 국가명 페이드
+
+핵심 변경
+1. 사용자가 제공한 1536x1024 RGBA 통이미지를
+   assets/images/ui/faction_labels_sheet.png 으로 추가했습니다.
+2. FactionLabelSprite.js가 이 이미지를 Image 객체 1개로 1회만 프리로드합니다.
+3. 11개 라벨은 한 장의 스프라이트 시트에서 sx/sy/sw/sh로 잘라
+   ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)로 그립니다.
+4. 검은 막대 부분에는 Canvas fillText/strokeText로 병력 숫자를 올립니다.
+5. 정적 영토 HUD는 하나의 screen-space Canvas에 모아 렌더링합니다.
+6. 카메라/상태/리사이즈가 바뀔 때만 rAF 1회로 합쳐 다시 그리며,
+   화면 밖 영토는 그리지 않습니다.
+7. 지역명, 성/수도 이미지, 자원, 영토 Polygon 클릭은 기존 SVG 구조를 유지합니다.
+8. 기존 Full Map compact 모드의 '깃발만 표시' 동작을 유지하기 위해
+   스프라이트의 방패와 검은 막대를 분리 슬라이싱합니다.
+
+스프라이트 키
+좌측: 고 / 유 / 신 / 탐 / 우 / 읍
+우측: 북 / 남 / 가 / 왜 / 부
+
+호환 별칭
+- 선 -> 신
+- 복 -> 북
+
+주의
+- 제공된 스프라이트 시트에는 백제 / 거란 / 동진 배지가 없습니다.
+- 세 국가가 사라지는 회귀를 막기 위해 이 세 국가만 기존 경량 SVG HUD를
+  호환 fallback으로 유지했습니다.
+- 행군 중 움직이는 군기 HUD도 기존 SVG march layer를 유지합니다.
+  정적 영토 병력 HUD만 Canvas sprite sheet로 전환했습니다.

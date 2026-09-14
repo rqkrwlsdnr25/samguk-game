@@ -1,0 +1,13 @@
+삼국쟁패 v60 - 실시간 줌 배율 디버그 표시
+
+변경 사항
+1. ZoomDebugIndicator.js 추가
+2. 화면 우측 하단에 고정된 반투명 Canvas 디버그 HUD 추가
+3. 표시 형식: Zoom: 1.00x / Zoom: 2.54x
+4. samguk:map-view-changed 이벤트의 camera.zoomRatio와 연동
+5. 지도 Pan/Zoom transform과 완전히 분리된 fixed overlay canvas 사용
+6. pointer-events:none으로 지도 마우스 입력을 가로채지 않음
+7. 영구 requestAnimationFrame 루프를 만들지 않고, 값 변경 시에만 단일 RAF로 redraw
+8. 범용 drawZoomIndicator(ctx, currentZoom) 함수를 window에 공개
+
+기존 지도/AI/외교/도시/병력/줌 기능은 변경하지 않음.

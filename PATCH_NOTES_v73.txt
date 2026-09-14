@@ -1,0 +1,39 @@
+삼국쟁패 v73 — 점령/공성 연기 VFX + GC 최소화 패치
+
+기준 버전: v72 역사 장수명 기존 객체 개명
+
+핵심 변경
+1) SmokeManager.js 추가
+- 420개 고정 particlePool + 24개 emitterPool 사전 생성.
+- 전투 중 매 프레임 new particle / filter / splice 사용 없음.
+- 연기 수명 종료 시 객체 삭제 대신 isActive=false로 재사용.
+- 실시간 radialGradient / filter / shadowBlur 미사용.
+- 5단계 alpha bucket으로 묶어 프레임당 fillStyle 변경 최대 5회.
+- 전용 Canvas 한 장에서 batch arc 렌더링.
+- devicePixelRatio 최대 1.5 제한.
+- 화면 밖 연기 파티클 즉시 비활성화하는 frustum culling.
+- 연기가 없으면 requestAnimationFrame 완전 정지.
+- document.hidden 상태에서는 rAF 중지.
+
+2) 점령 이벤트 연결
+- 일반 침략 성공: 점령 영토 중심에서 약 5초 연기.
+- 포위(siege) 점령 성공: 더 강한 약 6.2초 연기.
+- 대규모 전투 공격측 승리/점령: 약 5.6초 연기.
+- AI의 fight() 점령도 동일 경로를 사용하므로 화면 안에 보이는 AI 점령에도 적용.
+- 패배/아군 이동에는 연기 발생 없음.
+
+3) 카메라 동기화
+- region.centerX / centerY 우선 지원.
+- 현 프로젝트의 region.center.x / y도 fallback 지원.
+- SAMGUK_GPU_MAP_CAMERA snapshot의 view / pixelsPerWorldUnit / offset을 사용해 Pan/Zoom과 정렬.
+- 지도 viewport 내부 전용 overlay canvas이므로 지도 이동 중에도 중심점에서 이탈하지 않음.
+
+4) 공개 API
+- window.SAMGUK_OCCUPATION_SMOKE.triggerRegion(regionId, options)
+- window.updateAndRenderSmoke(ctx, occupiedRegions, currentZoom, viewport)
+- window.SAMGUK_OCCUPATION_SMOKE.stats()
+- window.SAMGUK_OCCUPATION_SMOKE.clear()
+
+기존 시스템 변경 금지 원칙
+- 전투 수치, 영토 소유권 로직, AI, 지도 Geometry, 도시/수도, 외교, 해상 이동, VFX 선택창 코드는 변경하지 않음.
+- game.js는 소유권 변경 직후 smoke trigger 두 군데만 추가.

@@ -1,0 +1,31 @@
+삼국쟁패 v45 — 월드맵 좌측 잘림 / 반응형 카메라 경계 수정
+
+[원인]
+- v40~v44 GPU 카메라가 viewportWidth / WORLD.width만 pixelsPerWorldUnit로 사용함.
+- SVG는 preserveAspectRatio="none"이어서 실제 viewport 종횡비가 지도와 다를 때 SVG 좌표와 CSS matrix 좌표가 불일치함.
+- 드래그 X/Y 제한도 -300~1000 / -300~1200 고정값이라 확장된 월드 bounds와 분리되어 있었음.
+- .map-panel 과 #mapViewport가 모두 clipping 레이어여서 잘못된 matrix가 서쪽을 밀어내면 그대로 잘려 보였음.
+
+[수정]
+1. WorldMapBoundsController.js
+   - WORLD.minX/minY/width/height를 단일 경계 데이터로 사용.
+   - view가 지도보다 작으면 [min, max-viewSize]로 clamp.
+   - view가 지도보다 크면 월드를 중앙에 고정하여 한쪽만 사라지는 현상 차단.
+   - centerMap() / fullView() 제공.
+
+2. GpuMapCamera.js
+   - preserveAspectRatio="xMidYMid meet"로 변경.
+   - basePPU = min(viewportW/worldW, viewportH/worldH)
+   - targetPPU = min(viewportW/viewW, viewportH/viewH)
+   - letterbox offset까지 포함하여 matrix3d를 계산.
+   - 가로·세로 어느 비율에서도 FULL_MAP의 네 모서리가 viewport 안에 들어옴.
+
+3. map.js
+   - 고정 pan clamp(-300~1000 등) 제거.
+   - 모든 set/zoom/drag/interpolation view를 동적 WORLD bounds로 clamp.
+   - 전체지도 버튼은 centerMap()으로 정확히 원점 복구.
+
+4. responsive-worldmap.css
+   - 고정 1150/1146 CSS aspect-ratio 제거.
+   - width:100%, 반응형 height(min(100vh,860px)).
+   - .map-panel의 2중 clipping 제거. #mapViewport만 카메라 viewport 역할.

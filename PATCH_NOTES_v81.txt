@@ -1,0 +1,19 @@
+삼국쟁패 v81 - 첩보/계략 시네마틱 와이드 슬롯 UI
+
+- 첩보/계략 팝업을 기존 2열 플랫 카드에서 1열 128px 와이드 시네마틱 슬롯으로 개편.
+- 7개 첩보 행동별 전용 와이드 일러스트를 1:1 배경 매핑.
+- background-size: cover / background-position: center 기반으로 비율 유지.
+- 좌측 다크 그라데이션 + 금색 제목 + 설명 한 줄 오버레이로 가독성 강화.
+- hover 시 배경 1.03 확대, brightness 1.2, 플레이어 국가 색상 glow 적용.
+- 선택(aria-pressed) 슬롯 금빛 강조, disabled 시 별도 저채도/암전 처리.
+- 모바일에서 104px 슬롯 및 설명 2줄로 반응형 대응.
+- 기존 첩보 실행/대상 선택/성공률/비용/AI 로직은 변경하지 않음.
+
+에셋 매핑
+SPY_SCOUT     -> image_HVYpzu.png
+SPY_RUMOR     -> image_zlI1-7.png
+SPY_RAID      -> image_VJrNXn.png
+SPY_ARSON     -> image_U5ZYX_.png
+SPY_DISCORD   -> image_smlfKO.png
+SPY_COUNTER   -> image_ZTBQhS.png
+SPY_FAKE_INFO -> image_OTJoMB.png

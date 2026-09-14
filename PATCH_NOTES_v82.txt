@@ -1,0 +1,23 @@
+삼국쟁패 v82 - 정찰 지도 선택 / Spotlight / Confirm / Canvas VFX
+
+[핵심 흐름]
+- 첩보/계략 > 정찰 클릭 시 기존 팝업이 닫히고 지도 직접 선택 모드로 진입.
+- 인접한 정찰 가능 적 영토만 대상 후보로 유지.
+- 마우스 오버한 단 하나의 영토를 실제 SVG polygon 형태로 Canvas 마스크에서 뚫어 원래 밝기로 노출.
+- 나머지 지도는 rgba(0,0,0,0.70) 암전.
+- 대상 영토는 금빛/청록빛 글로우와 밝기 상승으로 추가 강조.
+- 도시 클릭 시 DOM dialog 기반 "이 도시를 정찰하시겠습니까?" 실행/취소 팝업 표시.
+- 취소 또는 ESC 시 비용 없이 선택 모드 해제 후 첩보/계략 창으로 복귀.
+- 실행은 기존 executeEspionageAction / 성공률 / 비용 / 로그 / 저장 구조를 그대로 사용.
+- 성공 시 도시 중심에서 3중 레이더 펄스가 퍼지는 requestAnimationFrame VFX 재생 후 정상 지도 복귀.
+- 실패 시 기존 실패 처리 후 자연스럽게 선택 모드 종료.
+
+[구현 파일]
+- ScoutReconSystem.js : 선택 상태, Canvas destination-out polygon mask, confirm, ScoutPulseVFX, 이벤트 캡처
+- scout-recon.css : 지도 선택 HUD, 대상 glow, confirm modal 스타일
+- index.html : 위 JS/CSS 로드 추가
+
+[호환성]
+- 기존 정찰 성공 판정 및 결과 데이터(scoutUntil/lastScoutReport) 변경 없음.
+- 다른 6개 첩보/계략 동작 변경 없음.
+- 전투/AI/영토 polygon/adjacency/저장 데이터 변경 없음.

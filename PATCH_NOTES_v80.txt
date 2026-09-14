@@ -1,0 +1,24 @@
+삼국쟁패 v80 — 병력 라벨 배경 50% 반투명화
+
+변경 파일
+- FactionLabelSprite.js
+- faction-troop-hud.css
+
+핵심 변경
+1. 스프라이트 시트 기반 병력 라벨
+   - PNG 원본 파일은 수정하지 않습니다.
+   - 검은 막대 crop을 drawImage하기 직전에 globalAlpha=0.5를 적용합니다.
+   - 국가 방패/문자 및 병력 숫자는 기존 선명도(정상 표시 시 alpha=1)를 유지합니다.
+   - 기존 줌 단계에서 의도적으로 HUD를 숨기거나 페이드하는 동작은 보존합니다.
+
+2. SVG fallback 병력 라벨
+   - territory HUD의 검은 타원 배경만 rgba(0,0,0,.50)로 고정합니다.
+   - territory HUD의 drop-shadow를 제거해 반투명 배경이 번져 보이지 않도록 했습니다.
+   - 이동 중 부대/수송선 HUD 스타일에는 영향을 주지 않습니다.
+
+3. 범용 Canvas 함수
+   - FactionLabelSprite.drawTransparentTroopLabel(ctx,x,y,count,options) 추가.
+   - 코드로 직접 그리는 라벨에서도 배경만 50%, 텍스트는 100%로 렌더링할 수 있습니다.
+
+기능 영향
+- 영토 선택/클릭, 병력 수치, 줌/팬, 도시, 국가 깃발, 스프라이트 매핑에는 변경 없음.

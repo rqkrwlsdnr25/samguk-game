@@ -1,0 +1,54 @@
+삼국쟁패 v47 — 줌 먹통 복구 / Safe Zoom Range 패치
+
+[원인]
+- v46 WorldMapBoundsController가 logical camera view를 월드 atlas보다 크게 만들지 못하게 강제했다.
+- 전체 전도 상태에서 Zoom Out 입력은 같은 fullView로 즉시 clamp되어 사실상 무반응이었다.
+- 여러 줌 모듈에 경계값/상태가 분산되어 target state가 비정상 값이 되면 복구 루트가 약했다.
+
+[핵심 수정]
+1) 줌 범위 단일화
+- minZoom = 0.5
+- maxZoom = 2.5
+- defaultZoom = 1.0
+- MapZoomConfig.js를 카메라/Bounds보다 먼저 로드
+
+2) 월드보다 넓은 Zoom Out 허용
+- 0.5~1.0 구간에서 view가 atlas보다 커질 수 있음
+- 이때 atlas를 minX/minY에 고정하지 않고 중앙 정렬하여 한쪽 빈 공간/잘림 착시 방지
+
+3) 프레임 독립 Smooth Zoom 유지
+- rAF 내부에서만 실제 view 갱신
+- exp damping 기반 보간
+- deadzone = 0.001
+
+4) NaN / Infinity Fail-Safe
+- targetZoom, targetView, lerp result를 매 프레임 검사
+- 비정상 값 감지 시 zoom 1.0으로 즉시 복구
+- samguk:map-zoom-failsafe 이벤트 제공
+
+5) 휠 이벤트 단일 바인딩
+- MapWheelRafController.bind(mapViewport)
+- passive:false + preventDefault()
+- stopPropagation()은 사용하지 않음
+- 연속 wheel delta를 한 rAF 프레임으로 합침
+- deltaMode(pixel/line/page) 정규화
+
+6) 상단 지도 버튼 초기화
+- 동아시아 전도: zoom 1.0 + 월드 중앙
+- 한반도: center를 한반도로 옮긴 뒤 zoom 2.5
+
+7) 카메라 API 확장
+- getZoomLevel(view)
+- viewForZoom(zoom, center)
+- resetZoom(zoom, center)
+
+[검증]
+- 전체 JavaScript node --check 통과
+- 모든 index.html 로컬 script/css asset 존재 확인
+- zoom 1.0 -> in factor .72 = 1.388888...
+- zoom 1.0 -> out factor 1.4 = 0.714285...
+- minZoom 0.5 / maxZoom 2.5 clamp 확인
+- invalid view(NaN) -> zoom 1.0 복구 확인
+- SmoothMapZoomController 120-frame 수렴 테스트 통과
+- targetZoom NaN 주입 -> zoom 1.0 Fail-Safe 복구 확인
+- 5개 연속 wheel event -> 실제 zoom 호출 1회(rAF coalescing) 확인

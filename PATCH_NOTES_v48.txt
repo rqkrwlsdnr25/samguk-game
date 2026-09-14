@@ -1,0 +1,23 @@
+삼국쟁패 v48 — 하단 스크롤 막힘 / 남쪽 영토 잘림 복구
+
+1) Y축 Clamp를 줌별 동적 경계로 교체
+- 기존: maxY = worldBottom - viewHeight
+- v48: maxY = worldBottom - viewHeight + southPadding
+- southPadding = 현재 viewHeight의 30%를 기준으로 88~220 world-unit Clamp
+- 확대할수록 남쪽 끝 영토를 화면 중앙 쪽으로 충분히 끌어올릴 수 있음
+
+2) 상하좌우 Overscan
+- 서/동: viewWidth의 8% (36~120)
+- 북: viewHeight의 8% (32~96)
+- 남: viewHeight의 30% (88~220)
+- 줌 <= 1처럼 전체 월드가 이미 View 안에 들어온 경우에는 월드 중앙 고정
+
+3) 맵 컨테이너 세로 잘림 방지
+- near-square atlas aspect-ratio 강제 제거
+- mapViewport 높이를 100dvh 기반 반응형으로 제한
+- parent .map-panel의 중복 overflow clipping 제거
+- 실제 clipping은 #mapViewport 하나만 담당
+
+4) 데이터/UI 동기화
+- 배경 #map과 HUD #mapUiOverlay는 기존 GpuMapCamera의 동일 matrix3d를 계속 공유
+- 카메라 Clamp만 바뀌므로 영토와 세력/병력 HUD 좌표계는 분리되지 않음

@@ -1,0 +1,44 @@
+삼국쟁패 v40 — GPU 월드맵 카메라 / 줌 렉 최적화
+
+핵심 원인
+- v39까지 SmoothMapZoomController가 매 RAF 프레임마다 mapView를 보간한 뒤 SVG viewBox를 변경함.
+- applyView()가 매 프레임 refreshTerritoryLabels()를 호출해 전국 영토명/병력/도시 라벨 DOM을 전부 재생성함.
+- OfficerMapZoomScaler가 getScreenCTM()을 반복 호출해 브라우저의 style/layout flush 가능성이 있었음.
+- 결과적으로 단순 줌인데도 Layout -> Paint -> Composite 전 단계를 반복하는 구조였음.
+
+v40 구조
+1. GpuMapCamera.js
+   - WORLD 전체 범위를 고정 viewBox로 유지.
+   - 카메라 이동/줌은 #map 및 #mapUiOverlay 최상위 레이어에 matrix3d()만 기록.
+   - viewport 크기는 init/ResizeObserver에서만 읽고 휠/줌 프레임에서는 getBoundingClientRect를 읽지 않음.
+   - worldUnitsPerPixel / pixelsPerWorldUnit / zoomRatio를 하나의 camera snapshot으로 공유.
+
+2. MapUiOverlayManager.js
+   - 영토명/병력/도시 라벨을 무거운 월드 SVG에서 분리한 #mapUiOverlay에 렌더.
+   - 카메라 애니메이션 중 라벨 DOM 재생성 금지.
+   - territory-screen-space는 전역 --map-ui-world-unit CSS 변수 하나만 참조해 화면 크기를 보정.
+
+3. MapWheelRafController.js
+   - 여러 wheel 이벤트를 한 프레임에 하나로 coalescing.
+   - wheel listener는 delta/client 좌표만 저장하고 실제 줌 목표 계산은 requestAnimationFrame에서 수행.
+   - 기존 100 delta 기준 1.15 / 0.87 배율 감각을 exp(delta * 0.0014)로 연속화.
+
+4. 문/무관 아이콘
+   - 아이콘 레이어를 #mapUiOverlay로 이동.
+   - getScreenCTM() 제거, GpuMapCamera snapshot의 pixelsPerWorldUnit만 사용.
+   - 기존 culling / smooth scale / 40px max 규칙 유지.
+
+5. CSS compositor 최적화
+   - #mapViewport: contain: layout paint style / isolation:isolate / overflow:hidden.
+   - #map, #mapUiOverlay: will-change:transform, transform-origin:0 0, backface-visibility:hidden.
+   - 줌 중 width/height/viewBox/개별 영토 path 좌표는 변경하지 않음.
+
+검증
+- 전체 JS node --check 통과.
+- GpuMapCamera 120프레임 모의 테스트: getBoundingClientRect 읽기 1회(init), 이후 카메라 프레임은 matrix 쓰기만 수행.
+- wheel 3개 연속 이벤트 모의 테스트: RAF 1회, zoomMap 호출 1회로 병합 확인.
+- FULL_MAP -> KOREA_MAP 카메라 중심 좌표/letterbox 역변환 수학 테스트 통과.
+- 줌 기본 경로에서 territoryLabels() 재생성 및 OfficerMapZoomScaler getScreenCTM() 제거 확인.
+
+주의
+- 60fps는 실제 브라우저/해상도/GPU/백그라운드 탭 상태에 따라 달라질 수 있으나, v40은 줌 프레임의 주 작업을 Layout/Paint가 아닌 compositor transform 중심으로 변경해 메인 병목을 제거함.

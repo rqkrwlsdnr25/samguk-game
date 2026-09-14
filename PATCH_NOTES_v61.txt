@@ -1,0 +1,44 @@
+삼국쟁패 v61 — 고배율 지역 복합 UI 콤팩트 정렬
+기준: v60 줌 배율 디버그 표시 전체본
+
+[문제 원인]
+- v59 이후 도시 아이콘은 40px 기준에서 카메라 줌에 따라 최대 2.2배(88px)까지 커집니다.
+- 도시가 커진 만큼 특산품/병력 HUD를 아래로 밀어 겹침을 막았지만, 고배율에서는 전체 스택이 영토 중심보다 지나치게 아래로 내려갔습니다.
+- 특히 Zoom 3.74x에서 도시 성장분 48px + 기존 간격이 누적되어 한성 같은 영토의 하단 국경을 넘어갈 수 있었습니다.
+
+[수정]
+1. RegionCompositeUILayout.js 신규
+   - liftForZoom(currentZoom) : 도시 성장분을 우선 상쇄 + 고배율 추가 리프트
+   - gapsForZoom(currentZoom) : 간격을 제한적으로 압축
+   - drawRegionCompositeUI(ctx, region, currentZoom) : Canvas 참조 렌더러
+
+2. GpuMapCamera.js
+   - --region-composite-offset-y CSS 변수를 카메라 프레임마다 1회만 갱신
+   - 영토별 DOM 스타일 반복 수정은 하지 않음
+
+3. map.js
+   - 비콤팩트 상세 라벨을 territory-composite-lift 그룹으로 묶음
+   - 도시→특산품, 특산품→병력 간격을 고배율에서 제한적으로 압축
+   - 도시가 없는 일반 영토의 기존 간격은 유지
+
+4. FactionLabelSprite.js
+   - 별도 Canvas에 그려지는 병력 HUD도 동일한 composite lift를 적용
+   - SVG와 Canvas 위치가 서로 어긋나는 문제 방지
+
+5. TerritoryCityUIManager.js / WorldMapCitySpriteController.js
+   - 지역명→도시 기본 간격을 5px에서 고배율 최대 3px로 완만하게 압축
+
+[3.74x 기준]
+- 도시 스케일: 2.20x (40px → 88px)
+- 도시 추가 높이: 48px
+- 전체 상향 보정: 약 66px
+- 지역명→도시 gap: 3px
+- 도시→특산품 gap: 3px
+- 특산품→병력 gap 기준: 7px
+- 3.74x 이후에도 lift가 계속 선형 증가하지 않고 66px 부근에서 포화
+
+[보존]
+- 영토 Polygon/Center/Centroid 데이터 변경 없음
+- 수도/전문도시 이미지 크기 규칙 변경 없음
+- 병력 수치/특산품 데이터 변경 없음
+- 줌 최대 15x, 국가명 페이드, v58 스프라이트 HUD, v60 줌 디버그 표시 유지

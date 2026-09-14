@@ -1,0 +1,44 @@
+삼국쟁패 v33 · 전문도시 III 월드맵 그래픽 패치
+
+[핵심]
+- 농업/상업/군사 전문도시가 최고 단계(III)에 도달하면 영지 중앙 월드맵 이미지 교체.
+- 상업 III -> city_commerce.webp
+- 군사 III -> city_military.webp
+- 농업 III -> city_agriculture.webp
+- 수도는 기존 capital.png를 동일 에셋 매핑 시스템의 fallback으로 사용.
+- 전문도시 III 수도는 전문도시 이미지가 수도 아이콘보다 우선.
+
+[렌더 순서]
+1. 영토/지형/국경
+2. 전문도시 스프라이트
+3. 해상로/이동 경로
+4. 영토명/병력/자원 UI
+5. 문관/무관 아이콘(기존 OfficerMapIconController가 최상단 append)
+
+SVG는 CSS z-index보다 DOM 문서 순서가 핵심이므로 drawMap()의 출력 순서를 직접 정렬함.
+
+[전환]
+- III 달성 이벤트 samguk:city-upgraded 발행.
+- 840ms 페이드 + 스케일 팝 애니메이션.
+- map redraw 중에도 음수 animation-delay로 진행 시간을 이어 받아 전환이 처음부터 반복되지 않도록 처리.
+- prefers-reduced-motion 환경에서는 애니메이션 자동 비활성화.
+
+[에셋 최적화]
+- 사용자가 제공한 1254x1254 PNG의 검은 배경을 알파 투명화.
+- 지도 표시용 최대 640px WebP로 최적화.
+- 세 전문도시 에셋 합계 약 335KB.
+- <link rel=preload> + Image.decode() 캐시를 사용해 III 달성 시 첫 표시 지연을 줄임.
+
+[추가 파일]
+- CityTechTreeManager.js : 영지 ID별 cityType/cityLevel/assetPath 데이터 매핑 및 preload cache.
+- WorldMapCitySpriteController.js : 영지 중앙 스프라이트 생성, 화면 픽셀 크기 clamp, 전환 상태 관리.
+- city-map-layer.css : 도시 스프라이트 효과와 UI 가독성 스타일.
+- city_agriculture.webp / city_commerce.webp / city_military.webp : 투명 배경 최적화 에셋.
+
+[수정 파일]
+- index.html
+- map.js
+- game.js
+
+[호환 기준]
+- v32 관직 아이콘 줌 컬링/스무딩 패치 이후 버전.

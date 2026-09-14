@@ -1,0 +1,12 @@
+삼국쟁패 v76 - 왕권 버튼 클릭/모달 복구
+
+원인
+- v75의 document capture-phase 리스너가 왕권 버튼 이벤트를 target 단계 전에 stopPropagation 하던 구조를 제거했습니다.
+- #orders는 render() 때마다 innerHTML로 교체되므로 왕권 UI를 그 안에 마운트하는 방식은 다른 렌더 호출에 의해 사라질 수 있었습니다.
+
+수정
+1. 왕권 버튼에 id=kingRankBtn, type=button, onclick="return openKingdomRankUI(event)" 직접 바인딩.
+2. window.openKingdomRankUI 전역 함수 연결.
+3. #kingdomRankModal을 body 직속 독립 모달로 생성하여 #orders 재렌더와 분리.
+4. 클릭 즉시 메모리 데이터로 UI를 먼저 표시하고, SAMGUK_AUTHORITY_API_URL이 설정된 경우 fetch로 최신 권위/작위를 받아 재렌더.
+5. 기존 지원/침략/내정/도시·수도증축/인사/첩보 이벤트 코드는 변경하지 않음.

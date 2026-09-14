@@ -1,0 +1,25 @@
+삼국쟁패 v51 — 지도/랜드마크 간헐적 흐림 + hover 순간 선명화 수정
+
+[확인된 원인]
+- #map / #mapUiOverlay가 상시 matrix3d + will-change:transform GPU 합성 레이어로 유지됨.
+- Chrome이 SVG 전체를 특정 배율의 래스터 texture로 캐시한 뒤 고배율에서 재사용할 수 있음.
+- 영토 hover 시 filter/fill-opacity 변경이 paint invalidation을 발생시켜 잠깐 재-rasterize되므로 선명해졌다가 다시 흐려지는 현상과 일치.
+- v50의 전역 image-rendering:crisp-edges는 일러스트형 PNG에는 부적합하여 제거.
+
+[수정]
+1. 이동 중: 기존 GPU matrix3d 사용.
+2. 정지 후: 현재 카메라를 두 SVG의 viewBox로 직접 commit + CSS transform:none.
+3. will-change/backface/contain GPU 승격 속성은 이동 중에만 활성화.
+4. 드래그 pointerup에서도 sharp commit.
+5. PNG/SVG image는 image-rendering:auto.
+6. maxZoom 6.0 / 마우스 피벗 / HUD 확대 기능 유지.
+7. GpuMapCamera.js의 zoomRatio snapshot-before-declaration 오류도 함께 수정.
+
+[교체 파일]
+- GpuMapCamera.js
+- map.js
+- gpu-map-camera.css
+
+[추가 문서]
+- PATCH_PROMPT_v51_화질흐림_GPU캐시수정.txt
+- TEST_RESULTS_v51.txt

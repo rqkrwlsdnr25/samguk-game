@@ -1,0 +1,28 @@
+삼국쟁패 v46 — 서쪽 영토/배경 잘림 완전 복구
+
+근본 원인
+- world.js는 `const WORLD=...`를 선언하고 공개 API로 `window.SAMGUK_WORLD=WORLD`를 제공함.
+- v45 WorldMapBoundsController/GpuMapCamera는 잘못해서 `window.WORLD`(`global.WORLD`)를 읽고 있었음.
+- top-level `const WORLD`는 window 프로퍼티가 아니므로 카메라만 fallback minX=0을 사용함.
+- 반면 map.js와 HUD는 lexical `WORLD` 및 seed 좌표를 정상 사용해 음수 X(-180대) 깃발이 그대로 표시됨.
+- 결과적으로 X=0 왼쪽의 영토 배경은 카메라/ViewBox에서 빠지고, 깃발만 남색 빈 공간에 떠 있는 정확한 증상이 발생함.
+
+추가 방어
+- 전체 월드보다 더 줌아웃하는 이전 흐름을 차단.
+- 실제 월드 종횡비와 카메라 viewport 비율을 동기화.
+- 지형/영토 clip bounds도 동일한 geometry source를 사용.
+
+v46 수정
+1. WORLD.minX 상수를 카메라의 최종 진실값으로 사용하지 않음.
+   모든 territory.path + landPath의 실제 좌표를 파싱하여 bounds를 재구성.
+2. 현재 데이터에서 실제 geometry bounds는 대략 X -180.5~969.5 / Y -0.5~1145.5.
+   non-scaling stroke 보호를 위해 0.75 world-unit 안전 여백만 추가.
+3. 카메라는 전체 월드보다 더 줌아웃할 수 없음.
+   논리 view가 월드보다 커져 생기던 가짜 남색 여백 제거.
+4. #mapViewport의 CSS aspect-ratio를 geometry bounds와 동일하게 동적 설정.
+   map + mapUiOverlay는 같은 viewBox / 같은 matrix3d / 같은 transform-origin 사용.
+5. image-bounds clipPath도 동적 geometry bounds를 사용하며 clipPathUnits=userSpaceOnUse 명시.
+6. 최초 로딩은 레이아웃이 확정된 뒤 2 RAF 후 CenterMap 적용.
+7. resize 때 world/UI 두 SVG의 viewBox를 동시에 다시 동기화.
+
+영토/전투/AI/인물/건물/왜구/해상칸 데이터는 변경하지 않음.

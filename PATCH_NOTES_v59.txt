@@ -1,0 +1,20 @@
+삼국쟁패 v59 — 도시 아이콘 기준 크기 통일 + 카메라 줌 연동
+
+핵심 변경
+- 수도(capital.png)와 농업/상업/군사 전문도시의 기본 SVG 기준 크기를 모두 40px로 통일.
+- 기존 전문도시 specializedScale 1.55 제거. 국내성 수도와 국내성 서부 농업도시가 동일 기준 크기 사용.
+- GpuMapCamera는 매 프레임 개별 이미지 width/height 대신 전역 CSS 변수만 갱신.
+- 기본 줌 1.0 = 40px, 축소 시 최소 0.55x, 확대 시 최대 2.20x.
+- 지역명은 원위치 유지.
+- 도시가 커진 만큼 자원/병력 HUD만 상대 오프셋으로 이동하여 겹침 방지.
+- compact 전체지도 모드에서도 아이콘 중심과 병력 라벨 간격 유지.
+- v58 Canvas 병력 스프라이트도 같은 cityExtraY를 적용해 고 32 / 고 34가 아이콘 아래를 실시간 추적.
+- Canvas 호환 drawMapCities(ctx, cityList, currentZoom) 함수 포함.
+
+보존된 기존 패치
+- v58 병력 라벨 Sprite Sheet
+- v57 15x 줌 / 대형 국가명 페이드
+- v56 국경선 고정 두께 / LOD
+- v55 히트박스 오버레이 제거
+- v54 Centroid 정중앙
+- v53 Dirty Update 렌더링 최적화

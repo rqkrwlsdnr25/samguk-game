@@ -1,0 +1,21 @@
+삼국쟁패 v43 — 문/무/균 월드맵 관직 아이콘 시스템 완전 제거
+
+핵심 변경
+- 월드맵 文 / 武 / 均 원형 아이콘 DOM 생성 완전 제거
+- TerritoryOfficerIconController 및 OfficerMapZoom 계열 5개 모듈 삭제
+- 아이콘 RAF Lerp / alpha fade / zoom culling / screen-space billboard 연산 삭제
+- MapUiOverlayManager에서 관직 아이콘 rebuild/invalidate 경로 제거
+- GpuMapCamera는 지도 transform + territory UI overlay + faction/troop HUD 전역 변수만 갱신
+- 장수/태수/국경 수비장 데이터 및 전투·내정 계산은 그대로 유지
+- 장수 패널/상세/전법/이동 등 백엔드/관리 UI는 유지
+- SmoothMapZoomController가 관직 UI 설정에 의존하지 않도록 MapZoomConfig.js로 분리
+
+삭제 파일
+- OfficerMapZoomConfig.js
+- OfficerMapZoomVisibilityManager.js
+- OfficerMapZoomScaler.js
+- OfficerMapIconController.js
+- MapZoomUIBridge.js
+
+패치 ZIP을 기존 폴더에 덮어쓸 때는 index.html에서 해당 파일을 더 이상 로드하지 않으므로 남아 있어도 실행되지 않습니다.
+완전 정리를 원하면 포함된 APPLY_PATCH.bat 또는 APPLY_PATCH.sh를 게임 루트에서 실행하면 위 5개 파일도 삭제됩니다.

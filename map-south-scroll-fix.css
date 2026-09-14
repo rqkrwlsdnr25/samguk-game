@@ -1,0 +1,49 @@
+/* v48 — south-scroll / viewport clipping fix
+   -------------------------------------------------------------------------
+   The GPU camera can render correctly in any viewport aspect ratio, so the
+   outer camera box no longer needs to inherit the atlas' near-square ratio.
+   A near-square 100%-width box can become taller than the browser viewport on
+   wide desktop layouts, making the southern map look clipped even though the
+   SVG data is present. Keep the camera itself inside a useful portion of 100dvh.
+
+   #map and #mapUiOverlay remain absolute compositor layers. Their world-space
+   content is never resized here; only the viewport window changes. */
+#mapViewport.map-viewport{
+  width:100%!important;
+  height:clamp(520px,72dvh,900px)!important;
+  min-height:0!important;
+  max-height:calc(100dvh - 150px)!important;
+  aspect-ratio:auto!important;
+  overflow:hidden!important;
+  overscroll-behavior:contain;
+}
+
+/* There must be exactly one clip boundary: the camera viewport. Parent panels
+   must not crop the compositor layers a second time. */
+.map-panel{
+  overflow:visible!important;
+  min-height:0;
+}
+
+#mapViewport>#map,
+#mapViewport>#mapUiOverlay{
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+@media(max-height:760px) and (min-width:651px){
+  #mapViewport.map-viewport{
+    height:clamp(440px,66dvh,620px)!important;
+    max-height:calc(100dvh - 120px)!important;
+  }
+}
+
+@media(max-width:650px){
+  #mapViewport.map-viewport{
+    height:clamp(430px,66dvh,650px)!important;
+    max-height:none!important;
+  }
+}

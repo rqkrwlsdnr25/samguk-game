@@ -1,0 +1,12 @@
+삼국쟁패 v87 - 전쟁 안개 / 시야 / 줌 LOD 최적화
+
+- VISIBLE: 아군 / 아군 인접 / 동맹 영토. 실시간 병력·도시·자원 HUD 렌더.
+- SCOUTED: 정찰 성공 또는 교역/불가침/우호 관계의 먼 영토. 도시/지명 + ?만 렌더.
+- HIDDEN: 미정찰 타국 영토. territoryLabels 단계에서 즉시 return하여 병력 뱃지/도시 이미지/자원 아이콘 SVG DOM 생성 자체를 생략.
+- Zoom < 2.5: VISIBLE 영토도 자원 아이콘 DOM을 만들지 않고 지명/도시/핵심 병력 뱃지만 유지.
+- 기존 정찰 scoutUntil/scoutBy 데이터를 그대로 연동.
+- scoutTerritory(id, turns), updateAllianceVision(), updateTurnVisibility(), getRenderableTerritories(), renderMapUI() API 제공.
+- 턴 증가 시 정찰 기간 자동 감소/만료.
+- 기존 동맹 제안 성공 시 동맹국 영토 전체 VISIBLE 공유.
+- Canvas 도시 렌더러도 HIDDEN을 drawImage/좌표 계산 전에 skip하며 SCOUTED 병력은 ? 처리.
+- 전쟁/AI/영토 ID/인접 그래프/도시/병과 데이터 구조는 변경하지 않음.

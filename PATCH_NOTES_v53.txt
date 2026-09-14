@@ -1,0 +1,64 @@
+삼국쟁패 v53 - 렌더링 최적화 / 외교 RAF 수명주기 패치
+기준: v52 하단 외교 / Canvas 관계선 / 상호 거래 버전
+
+[핵심 수정]
+1) 외교 Canvas requestAnimationFrame 수명주기 수정
+- 외교창이 닫혀 있을 때 RAF 0개 유지
+- 외교창 OPEN 시에만 애니메이션 시작
+- CLOSE 시 cancelAnimationFrame + Canvas clear + 비활성화
+- 탭 숨김 시 루프 정지, 복귀 시 외교창이 열려 있을 때만 재시작
+- 외교 화살표 애니메이션은 30FPS로 유지하여 시각 효과를 보존하면서 합성 부하 감소
+
+2) 수도 화면좌표 캐시
+- 기존: 화살표 프레임마다 수도 DOM getBoundingClientRect() 2회
+- v53: 외교 OPEN/상대 변경/지도 Pan·Zoom/resize/지도 상태 변경 때만 좌표 dirty 처리
+- 정지 상태에서는 캐시된 좌표로 화살표만 애니메이션
+
+3) render()와 전체 지도 drawMap() 분리
+- game.js 일반 render() 끝에서 drawMap() 호출 제거
+- 일반 UI 갱신은 updateMapDynamicState()를 사용
+- 전체 SVG innerHTML 교체는 초기 지도 생성 / 지도 reset / 지형 보기 전환 같은 전체 재생성이 필요한 경우에만 수행
+
+4) Dirty Map Update
+- 영토 소유권 변경: 해당 영토 fill/세력 HUD + 국경선만 갱신
+- 병력 변경: 해당 영토 병력 HUD만 갱신
+- 선택/목표 변경: 선택 테두리/항로/계획 경로만 갱신
+- 도시 비주얼 변경: 지도 UI overlay만 강제 갱신
+- 해상칸 상태: sea tile layer가 실제로 바뀔 때만 교체
+- 강/산맥/지형 texture/랜드마크는 일반 render에서 재생성하지 않음
+
+5) 외교 GPU filter 경량화
+- 다수 SVG 영토에 saturate/brightness/drop-shadow filter 적용 제거
+- opacity + stroke 강조로 동일한 외교 시각 구분 유지
+- backdrop-filter 제거, 기존 반투명 gradient overlay 유지
+
+6) 줌/진군 카메라
+- animateMarch가 카메라 위치 조정 때문에 전체 drawMap()을 호출하던 경로 제거
+- 기존 GPU camera/viewBox sharp commit 구조 유지
+- 줌 시 전체 지도 geometry 재생성 없음
+
+7) 검증 중 발견한 기존 안전성 오류 1건 수정
+- CAPITALS 배열의 null 항목을 supply 계산에서 seeds[null]로 접근하던 오류 방지
+- 의도된 '수도 없음 → 가장 큰 연결 영토를 본토로 사용' fallback 동작을 복구
+- 게임 규칙 수치/밸런스 변경 없음
+
+[변경 파일]
+- game.js
+- map.js
+- DiplomacyTradeSystem.js
+- diplomacy-bottom-trade.css
+- MANIFEST.json
+- README.md
+- PATCH_NOTES_v53.txt
+- TEST_RESULTS_v53.txt
+- APPLY_PATCH_v53.txt
+
+[성능 디버그]
+window.__perfDebug = {
+  fullMapDraws,
+  diplomacyFrames,
+  activeRaf,
+  lastFullMapReason
+}
+
+Idle 상태에서 activeRaf는 0이어야 합니다.

@@ -1,0 +1,24 @@
+삼국쟁패 v29 - AI Phase 안정화 / 턴 매니저 핫픽스
+
+기준: v28 토탈워 스타일 외교 UI 패치
+핵심 수정 파일: game.js, src/components/SafeTurnManager.js
+
+[원인]
+- 기존 endTurn()은 AI 국가 전체를 하나의 ai-phase try/catch로 처리하여, 한 국가의 한 연산에서 예외가 나도 전체 턴이 롤백됨.
+- ai-phase 내부에 세부 단계 로그가 없어 실제 실패 위치가 모두 "ai-phase"로만 표시됨.
+- AI 공격 행동 루프에 반복 횟수 상한이 없었고, 비정상 movementCost에 대한 검증도 없었음.
+- AI 데이터 갱신과 외교 지도 UI 갱신의 명시적 순서 보장이 없었음.
+
+[수정]
+- 국가별 트랜잭션 스냅샷 추가: 해당 AI 국가 처리 실패 시 그 국가 처리 시작 직전으로만 되돌리고 '대기' 처리 후 다음 국가 계속 진행.
+- 단계별 콘솔 로그: officers / city-specialize / espionage / territory-scan / income / mountain-event / build / growth / draft / special-recruit / large-battle-support / attack loop.
+- 단계당 3초 초과 감지(AiPhaseTimeoutError) 및 시각 연출 3초 타임아웃.
+- AI 행동 루프 최대 64회, movementCost finite/positive 검증.
+- 외교 데이터 갱신 완료 후 syncDiplomacyVisualsAfterAi()에서 지도 효과를 후순위로 동기화.
+- 외부 화살표 렌더러가 있다면 window.SAMGUK_DIPLOMACY_MAP_EFFECTS.sync(payload) 또는 SAMGUK_DIPLOMACY_ADAPTER.syncMapEffects(payload) 훅으로 안전하게 연결 가능.
+- 전체 턴 롤백은 validate/end hooks 같은 치명적 오류에만 유지.
+
+[디버깅]
+개발자 콘솔에서 [삼국쟁패][AI-PHASE] 로 필터하면 국가/단계/소요시간/스택을 확인할 수 있음.
+window.SAMGUK_TURN_MANAGER.version === 3
+window.SAMGUK_TURN_MANAGER.getState()

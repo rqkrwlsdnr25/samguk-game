@@ -1,0 +1,29 @@
+삼국쟁패 v49 — 상·하단 HUD 공간 최적화
+
+1. 하단 안내 바 삭제
+- #mapStatus DOM 완전 제거.
+- map.js의 기존 mapStatus 직접 접근을 null-safe 처리하여 전투/진군 중 오류 방지.
+- 하단 설명 문구 삭제.
+- 세력 범례 #legend만 작은 월드맵 오버레이로 유지하여 세로 레이아웃 높이 0.
+
+2. 상단 지도 메뉴 최상단 밀착
+- + / - / 한반도 / 동아시아 전도 / 지형 보기 바를 position:fixed; top:0 로 변경.
+- 브라우저 상단 여백 0, 최고 z-index 적용.
+- translate3d 기반 compositor layer 사용.
+
+3. 이벤트 충돌 차단
+- MapHudEventGuard.js 추가.
+- 지도 메뉴의 pointer/click/touch 이벤트 stopPropagation.
+- 메뉴 위 wheel은 preventDefault + stopPropagation하여 지도 줌 중복 방지.
+
+4. 지도 화면 확장
+- MapHudLayoutController.js가 resize/orientation 시 mapViewport의 실제 화면 내 top을 1회 측정.
+- 남은 visual viewport 높이를 --samguk-map-fill-height로 반영.
+- 카메라 rAF 루프에서는 layout read를 하지 않음.
+
+편집 파일
+- index.html
+- map.js
+- map-hud-layout.css
+- MapHudLayoutController.js
+- MapHudEventGuard.js

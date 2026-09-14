@@ -1,0 +1,32 @@
+삼국쟁패 v57 — 고배율 줌 / 거대 국가명 페이드 패치
+
+기준 버전
+- v56 국경선 고정 두께 + LOD 최적화 전체본
+
+1. 최대 줌 확장
+- MapZoomConfig.js의 단일 줌 설정값 maxZoom을 6.0 -> 15.0으로 변경.
+- SmoothMapZoomController / WorldMapBoundsController / map.js의 안전 fallback도 15.0으로 통일.
+- 마우스 휠, + 버튼, 커서 피벗 줌, clampView, viewForZoom 모두 기존 중앙 설정을 그대로 사용하므로 별도 고배율 분기 없이 15x까지 확대 가능.
+
+2. 거대 국가명만 실시간 페이드
+- 대상: map.js의 #atlas-labels (백제/신라/가야 등 대형 세력명).
+- 시작 배율: 1.25x
+- 종료 배율: 2.40x
+- 공식: clamp(1 - (zoom - start) / (end - start), 0, 1)
+- GpuMapCamera의 기존 프레임 업데이트에서 --large-country-name-opacity CSS 변수만 갱신.
+- map geometry 재생성 / svg.innerHTML 재실행 / getBoundingClientRect 추가 호출 없음.
+
+3. 다른 UI 격리
+- 페이드 변수는 #atlas-labels만 참조.
+- territory-labels, 성/수도 이미지, 전문도시, 세력 깃발/병력 HUD에는 opacity를 적용하지 않음.
+- Canvas 참고 함수는 ctx.save()/restore()로 globalAlpha를 완전히 격리.
+
+4. 기존 HUD 확대 곡선 보존
+- 기존 코드는 maxZoom 자체를 HUD 상세도 보간의 끝점으로 사용했음. maxZoom을 15로 바꾸기만 하면 6x 이하에서 지역명/병력 HUD 확대가 지나치게 느려지는 부작용이 생김.
+- highZoomDetailEnd=6.0을 별도로 추가해 기존 v56의 UI 확대 체감을 보존하면서 카메라만 15x까지 확장.
+
+5. Canvas API
+- LargeCountryNameZoomFade.js
+  - alphaForZoom(currentZoom, fadeStart, fadeEnd)
+  - drawLargeCountryNames(ctx, countryList, currentZoom, options)
+- 현재 실제 월드맵은 Canvas가 아니라 SVG이므로 production 경로에서는 동일 공식을 SVG 그룹 opacity에 적용함.

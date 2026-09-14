@@ -1,0 +1,14 @@
+삼국쟁패 v75 - 왕권 버튼 UI 미표시 수정
+
+원인/구조 개선
+- v74 왕권 버튼은 기존 공용 data-mode 클릭 위임 + 누적 setAction 래퍼 체인에만 의존했습니다.
+- 왕권 전용 UI를 #orders에 직접 보장하는 mount 경로가 없어, 클릭이 기존 이벤트 체인에서 누락/충돌할 경우 버튼만 있고 패널이 보이지 않을 수 있었습니다.
+
+수정
+1. openAuthorityPanelV75() 전용 진입점 추가
+2. 왕권 버튼에 capture-phase 전용 클릭 바인딩 추가
+3. render() 후 .authority-panel이 없으면 #orders에 즉시 fallback mount
+4. AuthoritySystem.mountAuthorityPanel()/refreshMountedAuthorityPanel() 추가
+5. #orders 왕권 패널 스크롤/가시성 CSS 보강
+
+그 외 왕권 수치, 권위 획득량, 승격 임계값, 기존 전투/건설/수도/외교 로직은 변경하지 않았습니다.

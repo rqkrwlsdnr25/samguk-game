@@ -1,0 +1,29 @@
+삼국쟁패 v62 — 인물 중심 외교 / 외교 관계 판도 지도
+
+기준 버전: v61 고배율 UI 콤팩트 정렬
+
+핵심 변경
+- 외교창을 좌측 40% 고정 패널 + 우측 60% 실시간 월드맵 구조로 변경.
+- 선택 군주의 인물 SVG, 세력 정보, 스탯과 외교/거래 메뉴를 좌측 패널에 통합.
+- 외교 모드에서 우측 지도는 기존 카메라 Pan/Zoom을 그대로 사용.
+- 우측 지도 영토 색상을 선택 국가 시점의 우호도(-100~+100)에 따라 적색↔회색↔녹색으로 실시간 표시.
+- 전쟁 상태는 강한 적색, 동맹은 강한 녹색으로 우선 표시.
+- 우측 지도에서 영토를 클릭하면 해당 소유 국가를 외교 대상으로 즉시 선택.
+- 기존 점선 화살표 유지. 동맹 파랑 / 전쟁 빨강 / 중립 흰색.
+- 화살표 Canvas는 외교 지도 viewport 영역으로 clip되어 좌측 패널을 침범하지 않음.
+- 도시/성/지역명/병력 HUD는 판도 색상 변경 대상에서 제외.
+- 기존 요구 제안/상호 거래 시스템과 호환.
+- Canvas/Astra 호환용 DiplomacyManager 및 renderDiplomacyMapWithArrows() API 추가.
+
+수정 파일
+- index.html
+- DiplomacyTradeSystem.js
+- MANIFEST.json
+- README.md
+
+추가 파일
+- DiplomacyStrategicManager.js
+- diplomacy-strategic-mode.css
+- PATCH_NOTES_v62.txt
+- TEST_RESULTS_v62.txt
+- APPLY_PATCH_v62.txt

@@ -1,0 +1,21 @@
+/* v55 — territory label hitbox overlay hard-disable
+   -------------------------------------------------------------------------
+   Region names / city art / faction troop HUD are presentation-only.
+   Actual territory interaction remains on #map .territory-shape polygon paths.
+   This prevents transparent rectangular label targets and SVG focus outlines
+   from ever becoming visible over labels such as 한성 / 한양. */
+#mapUiOverlay .map-marker,
+#mapUiOverlay .territory-label-stack{
+  pointer-events:none!important;
+  outline:none!important;
+}
+
+/* Hot-reload / stale-DOM fail-safe for pre-v55 transparent label hitboxes. */
+#mapUiOverlay .territory-label-stack>rect[fill="transparent"],
+#mapUiOverlay .territory-label-stack>rect[pointer-events="all"]{
+  display:none!important;
+  pointer-events:none!important;
+  fill:none!important;
+  stroke:none!important;
+  opacity:0!important;
+}

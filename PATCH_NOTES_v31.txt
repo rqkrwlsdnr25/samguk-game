@@ -1,0 +1,30 @@
+삼국쟁패 v31 관직 아이콘 줌 안정화 패치
+
+[직접 원인 수정]
+- wheel 줌 시 setView() → drawMap() → svg.innerHTML 재생성으로 관직 아이콘 레이어가 삭제되던 문제 수정
+- drawMap 완료 후 samguk:map-rendered 이벤트를 발생시켜 관직 아이콘 레이어 자동 복구
+- applyView 완료 후 samguk:map-view-changed 이벤트를 발생시켜 viewBox 변화와 UI 스케일 동기화
+
+[Dynamic Pixel Scaling]
+- SVG getScreenCTM()으로 현재 pixelsPerWorldUnit 실시간 계산
+- worldScale = (1 / pixelsPerWorldUnit) × visualFactor 적용
+- 전체 지도 기준 32px, 줌 아웃 최소 28px, 줌 인 최대 40px로 화면상 크기 Clamp
+- WORLD.width / viewBox.width 기반 zoomRatio를 log2 곡선으로 보정해 줌 인 시 부드럽게 확대
+- NaN / Infinity / 0 스케일 방지를 위한 finite 체크와 수학적 clamp 적용
+
+[렌더링 최적화]
+- 아이콘 데이터 DOM 생성과 카메라 줌 transform 갱신을 분리
+- 줌 중에는 SVG 아이콘 DOM을 재생성하지 않고 기존 screen-space 그룹 transform만 갱신
+- requestAnimationFrame으로 휠 이벤트 연속 입력을 1프레임 1회 처리
+- 데이터 시그니처가 동일하면 DOM 재생성 생략
+- 관직 아이콘 레이어를 SVG 마지막 자식으로 재부착해 영토/라벨 아래로 묻히지 않도록 렌더 순서 보장
+- pointer-events:none 유지로 드래그/영토 클릭 입력 방해 없음
+
+[파일]
+- OfficerMapZoomScaler.js : 카메라 줌 연동 스크린 스페이스 스케일러
+- MapZoomUIBridge.js : wheel / viewBox / drawMap 재생성 이벤트 브리지
+- OfficerMapIconController.js : 데이터 렌더링 및 최상단 레이어 유지
+- map.js : map-rendered / map-view-changed 이벤트 발생
+- game.js : 글로벌 관직 아이콘 컨트롤러 연결
+- style.css : 줌 안정화 전용 SVG 렌더 스타일
+- index.html : 신규 스크립트 로드 순서 반영
