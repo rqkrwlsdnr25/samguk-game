@@ -1,0 +1,9 @@
+적용 기준: 삼국쟁패 v51_화질흐림_GPU캐시수정_전체
+
+가장 안전한 방법:
+1. 기존 v51 폴더를 백업합니다.
+2. 이 패치 ZIP의 파일을 v51 폴더 루트에 덮어씁니다.
+3. index.html은 교체하고, 신규 파일 DiplomacyTradeSystem.js / diplomacy-bottom-trade.css / java-backend-example 폴더를 추가합니다.
+4. index.html을 실행합니다.
+
+이미 통합된 전체본 ZIP도 함께 제공됩니다. 전체본은 압축만 풀고 index.html을 실행하면 됩니다.

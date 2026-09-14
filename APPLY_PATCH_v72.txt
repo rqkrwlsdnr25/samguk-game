@@ -1,0 +1,8 @@
+v72 패치 파일
+- HistoricalNamePatch.js (신규)
+- game.js (로스터 생성 후 기존 객체 이름 패치 호출)
+- index.html (HistoricalNamePatch.js 로드)
+- java-backend-example/src/main/java/com/samguk/history/HistoricalNamePatch.java
+- PATCH_NOTES_v72.txt
+
+v71에 위 파일을 덮어쓰고 신규 파일을 추가하면 됩니다.

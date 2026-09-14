@@ -1,0 +1,22 @@
+삼국쟁패 v58 패치 적용
+
+권장: 전체 ZIP을 새 폴더에 압축 해제하여 index.html을 실행하세요.
+
+기존 v57에 패치 ZIP만 적용하는 경우 다음 파일을 동일 경로에 덮어씁니다.
+- index.html
+- FactionTroopHud.js
+- FactionHudGsapTransitions.js
+- MapUiOverlayManager.js
+- map.js
+- game.js
+- MANIFEST.json
+
+새 파일 추가
+- FactionLabelSprite.js
+- faction-label-sprite.css
+- assets/images/ui/faction_labels_sheet.png
+- PATCH_NOTES_v58.txt
+- TEST_RESULTS_v58.txt
+- APPLY_PATCH_v58.txt
+
+중요: assets/images/ui/faction_labels_sheet.png 의 폴더 경로를 바꾸지 마세요.

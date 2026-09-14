@@ -1,0 +1,7 @@
+기존 v85 게임 폴더에 아래 4개 파일을 덮어쓰기:
+- world.js
+- game.js
+- map.js
+- RegionGeometry.js
+
+기존 영토 index/인접 그래프/좌표/부대 라벨 스프라이트 파일은 교체하지 않습니다.

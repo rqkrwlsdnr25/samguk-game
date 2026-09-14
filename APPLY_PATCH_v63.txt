@@ -1,0 +1,19 @@
+삼국쟁패 v63 패치 적용 방법
+===========================
+권장: v63 전체본 ZIP을 새 폴더에 풀어 index.html을 실행하세요.
+
+기존 v62에 패치본을 적용하려면:
+1. 게임을 종료합니다.
+2. v62 폴더를 백업합니다.
+3. v63 패치 ZIP의 모든 파일/폴더를 v62 루트에 덮어씁니다.
+4. 브라우저 캐시를 새로고침(Ctrl+F5)한 뒤 실행합니다.
+
+새 수도 에셋:
+- capital_lv1.png
+- capital_lv3.png
+- capital_lv5.png
+
+승급 비용을 바꾸려면:
+- 클라이언트: CapitalUpgradeSystem.js의 COSTS
+- Java 예제: CapitalUpgradeService.java의 COSTS
+두 값을 동일하게 유지하세요.

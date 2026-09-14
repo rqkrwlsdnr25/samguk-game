@@ -1,0 +1,19 @@
+삼국쟁패 v64 패치 적용 방법
+
+[권장]
+전체본 ZIP을 새 폴더에 압축 해제하여 실행하세요. 삭제 대상 파일까지 완전히 정리된 상태입니다.
+
+[기존 v63에 패치 ZIP 적용]
+1. 게임 폴더를 백업합니다.
+2. v64 패치 ZIP의 파일을 기존 v63 루트에 덮어씁니다.
+3. Windows: apply_v64_cleanup.bat 실행
+   macOS/Linux: sh apply_v64_cleanup.sh 실행
+4. index.html을 다시 실행합니다.
+
+삭제되는 구 시스템 파일:
+- SeaTileSystem.js
+- SeaRoutePathfinder.js
+- WakoEncounterSystem.js
+- sea-system.css
+
+※ index.html에서는 이미 위 파일을 로드하지 않으므로 실행에는 영향이 없지만, 소스 정리를 위해 삭제 스크립트를 함께 제공합니다.

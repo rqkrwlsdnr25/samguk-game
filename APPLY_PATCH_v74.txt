@@ -1,0 +1,13 @@
+삼국쟁패 v73 전체본 위에 이 패치 ZIP의 파일을 같은 상대 경로로 덮어쓰세요.
+
+핵심 변경 파일:
+- index.html
+- game.js
+- DiplomacyTradeSystem.js
+- AuthoritySystem.js (신규)
+- authority-system.css (신규)
+- java-backend-example/src/main/java/com/samguk/capital/Faction.java
+- java-backend-example/src/main/java/com/samguk/authority/* (신규)
+- java-backend-example/README_AUTHORITY_v74.md
+
+삭제해야 할 파일은 없습니다.

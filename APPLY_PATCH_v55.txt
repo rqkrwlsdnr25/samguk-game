@@ -1,0 +1,17 @@
+[v55 패치 적용]
+
+v54 전체본 폴더에 패치 ZIP의 파일을 같은 경로로 덮어씁니다.
+
+변경/추가 파일
+- index.html
+- map.js
+- style.css
+- map-label-hitbox-disable.css (신규)
+- PATCH_NOTES_v55.txt
+- TEST_RESULTS_v55.txt
+- MANIFEST.json
+- README.md
+
+주의
+- 실제 영토 Polygon 클릭은 그대로 유지됩니다.
+- 제거되는 것은 지역명/성/병력 HUD 주변의 사각형 보조 히트박스뿐입니다.

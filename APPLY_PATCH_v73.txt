@@ -1,0 +1,9 @@
+[v73 패치 적용]
+
+v72 전체본에 다음 파일을 덮어쓰거나 추가하세요.
+- index.html
+- game.js
+- SmokeManager.js (신규)
+- PATCH_NOTES_v73.txt
+
+가장 안전한 방법은 v73 전체본 ZIP을 새 폴더에 풀어 실행하는 것입니다.

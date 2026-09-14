@@ -1,0 +1,15 @@
+삼국쟁패 v61 패치 적용
+
+권장: 전체본 ZIP을 새 폴더에 풀어 실행하세요.
+
+기존 v60에 패치본을 적용할 경우 ZIP 내부 파일을 게임 루트에 덮어씁니다.
+index.html과 아래 JS/CSS 파일의 상대 경로를 유지해야 합니다.
+
+튜닝 포인트(MapZoomConfig.js):
+- regionCompositeCompactStart: 1.25
+- regionCompositeCompactTarget: 3.74
+- regionCompositeExtraLiftPx: 18
+- regionCompositeMaxLiftPx: 72
+
+한성처럼 하단으로 더 내려가는 경우 ExtraLiftPx를 2~4px씩 올리는 방식으로 미세 조정하세요.
+MaxLiftPx를 먼저 크게 올리는 방식은 다른 좁은 영토에서 상단 이탈을 만들 수 있으므로 권장하지 않습니다.

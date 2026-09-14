@@ -1,0 +1,5 @@
+v79 전체본에 아래 파일을 같은 경로로 덮어쓰세요.
+- FactionLabelSprite.js
+- faction-troop-hud.css
+
+브라우저 캐시가 남아 있으면 Ctrl+F5로 강력 새로고침하세요.

@@ -1,0 +1,12 @@
+v64 전체본에 이 패치 ZIP의 파일을 같은 상대 경로로 덮어쓰세요.
+
+추가 파일:
+- DirectSeaMovement.js
+- transport_ship.svg
+- java-backend-example/README_SEA_DIRECT_v65.md
+- java-backend-example/src/main/java/com/samguk/map/DirectSeaAdjacencyConfig.java
+
+수정 파일:
+- index.html
+- map.js
+- MANIFEST.json

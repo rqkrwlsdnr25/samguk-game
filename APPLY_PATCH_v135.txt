@@ -1,0 +1,324 @@
+삼국쟁패 APPLY_PATCH_v135
+목표: 읍루/연해주 파란 해안 절삭 + 빨간 가이드 재분할 + 구 극동 3노드 완전 삭제
+적용: v134 + v133 index 복구 상태 위에 덮어쓰기
+
+========================================================================================
+FILE: MapExpansionV125.js (FULL REPLACEMENT, NO OMISSION)
+========================================================================================
+(function(global){
+  'use strict';
+
+  const world=global.SAMGUK_WORLD;
+  const japan=global.SAMGUK_JAPAN_MAP_DATA_V132;
+  if(!world||!Array.isArray(world.territories)||!Array.isArray(world.neighbors))return;
+  if(!japan||!Array.isArray(japan.territories))throw new Error('JapanMapDataV132.js must load before MapExpansionV125.js');
+  if(world.__mapExpansionV125Applied)return;
+
+  // v135: 읍루/연해주 red-guide repartition + blue-mask sea cut.
+  // The data is also shipped as EumnuMapDataV135.json for GitHub/data review.
+  const EUMNU_DATA={"version":135,"geometryRevision":"v135-eumnu-red-guide-blue-coast-cut","removedExpansionTerritories":[{"id":"eumnu_far_northeast","name":"읍루 극동 북부"},{"id":"eumnu_far_east_north","name":"읍루 동북 해안"},{"id":"eumnu_far_east_central","name":"읍루 극동 중부"}],"baseTerritoryOverrides":{"연해주 북부":{"x":998.5,"y":70.4,"path":"M1008.00,140.00L1028.00,125.00L1048.00,105.00L1062.00,55.00L1065.00,0.00L969.50,11.00L968.00,10.50L963.00,14.50L962.00,14.50L959.00,17.50L958.00,17.50L953.50,23.00L953.50,25.00L952.50,26.00L952.50,30.00L951.50,32.00L953.50,36.00L953.50,38.00L954.50,39.00L954.50,46.00L952.50,49.00L951.50,54.00L948.50,60.00L948.50,63.00L946.50,66.00L945.50,71.00L942.50,77.00L927.50,91.00L927.50,92.00L923.50,96.00L923.50,97.00L917.50,104.00L917.50,105.00L914.50,109.00L914.50,111.00L916.00,112.50L919.00,113.50L926.00,119.50L928.00,119.50L933.00,122.50L935.00,122.50L943.00,126.50L945.00,126.50L950.00,129.50L952.00,129.50L955.00,131.50L963.00,133.50L964.00,134.50L969.50,134.00ZM969.00,34.50L966.50,34.00L969.50,33.00L969.50,36.00ZM969.50,36.00L969.50,38.00L966.50,37.00ZM969.50,61.00L966.00,60.50L963.50,58.00L966.00,55.50L967.00,56.50L969.50,56.00Z"},"숙신 고토":{"x":909.2,"y":195.8,"path":"M1030.00,235.00L1062.00,225.00L1048.00,185.00L1043.00,145.00L1048.00,105.00L1028.00,125.00L1008.00,140.00L969.50,135.00L964.00,134.50L961.00,133.00L959.00,132.50L958.00,132.50L957.67,132.17L955.00,131.50L951.00,129.50L950.00,129.50L945.00,126.50L943.00,126.50L939.00,124.50L938.00,124.50L935.00,122.50L933.00,122.50L928.00,119.50L926.00,119.50L919.00,113.50L916.00,112.50L914.50,111.00L914.00,110.50L912.50,114.00L910.00,116.50L909.00,116.50L901.50,124.00L899.50,128.00L898.50,135.00L894.50,143.00L894.50,146.00L893.00,147.50L890.00,148.50L887.00,151.50L883.00,153.50L881.00,153.50L880.00,154.50L878.00,154.50L874.00,152.50L870.00,148.50L866.00,146.50L855.00,146.50L851.00,144.50L847.00,139.50L842.00,137.50L839.00,134.50L835.00,133.50L832.00,131.50L830.00,131.50L829.00,130.50L827.00,130.50L823.00,127.50L819.00,127.50L813.00,130.50L810.00,133.50L809.00,133.50L804.00,137.50L802.00,137.50L801.00,138.50L797.00,138.50L796.00,139.50L793.00,139.50L789.00,141.50L787.00,141.50L786.00,142.50L784.00,142.50L783.00,143.50L777.00,143.50L773.00,145.50L770.00,148.50L765.00,149.50L763.50,151.00L764.50,161.00L765.50,162.00L765.50,165.00L766.50,166.00L766.50,175.00L768.50,179.00L768.50,181.00L769.50,182.00L769.50,184.00L770.50,185.00L770.50,187.00L771.50,188.00L771.50,190.00L772.50,191.00L772.50,198.00L770.50,202.00L770.50,209.00L772.50,213.00L772.50,220.00L770.50,224.00L770.50,226.00L774.00,230.50L775.00,230.50L780.50,236.00L781.50,240.00L782.50,241.00L782.50,243.00L786.00,248.50L787.00,248.50L791.00,244.50L798.00,243.50L799.00,242.50L806.00,247.50L810.00,246.50L811.00,245.50L814.00,245.50L816.50,248.00L817.50,251.00L819.00,252.50L827.00,254.50L830.00,256.50L833.00,256.50L837.00,258.50L838.50,260.00L837.50,261.00L837.50,263.00L840.00,265.50L843.00,265.50L843.50,268.00L846.00,270.50L849.50,272.00L849.50,280.00L851.50,282.00L851.50,283.00L849.50,285.00L850.00,286.50L866.00,286.50L869.00,284.50L871.00,284.50L874.00,282.50L876.00,282.50L882.00,279.50L888.00,279.50L892.00,277.50L894.00,277.50L895.00,276.50L897.00,276.50L907.00,271.50L909.00,271.50L912.00,269.50L914.00,269.50L919.00,266.50L921.00,266.50L924.00,264.50L926.00,264.50L929.00,262.50L932.00,262.50L933.00,261.50L938.00,261.50L942.00,259.50L944.00,259.50L945.00,258.50L947.00,258.50L957.00,253.50L959.00,253.50L962.00,251.50L964.00,251.50L967.00,249.50L969.50,249.00L1000.00,245.00Z"},"연해주 남부":{"x":963.7,"y":288.6,"path":"M1030.00,235.00L1000.00,245.00L969.50,249.00L969.50,250.00L967.00,249.50L964.00,251.50L962.00,251.50L959.00,253.50L957.00,253.50L947.00,258.50L944.33,259.17L944.00,259.50L943.00,259.50L941.00,260.00L938.00,261.50L933.00,261.50L932.00,262.50L929.00,262.50L926.00,264.50L925.00,264.50L921.00,266.50L919.00,266.50L914.00,269.50L912.00,269.50L909.00,271.50L907.00,271.50L902.00,274.50L901.00,274.50L897.00,276.50L894.33,277.17L894.00,277.50L893.00,277.50L891.00,278.00L888.00,279.50L882.00,279.50L876.00,282.50L874.00,282.50L871.00,284.50L869.00,284.50L866.00,286.50L848.50,287.00L849.50,293.00L846.50,295.00L845.50,297.00L848.50,300.00L848.50,304.00L847.50,306.00L849.00,308.50L851.00,308.50L853.00,310.50L853.50,309.00L856.00,306.50L858.50,309.00L856.00,312.50L854.50,313.00L854.50,315.00L852.50,317.00L853.00,317.50L856.00,317.50L858.00,316.50L861.00,319.50L865.00,316.50L867.00,316.50L870.00,312.50L871.00,312.50L872.50,311.00L870.50,309.00L872.00,307.50L875.50,310.00L875.50,313.00L873.50,315.00L879.50,320.00L878.00,321.50L877.00,320.50L874.50,322.00L875.50,323.00L875.50,325.00L874.50,326.00L873.50,334.00L874.50,335.00L872.50,339.00L872.50,344.00L873.50,345.00L872.50,346.00L874.00,347.50L876.00,348.50L876.50,348.00L875.50,344.00L877.00,342.50L878.00,343.50L880.00,341.50L884.00,342.50L886.50,345.00L887.00,348.50L888.00,347.50L891.00,348.50L892.00,347.50L895.00,347.50L897.50,346.00L897.50,345.00L899.00,343.50L900.00,343.50L901.33,344.83L940.00,340.00L980.00,325.00L1030.00,300.00L1082.00,260.00L1062.00,225.00Z"}},"expansionTerritories":[{"id":"eumnu_far_east_coast","name":"읍루 동해안","x":1088.2,"y":135.8,"home":7,"terrainType":"plain","resources":["wood"],"path":"M1065.00,0.00L1120.00,0.00L1120.00,300.00L1082.00,260.00L1062.00,225.00L1048.00,185.00L1043.00,145.00L1048.00,105.00L1062.00,55.00Z"}],"landLinks":[["연해주 북부","읍루 동해안"],["숙신 고토","읍루 동해안"],["연해주 남부","읍루 동해안"]],"seaCut":{"description":"연해주 남부 우측 하단의 파란 가이드 영역은 순수 바다로 절삭됨","coastlineGuide":[[900,345],[940,340],[980,325],[1030,300],[1082,260]]}};
+  global.SAMGUK_EUMNU_MAP_DATA_V135=Object.freeze(EUMNU_DATA);
+
+  function findTerritoryIndexByName(name){
+    return world.territories.findIndex(t=>String(t?.name||'')===String(name));
+  }
+
+  function applyBaseEumnuOverrides(){
+    const overrides=EUMNU_DATA.baseTerritoryOverrides||{};
+    for(const [name,patch] of Object.entries(overrides)){
+      const i=findTerritoryIndexByName(name);
+      if(i<0)continue;
+      const t=world.territories[i];
+      if(Number.isFinite(Number(patch.x)))t.x=Number(patch.x);
+      if(Number.isFinite(Number(patch.y)))t.y=Number(patch.y);
+      if(typeof patch.path==='string'&&patch.path.trim())t.path=patch.path;
+      t.mapGeometryRevision='v135-eumnu-coast';
+    }
+  }
+
+  // Apply before rebuilding the land silhouette so the removed blue area cannot remain
+  // in the old BASE_LAND_PATH as a hidden stale polygon.
+  applyBaseEumnuOverrides();
+
+  const START_INDEX=world.territories.length;
+  const waterSet=new Set(Array.isArray(world.waterTerritoryIds)?world.waterTerritoryIds.map(Number):[]);
+  const BASE_LAND_PATH=world.territories.map((t,i)=>{
+    if(!t||t.inactive||waterSet.has(i))return '';
+    return typeof t.path==='string'?t.path:'';
+  }).join('');
+
+  const NON_JAPAN_TERRITORIES=[
+    // v135: old 읍루 극동 북부 / 읍루 동북 해안 / 읍루 극동 중부 are deliberately gone.
+    // Only the right-most guide territory remains as '읍루 동해안'.
+    ...EUMNU_DATA.expansionTerritories.map(t=>({...t,resources:Array.isArray(t.resources)?t.resources.slice():[]})),
+
+    // 동진 / 강남 확장 — unchanged from v132/v134.
+    {id:'dongjin_jiangnan_west',name:'동진 강남 서부',x:-116,y:1169,home:10,terrainType:'plain',resources:['rice'],path:'M-180,1120L-118,1138L-60,1145L-70,1190L-115,1210L-180,1190Z'},
+    {id:'dongjin_jiangnan_central',name:'동진 강남 중부',x:-8,y:1171,home:10,terrainType:'plain',resources:['silk'],path:'M-60,1145L32,1145L74,1138L78,1185L35,1215L-20,1205L-70,1190Z'},
+    {id:'dongjin_jiangnan_east',name:'동진 강남 동부',x:139,y:1174,home:10,terrainType:'plain',resources:['salt'],path:'M74,1138L168,1145L220,1160L205,1205L150,1222L78,1185Z'},
+    {id:'dongjin_southsea_west',name:'동진 남해 서부',x:-121,y:1235,home:10,terrainType:'plain',resources:['rice'],path:'M-180,1190L-115,1210L-70,1190L-55,1240L-80,1260L-180,1260Z'},
+    {id:'dongjin_southsea_central',name:'동진 남해 중부',x:-7,y:1237,home:10,terrainType:'plain',resources:['silk'],path:'M-70,1190L-20,1205L35,1215L45,1260L-80,1260L-55,1240Z'},
+    {id:'dongjin_southsea_east',name:'동진 남해 동부',x:137,y:1240,home:10,terrainType:'plain',resources:['salt'],path:'M35,1215L150,1222L205,1205L220,1245L200,1260L45,1260Z'}
+  ];
+
+  const TERRITORIES=[...NON_JAPAN_TERRITORIES,...japan.territories.map(t=>({...t,resources:Array.isArray(t.resources)?t.resources.slice():[]}))];
+
+  const NON_JAPAN_LAND_LINKS=[
+    ...EUMNU_DATA.landLinks.map(pair=>pair.slice()),
+    ['서주','동진 강남 서부'],['동진 서부','동진 강남 서부'],['동진 남부','동진 강남 서부'],
+    ['동진 남부','동진 강남 중부'],['동진 남동','동진 강남 중부'],['동진 남동','동진 강남 동부'],
+    ['동진 연안','동진 강남 동부'],['동진 강남 서부','동진 강남 중부'],['동진 강남 중부','동진 강남 동부'],
+    ['동진 강남 서부','동진 남해 서부'],['동진 강남 중부','동진 남해 중부'],['동진 강남 동부','동진 남해 동부'],
+    ['동진 남해 서부','동진 남해 중부'],['동진 남해 중부','동진 남해 동부']
+  ];
+
+  const LAND_LINKS=[...NON_JAPAN_LAND_LINKS,...japan.landLinks.map(pair=>pair.slice())];
+  const SEA_LINKS=japan.seaLinks.map(pair=>pair.slice());
+  const TERRAIN_RULES=TERRITORIES.map(()=>({kind:'plain',river:false}));
+
+  function routeKey(a,b){return [Number(a),Number(b)].sort((x,y)=>x-y).join('-')}
+  function nameMap(){return new Map(world.territories.map((t,i)=>[String(t?.name||''),i]))}
+  function ensureNeighborSlot(){while(world.neighbors.length<world.territories.length)world.neighbors.push([])}
+  function addNeighbor(a,b){
+    if(!Number.isInteger(a)||!Number.isInteger(b)||a<0||b<0||a===b)return false;
+    ensureNeighborSlot();
+    if(!world.neighbors[a].includes(b))world.neighbors[a].push(b);
+    if(!world.neighbors[b].includes(a))world.neighbors[b].push(a);
+    world.neighbors[a].sort((x,y)=>x-y);
+    world.neighbors[b].sort((x,y)=>x-y);
+    return true;
+  }
+  function addSeaRoute(a,b){
+    if(!Array.isArray(world.seaRoutes))world.seaRoutes=[];
+    const key=routeKey(a,b);
+    if(!world.seaRoutes.some(pair=>Array.isArray(pair)&&pair.length>=2&&routeKey(pair[0],pair[1])===key)){
+      world.seaRoutes.push([Math.min(a,b),Math.max(a,b)]);
+    }
+    return addNeighbor(a,b);
+  }
+  function addNamedLinks(links,sea=false){
+    const ids=nameMap();
+    for(const [from,to] of links){
+      const a=ids.get(from),b=ids.get(to);
+      if(!Number.isInteger(a)||!Number.isInteger(b))continue;
+      if(sea)addSeaRoute(a,b);else addNeighbor(a,b);
+    }
+  }
+
+  for(const entry of TERRITORIES){
+    if(world.territories.some(t=>String(t?.id||'')===entry.id||String(t?.name||'')===entry.name))continue;
+    world.territories.push({
+      id:entry.id,name:entry.name,x:entry.x,y:entry.y,home:entry.home,path:entry.path,
+      resources:Array.isArray(entry.resources)?entry.resources.slice():[],terrainType:entry.terrainType||null,mapExpansion:'v135'
+    });
+    world.neighbors.push([]);
+  }
+
+  // SVG/Canvas land silhouette uses the corrected base polygons + expansion polygons only.
+  // This removes the old blue coastal wedge physically instead of painting sea over stale land.
+  world.baseLandPath=BASE_LAND_PATH;
+  world.landPath=BASE_LAND_PATH+TERRITORIES.map(t=>t.path).join('');
+
+  addNamedLinks(LAND_LINKS,false);
+  addNamedLinks(SEA_LINKS,true);
+
+  const seaSet=new Set((world.seaRoutes||[]).map(pair=>routeKey(pair[0],pair[1])));
+  for(let i=0;i<world.territories.length;i++){
+    const territory=world.territories[i];
+    const connected=Array.isArray(world.neighbors[i])?world.neighbors[i].slice().sort((a,b)=>a-b):[];
+    territory.connectedRoutes=connected;
+    territory.connectedSeaRoutes=connected.filter(j=>seaSet.has(routeKey(i,j)));
+  }
+
+  world.minX=Math.min(Number.isFinite(Number(world.minX))?Number(world.minX):-180.5,-180.5);
+  world.minY=Math.min(Number.isFinite(Number(world.minY))?Number(world.minY):-.5,-.5);
+  world.width=Math.max(Number(world.width)||0,1301.25);
+  world.height=Math.max(Number(world.height)||0,1271.0);
+  world.expandedBounds=Object.freeze({minX:-180.5,minY:-.5,maxX:1120.75,maxY:1270.5,width:1301.25,height:1271.0});
+  world.__mapExpansionV125Applied=true;
+
+  function territoryId(name){return nameMap().get(String(name))}
+  function canMoveSeaRoute(a,b){
+    const x=Number(a),y=Number(b);
+    if(!Number.isInteger(x)||!Number.isInteger(y)||x===y)return false;
+    if(!world.territories[x]||!world.territories[y])return false;
+    return seaSet.has(routeKey(x,y));
+  }
+  function connectedRoutes(id){
+    const i=Number(id);
+    return Number.isInteger(i)&&Array.isArray(world.neighbors[i])?world.neighbors[i].slice():[];
+  }
+  function appendTerrainRules(target){
+    if(!target||!Array.isArray(target.areas))return false;
+    for(let i=0;i<TERRAIN_RULES.length;i++){
+      const targetIndex=START_INDEX+i;
+      if(!target.areas[targetIndex])target.areas[targetIndex]={...TERRAIN_RULES[i]};
+    }
+    while(target.areas.length<world.territories.length)target.areas.push({kind:'plain',river:false});
+    return true;
+  }
+
+  global.SAMGUK_MAP_EXPANSION_V125=Object.freeze({
+    version:135,startIndex:START_INDEX,addedCount:world.territories.length-START_INDEX,
+    territoryNames:Object.freeze(TERRITORIES.map(t=>t.name)),
+    landLinks:Object.freeze(LAND_LINKS.map(x=>Object.freeze(x.slice()))),
+    seaLinks:Object.freeze(SEA_LINKS.map(x=>Object.freeze(x.slice()))),
+    terrainRules:Object.freeze(TERRAIN_RULES.map(x=>Object.freeze({...x}))),
+    geometryRevision:'v135-eumnu-red-guide-blue-coast-cut',
+    removedEumnuIds:Object.freeze(EUMNU_DATA.removedExpansionTerritories.map(x=>x.id)),
+    removedEumnuNames:Object.freeze(EUMNU_DATA.removedExpansionTerritories.map(x=>x.name)),
+    territoryId,canMoveSeaRoute,connectedRoutes,appendTerrainRules,bounds:world.expandedBounds
+  });
+})(window);
+
+========================================================================================
+FILE: EumnuMapDataV135.json (FULL FILE, NO OMISSION)
+========================================================================================
+{
+  "version": 135,
+  "geometryRevision": "v135-eumnu-red-guide-blue-coast-cut",
+  "removedExpansionTerritories": [
+    {
+      "id": "eumnu_far_northeast",
+      "name": "읍루 극동 북부"
+    },
+    {
+      "id": "eumnu_far_east_north",
+      "name": "읍루 동북 해안"
+    },
+    {
+      "id": "eumnu_far_east_central",
+      "name": "읍루 극동 중부"
+    }
+  ],
+  "baseTerritoryOverrides": {
+    "연해주 북부": {
+      "x": 998.5,
+      "y": 70.4,
+      "path": "M1008.00,140.00L1028.00,125.00L1048.00,105.00L1062.00,55.00L1065.00,0.00L969.50,11.00L968.00,10.50L963.00,14.50L962.00,14.50L959.00,17.50L958.00,17.50L953.50,23.00L953.50,25.00L952.50,26.00L952.50,30.00L951.50,32.00L953.50,36.00L953.50,38.00L954.50,39.00L954.50,46.00L952.50,49.00L951.50,54.00L948.50,60.00L948.50,63.00L946.50,66.00L945.50,71.00L942.50,77.00L927.50,91.00L927.50,92.00L923.50,96.00L923.50,97.00L917.50,104.00L917.50,105.00L914.50,109.00L914.50,111.00L916.00,112.50L919.00,113.50L926.00,119.50L928.00,119.50L933.00,122.50L935.00,122.50L943.00,126.50L945.00,126.50L950.00,129.50L952.00,129.50L955.00,131.50L963.00,133.50L964.00,134.50L969.50,134.00ZM969.00,34.50L966.50,34.00L969.50,33.00L969.50,36.00ZM969.50,36.00L969.50,38.00L966.50,37.00ZM969.50,61.00L966.00,60.50L963.50,58.00L966.00,55.50L967.00,56.50L969.50,56.00Z"
+    },
+    "숙신 고토": {
+      "x": 909.2,
+      "y": 195.8,
+      "path": "M1030.00,235.00L1062.00,225.00L1048.00,185.00L1043.00,145.00L1048.00,105.00L1028.00,125.00L1008.00,140.00L969.50,135.00L964.00,134.50L961.00,133.00L959.00,132.50L958.00,132.50L957.67,132.17L955.00,131.50L951.00,129.50L950.00,129.50L945.00,126.50L943.00,126.50L939.00,124.50L938.00,124.50L935.00,122.50L933.00,122.50L928.00,119.50L926.00,119.50L919.00,113.50L916.00,112.50L914.50,111.00L914.00,110.50L912.50,114.00L910.00,116.50L909.00,116.50L901.50,124.00L899.50,128.00L898.50,135.00L894.50,143.00L894.50,146.00L893.00,147.50L890.00,148.50L887.00,151.50L883.00,153.50L881.00,153.50L880.00,154.50L878.00,154.50L874.00,152.50L870.00,148.50L866.00,146.50L855.00,146.50L851.00,144.50L847.00,139.50L842.00,137.50L839.00,134.50L835.00,133.50L832.00,131.50L830.00,131.50L829.00,130.50L827.00,130.50L823.00,127.50L819.00,127.50L813.00,130.50L810.00,133.50L809.00,133.50L804.00,137.50L802.00,137.50L801.00,138.50L797.00,138.50L796.00,139.50L793.00,139.50L789.00,141.50L787.00,141.50L786.00,142.50L784.00,142.50L783.00,143.50L777.00,143.50L773.00,145.50L770.00,148.50L765.00,149.50L763.50,151.00L764.50,161.00L765.50,162.00L765.50,165.00L766.50,166.00L766.50,175.00L768.50,179.00L768.50,181.00L769.50,182.00L769.50,184.00L770.50,185.00L770.50,187.00L771.50,188.00L771.50,190.00L772.50,191.00L772.50,198.00L770.50,202.00L770.50,209.00L772.50,213.00L772.50,220.00L770.50,224.00L770.50,226.00L774.00,230.50L775.00,230.50L780.50,236.00L781.50,240.00L782.50,241.00L782.50,243.00L786.00,248.50L787.00,248.50L791.00,244.50L798.00,243.50L799.00,242.50L806.00,247.50L810.00,246.50L811.00,245.50L814.00,245.50L816.50,248.00L817.50,251.00L819.00,252.50L827.00,254.50L830.00,256.50L833.00,256.50L837.00,258.50L838.50,260.00L837.50,261.00L837.50,263.00L840.00,265.50L843.00,265.50L843.50,268.00L846.00,270.50L849.50,272.00L849.50,280.00L851.50,282.00L851.50,283.00L849.50,285.00L850.00,286.50L866.00,286.50L869.00,284.50L871.00,284.50L874.00,282.50L876.00,282.50L882.00,279.50L888.00,279.50L892.00,277.50L894.00,277.50L895.00,276.50L897.00,276.50L907.00,271.50L909.00,271.50L912.00,269.50L914.00,269.50L919.00,266.50L921.00,266.50L924.00,264.50L926.00,264.50L929.00,262.50L932.00,262.50L933.00,261.50L938.00,261.50L942.00,259.50L944.00,259.50L945.00,258.50L947.00,258.50L957.00,253.50L959.00,253.50L962.00,251.50L964.00,251.50L967.00,249.50L969.50,249.00L1000.00,245.00Z"
+    },
+    "연해주 남부": {
+      "x": 963.7,
+      "y": 288.6,
+      "path": "M1030.00,235.00L1000.00,245.00L969.50,249.00L969.50,250.00L967.00,249.50L964.00,251.50L962.00,251.50L959.00,253.50L957.00,253.50L947.00,258.50L944.33,259.17L944.00,259.50L943.00,259.50L941.00,260.00L938.00,261.50L933.00,261.50L932.00,262.50L929.00,262.50L926.00,264.50L925.00,264.50L921.00,266.50L919.00,266.50L914.00,269.50L912.00,269.50L909.00,271.50L907.00,271.50L902.00,274.50L901.00,274.50L897.00,276.50L894.33,277.17L894.00,277.50L893.00,277.50L891.00,278.00L888.00,279.50L882.00,279.50L876.00,282.50L874.00,282.50L871.00,284.50L869.00,284.50L866.00,286.50L848.50,287.00L849.50,293.00L846.50,295.00L845.50,297.00L848.50,300.00L848.50,304.00L847.50,306.00L849.00,308.50L851.00,308.50L853.00,310.50L853.50,309.00L856.00,306.50L858.50,309.00L856.00,312.50L854.50,313.00L854.50,315.00L852.50,317.00L853.00,317.50L856.00,317.50L858.00,316.50L861.00,319.50L865.00,316.50L867.00,316.50L870.00,312.50L871.00,312.50L872.50,311.00L870.50,309.00L872.00,307.50L875.50,310.00L875.50,313.00L873.50,315.00L879.50,320.00L878.00,321.50L877.00,320.50L874.50,322.00L875.50,323.00L875.50,325.00L874.50,326.00L873.50,334.00L874.50,335.00L872.50,339.00L872.50,344.00L873.50,345.00L872.50,346.00L874.00,347.50L876.00,348.50L876.50,348.00L875.50,344.00L877.00,342.50L878.00,343.50L880.00,341.50L884.00,342.50L886.50,345.00L887.00,348.50L888.00,347.50L891.00,348.50L892.00,347.50L895.00,347.50L897.50,346.00L897.50,345.00L899.00,343.50L900.00,343.50L901.33,344.83L940.00,340.00L980.00,325.00L1030.00,300.00L1082.00,260.00L1062.00,225.00Z"
+    }
+  },
+  "expansionTerritories": [
+    {
+      "id": "eumnu_far_east_coast",
+      "name": "읍루 동해안",
+      "x": 1088.2,
+      "y": 135.8,
+      "home": 7,
+      "terrainType": "plain",
+      "resources": [
+        "wood"
+      ],
+      "path": "M1065.00,0.00L1120.00,0.00L1120.00,300.00L1082.00,260.00L1062.00,225.00L1048.00,185.00L1043.00,145.00L1048.00,105.00L1062.00,55.00Z"
+    }
+  ],
+  "landLinks": [
+    [
+      "연해주 북부",
+      "읍루 동해안"
+    ],
+    [
+      "숙신 고토",
+      "읍루 동해안"
+    ],
+    [
+      "연해주 남부",
+      "읍루 동해안"
+    ]
+  ],
+  "seaCut": {
+    "description": "연해주 남부 우측 하단의 파란 가이드 영역은 순수 바다로 절삭됨",
+    "coastlineGuide": [
+      [
+        900,
+        345
+      ],
+      [
+        940,
+        340
+      ],
+      [
+        980,
+        325
+      ],
+      [
+        1030,
+        300
+      ],
+      [
+        1082,
+        260
+      ]
+    ]
+  }
+}
+========================================================================================
+FILE: PATCH_NOTES_v135.txt
+========================================================================================
+삼국쟁패 v135 — 읍루/연해주 해안 절삭 및 극동 영토 재분할
+
+적용 기준: v134 + v133 index 복구 상태
+
+핵심 변경
+1. 삭제
+- 읍루 극동 북부 (eumnu_far_northeast)
+- 읍루 동북 해안 (eumnu_far_east_north)
+- 읍루 극동 중부 (eumnu_far_east_central)
+
+2. 단일화
+- 극동 확장 노드는 가장 오른쪽 '읍루 동해안' 하나만 유지
+
+3. 기존 영토 재분할
+- 연해주 북부: 동쪽으로 확장, 라벨 중심 재배치
+- 숙신 고토: 빨간 가이드 기준 동쪽 확장
+- 연해주 남부: 동쪽 확장 + 우측 하단 파란 마스크 영역 실제 절삭
+
+4. 바다 복원
+- 연해주 남부 우측 하단은 world.landPath에서 물리적으로 삭제
+- 별도 덮어쓰기 마스크가 아니라 polygon 자체를 잘라 순수 Sea 영역으로 처리
+
+5. 공유선 정리
+- 수정한 4개 polygon 사이 area overlap = 0
+- 삭제된 3개 구 확장 polygon은 렌더/그래프/territory 배열에 존재하지 않음
+
+6. 그래프
+- 읍루 동해안은 실제 접하는 연해주 북부 / 숙신 고토 / 연해주 남부와 연결
+- 삭제된 구 읍루 노드를 경유하는 edge는 없음
+
+========================================================================================
+FILE: TEST_RESULTS_v135.txt
+========================================================================================
+PASS runtime metadata version = 135
+PASS Eumnu data version = 135
+PASS 읍루 극동 북부 deleted from WORLD.territories
+PASS 읍루 동북 해안 deleted from WORLD.territories
+PASS 읍루 극동 중부 deleted from WORLD.territories
+PASS eumnu_far_northeast stable id deleted
+PASS eumnu_far_east_north stable id deleted
+PASS eumnu_far_east_central stable id deleted
+PASS 읍루 동해안 remains as the sole far-east expansion node
+PASS 연해주 북부 label center updated
+PASS 숙신 고토 label center updated
+PASS 연해주 남부 label center updated
+PASS 읍루 동해안 graph links rebuilt to three real touching base territories
+PASS WORLD.neighbors length matches WORLD.territories
+PASS rebuilt world.landPath uses clipped 연해주 남부 geometry
+PASS v134 Japan map data remains loaded/unchanged
+INFO territory count 116
+PASS 연해주 북부 polygon valid
+PASS 숙신 고토 polygon valid
+PASS 연해주 남부 polygon valid
+PASS 읍루 동해안 polygon valid
+PASS patched northeast polygons have zero area overlap / no duplicate fill seams
+PASS representative blue-mask coast points are pure sea
+PASS MapExpansionV125.js syntax check

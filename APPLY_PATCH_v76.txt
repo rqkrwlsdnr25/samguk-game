@@ -1,0 +1,13 @@
+삼국쟁패 v76 왕권 UI 클릭 복구 패치
+
+v75 전체본에 다음 파일을 덮어쓰세요.
+- game.js
+- AuthoritySystem.js
+- authority-system.css
+
+핵심 변경:
+- 왕권 버튼에 직접 onclick="return openKingdomRankUI(event)" 연결
+- 전역 openKingdomRankUI() 추가
+- capture 단계에서 이벤트를 차단하던 v75 리스너 제거
+- body 직속 #kingdomRankModal 독립 모달 사용
+- 선택 패널의 #orders가 render()로 교체돼도 모달은 유지

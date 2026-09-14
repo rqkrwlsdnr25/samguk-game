@@ -1,0 +1,11 @@
+v65 전체본에 이 패치 ZIP의 파일을 같은 상대 경로로 덮어쓰세요.
+
+수정 파일:
+- map.js
+- diplomacy-strategic-mode.css
+- MANIFEST.json
+
+추가 파일:
+- PATCH_NOTES_v66.txt
+- TEST_RESULTS_v66.txt
+- APPLY_PATCH_v66.txt

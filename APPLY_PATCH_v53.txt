@@ -1,0 +1,13 @@
+삼국쟁패 v53 렌더링 최적화 패치 적용 안내
+
+적용 기준: v52 하단 외교 / 거래 시스템 버전
+
+가장 안전한 방법:
+1. 기존 v52 폴더를 별도 백업합니다.
+2. 패치 ZIP의 game.js, map.js, DiplomacyTradeSystem.js, diplomacy-bottom-trade.css를 기존 폴더에 덮어씁니다.
+3. PATCH_NOTES_v53.txt / TEST_RESULTS_v53.txt는 참고용입니다.
+4. 브라우저 캐시를 새로고침(Ctrl+F5)한 뒤 index.html을 실행합니다.
+
+권장:
+- 패치 ZIP보다 '전체본 ZIP'을 새 폴더에 압축 해제하여 먼저 테스트하세요.
+- 정상 확인 후 기존 작업 폴더를 교체하는 방식이 가장 안전합니다.

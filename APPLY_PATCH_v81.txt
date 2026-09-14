@@ -1,0 +1,14 @@
+[v81 적용 파일]
+1. game.js 교체
+2. index.html 교체
+3. espionage-cinematic-ui.css 추가
+4. 아래 이미지 7개를 index.html과 같은 폴더에 추가
+   - image_HVYpzu.png
+   - image_zlI1-7.png
+   - image_VJrNXn.png
+   - image_U5ZYX_.png
+   - image_smlfKO.png
+   - image_ZTBQhS.png
+   - image_OTJoMB.png
+
+기존 세이브/전투/AI/지도 데이터 구조 변경 없음.

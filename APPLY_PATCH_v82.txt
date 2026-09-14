@@ -1,0 +1,9 @@
+[v82 정찰 기능 패치 적용]
+기준: 삼국쟁패 v81 첩보/계략 시네마틱 UI
+
+1. index.html 교체
+2. ScoutReconSystem.js 추가
+3. scout-recon.css 추가
+
+기존 game.js / map.js / world.js / 이미지 에셋은 수정하지 않습니다.
+따라서 패치 ZIP을 기존 v81 폴더에 덮어쓰면 됩니다.

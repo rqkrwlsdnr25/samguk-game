@@ -1,0 +1,17 @@
+[v54 패치 적용]
+
+v53 전체본 폴더에 패치 ZIP의 파일을 같은 경로로 덮어씁니다.
+
+변경/추가 파일
+- index.html
+- game.js
+- map.js
+- RegionGeometry.js (신규)
+- java-backend-example/src/main/java/com/samguk/geometry/Point.java (신규)
+- java-backend-example/src/main/java/com/samguk/geometry/PolygonCentroid.java (신규)
+- java-backend-example/src/main/java/com/samguk/geometry/Region.java (신규)
+- java-backend-example/README_GEOMETRY_v54.md (신규)
+- PATCH_NOTES_v54.txt
+- TEST_RESULTS_v54.txt
+- MANIFEST.json
+- README.md

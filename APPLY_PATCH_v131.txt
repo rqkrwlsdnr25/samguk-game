@@ -1,0 +1,368 @@
+삼국쟁패 APPLY_PATCH_v131
+기준 버전: v130
+목표: 왜 시코쿠 영토 노드 완전 삭제 + 바다 복원
+
+========================================================================================
+FILE: JapanMapDataV130.js (FULL REPLACEMENT, NO OMISSION)
+========================================================================================
+(function(global){
+  'use strict';
+  const DATA={"version":131,"mask":{"source":"assets/map/japan_red_blue_mask_v131.png","landAlpha":"assets/map/japan_land_alpha_v131.png","seaAlpha":"assets/map/japan_sea_alpha_v131.png","pixelWidth":812,"pixelHeight":786,"worldBounds":{"x":658.5,"y":800.9,"width":454.72,"height":468.456}},"removedBlueMaskNodes":["왜 기내 동부","왜 남부","왜 남동부"],"territories":[{"id":"wa_northeast_expansion","name":"왜 동북부","x":996.44,"y":951.3,"home":11,"terrainType":"plain","resources":["wood"],"path":"M1021.94,915.33L1016.34,915.93L1011.30,914.74L1004.02,916.52L998.42,914.74L990.58,919.50L987.22,918.91L982.74,923.08L971.54,926.06L969.86,924.87L969.86,988.04L980.50,988.04L979.94,983.87L982.18,985.06L984.42,983.87L987.22,984.47L987.22,981.49L992.82,983.87L995.06,979.70L996.18,982.08L1005.14,979.70L1010.18,980.89L1014.66,983.87L1015.78,986.26L1017.46,985.66L1021.94,988.04Z"},{"id":"wa_far_east_expansion","name":"왜 극동부","x":1071.92,"y":976.96,"home":11,"terrainType":"plain","resources":["herb"],"path":"M1026.42,994.60L1024.18,995.20L1022.50,997.58L1022.50,1004.73L1025.86,999.37ZM1099.22,868.25L1096.98,868.25L1091.94,871.82L1091.94,873.61L1086.90,880.17L1084.10,887.92L1082.42,888.51L1084.10,897.45L1089.70,905.80L1088.58,914.14L1086.34,914.14L1085.78,908.78L1084.10,906.99L1082.42,909.97L1082.98,916.52L1080.74,918.31L1075.70,918.31L1072.34,923.68L1070.66,922.48L1067.86,926.66L1064.50,927.85L1053.86,926.66L1052.74,924.87L1053.86,923.08L1051.62,919.50L1046.58,922.48L1045.46,926.06L1040.42,923.08L1040.98,921.29L1038.18,920.70L1044.34,912.35L1040.42,905.80L1031.46,908.18L1022.50,914.74L1022.50,989.83L1029.22,991.62L1042.10,982.68L1053.86,983.28L1055.54,985.66L1055.54,988.04L1053.30,990.43L1053.86,997.58L1051.62,1002.94L1042.66,1013.08L1040.42,1013.08L1035.38,1017.84L1035.38,1019.63L1038.74,1023.80L1038.74,1030.36L1033.14,1030.96L1032.02,1032.74L1035.38,1036.92L1030.90,1040.49L1030.90,1047.64L1034.26,1047.64L1037.62,1053.01L1049.38,1060.76L1045.46,1064.33L1048.82,1066.12L1048.82,1069.10L1051.62,1072.08L1070.66,1078.64L1079.06,1071.48L1080.74,1065.52L1083.54,1061.95L1083.54,1060.16L1081.30,1059.56L1085.22,1057.78L1089.70,1047.64L1095.86,1042.88L1094.74,1041.09L1098.66,1039.30L1099.22,1036.32L1096.42,1033.94L1102.02,1026.19L1112.66,1022.02L1112.66,878.38L1110.42,879.57L1108.74,877.78L1105.38,877.19L1102.58,873.61L1103.14,871.82L1099.78,870.04Z"},{"id":"wa_central_east_expansion","name":"왜 중부 동부","x":987.25,"y":1043.24,"home":11,"terrainType":"plain","resources":["tachibana"],"path":"M976.02,1014.27L969.86,1015.46L969.86,1086.38L978.82,1086.38L980.50,1079.23L984.42,1070.89L990.02,1069.10L991.70,1065.52L996.74,1063.74L1002.34,1057.18L1007.94,1054.20L1007.38,1050.62L1005.70,1050.03L1007.94,1048.24L1008.50,1044.66L1006.26,1040.49L1001.78,1040.49L999.54,1038.11L999.54,1031.55L1002.90,1026.78L1000.10,1024.40L992.26,1025.59L988.90,1022.02L983.86,1020.23L982.18,1018.44L982.18,1015.46ZM1021.94,998.18L1014.66,1005.33L1011.30,1013.08L1007.94,1015.46L1007.94,1016.65L1011.86,1016.65L1012.98,1017.84L1012.98,1024.40L1021.94,1020.23L1021.94,1016.06L1019.70,1012.48L1019.70,1008.90L1021.94,1005.92ZM969.86,991.62L972.10,991.62L973.22,993.41L978.26,992.22L979.94,988.64L969.86,988.64Z"},{"id":"wa_kii_expansion","name":"왜 기이","x":987.18,"y":1045.53,"home":11,"terrainType":"plain","resources":["wood"],"path":"M974.90,1014.27L974.34,1015.46L969.86,1015.46L969.86,1086.38L976.58,1095.32L978.26,1095.32L979.38,1094.13L979.38,1083.40L984.42,1070.89L990.02,1069.10L991.70,1065.52L996.74,1063.74L1002.34,1057.18L1007.94,1054.20L1007.38,1050.62L1005.70,1050.03L1007.94,1048.24L1008.50,1044.66L1006.26,1040.49L1001.78,1040.49L999.54,1038.11L999.54,1031.55L1002.90,1026.78L1000.10,1024.40L992.26,1025.59L988.90,1022.02L983.86,1020.23L982.18,1018.44L982.18,1015.46ZM1021.94,998.18L1014.66,1005.33L1011.30,1013.08L1007.94,1015.46L1007.94,1016.65L1011.86,1016.65L1012.98,1017.84L1012.98,1024.40L1021.94,1020.23L1021.94,1016.06L1019.70,1012.48L1019.70,1008.90L1021.94,1005.92Z"},{"id":"wa_kyushu_south_expansion","name":"왜 규슈 남부","x":786.17,"y":1193.14,"home":11,"terrainType":"plain","resources":["tachibana"],"path":"M762.66,1151.94L753.70,1151.35L749.22,1156.12L747.54,1153.14L748.10,1149.56L746.98,1148.96L739.70,1151.35L734.66,1162.67L734.66,1167.44L739.14,1168.63L734.66,1169.82L734.66,1172.21L738.02,1175.78L740.82,1175.78L740.82,1174.00L744.74,1168.63L748.66,1166.25L749.78,1161.48L755.94,1160.88L756.50,1162.08L759.30,1162.08ZM838.82,1145.39L773.30,1145.39L768.26,1149.56L769.38,1153.14L768.82,1157.90L764.34,1162.08L762.66,1169.23L757.06,1176.38L757.62,1179.36L753.70,1182.34L749.22,1181.15L745.86,1182.94L747.54,1186.51L746.42,1192.47L748.66,1197.24L745.86,1207.37L754.82,1218.10L755.38,1221.08L753.14,1231.81L749.22,1235.38L746.98,1233.60L743.62,1233.60L743.62,1236.58L747.54,1240.75L748.66,1246.11L762.10,1247.30L764.90,1249.69L765.46,1253.26L771.62,1252.67L773.86,1250.28L773.86,1245.52L768.82,1240.75L768.82,1235.38L765.46,1230.02L768.82,1224.66L772.18,1214.52L775.54,1210.95L782.82,1215.12L781.14,1221.68L777.22,1224.06L776.10,1231.21L779.46,1234.79L782.26,1243.13L778.34,1256.24L774.98,1258.03L775.54,1263.40L778.34,1263.40L783.38,1259.22L789.54,1257.44L792.90,1254.46L796.26,1248.50L799.06,1247.90L800.18,1240.15L795.70,1238.36L796.82,1234.19L799.06,1231.81L802.42,1230.62L806.34,1232.40L808.58,1237.77L813.62,1236.58L815.30,1234.79L816.42,1224.66L820.90,1217.50L822.02,1209.16L819.78,1202.60L828.18,1169.23L832.10,1160.29L833.78,1159.10L832.66,1155.52L836.02,1154.33L836.02,1151.94L833.78,1150.75L834.90,1146.58Z"},{"id":"iki_island","name":"이키섬","x":724,"y":1048,"home":11,"terrainType":"plain","resources":["salt"],"path":"M716,1040L724,1034L734,1038L738,1047L732,1056L722,1059L714,1052Z"},{"id":"goto_islands","name":"오도열도","x":678,"y":1186,"home":11,"terrainType":"plain","resources":["tachibana"],"path":"M666,1179L677,1172L689,1176L696,1186L691,1198L680,1204L667,1199L662,1188Z"},{"id":"oki_island","name":"오키섬","x":846,"y":897,"home":11,"terrainType":"plain","resources":["herb"],"path":"M837,890L846,884L856,889L861,898L855,908L845,912L835,905L832,897Z"}],"landLinks":[["왜 북부","왜 동북부"],["왜 북부 서부","왜 동북부"],["왜 동부 북부","왜 동북부"],["왜 동북부","왜 극동부"],["왜 동북부","왜 중부 동부"],["왜 극동부","왜 중부 동부"],["왜 동부 북부","왜 중부 동부"],["왜 동부","왜 중부 동부"],["왜 기이","왜 중부 동부"],["왜 기이","왜 동부"],["왜 서부","왜 규슈 남부"],["왜 서부 동부","왜 규슈 남부"]],"seaLinks":[["우산","오키섬"],["오키섬","왜 동북부"],["대마도","이키섬"],["이키섬","왜 서부"],["이키섬","왜 동북부"],["탐라","오도열도"],["탐라 동부","오도열도"],["대마도","오도열도"],["오도열도","왜 서부"],["오도열도","왜 규슈 남부"]],"removedTerritories":["왜 시코쿠"]};
+  function deepFreeze(value){if(!value||typeof value!=='object'||Object.isFrozen(value))return value;Object.freeze(value);for(const key of Object.keys(value))deepFreeze(value[key]);return value;}
+  deepFreeze(DATA);global.SAMGUK_JAPAN_MAP_DATA_V130=DATA;
+  if(typeof module==='object'&&module.exports)module.exports=DATA;
+})(typeof window!=='undefined'?window:globalThis);
+
+========================================================================================
+FILE: MapExpansionV125.js (FULL REPLACEMENT, NO OMISSION)
+========================================================================================
+(function(global){
+  'use strict';
+
+  const world=global.SAMGUK_WORLD;
+  const japan=global.SAMGUK_JAPAN_MAP_DATA_V130;
+  if(!world||!Array.isArray(world.territories)||!Array.isArray(world.neighbors))return;
+  if(!japan||!Array.isArray(japan.territories))throw new Error('JapanMapDataV130.js must load before MapExpansionV125.js');
+  if(world.__mapExpansionV125Applied)return;
+
+  const START_INDEX=world.territories.length;
+  const BASE_LAND_PATH=String(world.landPath||'');
+
+  const NON_JAPAN_TERRITORIES=[
+    {id:'eumnu_far_northeast',name:'읍루 극동 북부',x:1007,y:72,home:7,terrainType:'plain',resources:['wood'],path:'M969.5,0L1038,0L1052,34L1047,78L1034,118L1008,145L969.5,135Z'},
+    {id:'eumnu_far_east_north',name:'읍루 동북 해안',x:1080,y:82,home:7,terrainType:'plain',resources:['herb'],path:'M1038,0L1120,0L1116,55L1108,108L1090,153L1048,177L1008,145L1034,118L1047,78L1052,34Z'},
+    {id:'eumnu_far_east_central',name:'읍루 극동 중부',x:1001,y:226,home:7,terrainType:'plain',resources:['bow'],path:'M969.5,135L1008,145L1048,177L1042,220L1025,261L1000,300L969.5,308Z'},
+    {id:'eumnu_far_east_coast',name:'읍루 동해안',x:1067,y:276,home:7,terrainType:'plain',resources:['wood'],path:'M969.5,308L1000,300L1025,261L1042,220L1048,177L1090,153L1108,190L1117,236L1111,280L1090,320L1054,350L1018,368L969.5,344Z'},
+    {id:'dongjin_jiangnan_west',name:'동진 강남 서부',x:-116,y:1169,home:10,terrainType:'plain',resources:['rice'],path:'M-180,1120L-118,1138L-60,1145L-70,1190L-115,1210L-180,1190Z'},
+    {id:'dongjin_jiangnan_central',name:'동진 강남 중부',x:-8,y:1171,home:10,terrainType:'plain',resources:['silk'],path:'M-60,1145L32,1145L74,1138L78,1185L35,1215L-20,1205L-70,1190Z'},
+    {id:'dongjin_jiangnan_east',name:'동진 강남 동부',x:139,y:1174,home:10,terrainType:'plain',resources:['salt'],path:'M74,1138L168,1145L220,1160L205,1205L150,1222L78,1185Z'},
+    {id:'dongjin_southsea_west',name:'동진 남해 서부',x:-121,y:1235,home:10,terrainType:'plain',resources:['rice'],path:'M-180,1190L-115,1210L-70,1190L-55,1240L-80,1260L-180,1260Z'},
+    {id:'dongjin_southsea_central',name:'동진 남해 중부',x:-7,y:1237,home:10,terrainType:'plain',resources:['silk'],path:'M-70,1190L-20,1205L35,1215L45,1260L-80,1260L-55,1240Z'},
+    {id:'dongjin_southsea_east',name:'동진 남해 동부',x:137,y:1240,home:10,terrainType:'plain',resources:['salt'],path:'M35,1215L150,1222L205,1205L220,1245L200,1260L45,1260Z'}
+  ];
+
+  const TERRITORIES=[...NON_JAPAN_TERRITORIES,...japan.territories.map(t=>({...t,resources:Array.isArray(t.resources)?t.resources.slice():[]}))];
+
+  const NON_JAPAN_LAND_LINKS=[
+    ['연해주 북부','읍루 극동 북부'],['찰하','읍루 극동 북부'],
+    ['읍루 극동 북부','읍루 동북 해안'],['읍루 극동 북부','읍루 극동 중부'],
+    ['동녕','읍루 극동 중부'],['숙신 고토','읍루 극동 중부'],['연해주 남부','읍루 극동 중부'],
+    ['읍루 동북 해안','읍루 동해안'],['읍루 극동 중부','읍루 동해안'],['연해주 남부','읍루 동해안'],
+    ['서주','동진 강남 서부'],['동진 서부','동진 강남 서부'],['동진 남부','동진 강남 서부'],
+    ['동진 남부','동진 강남 중부'],['동진 남동','동진 강남 중부'],['동진 남동','동진 강남 동부'],
+    ['동진 연안','동진 강남 동부'],['동진 강남 서부','동진 강남 중부'],['동진 강남 중부','동진 강남 동부'],
+    ['동진 강남 서부','동진 남해 서부'],['동진 강남 중부','동진 남해 중부'],['동진 강남 동부','동진 남해 동부'],
+    ['동진 남해 서부','동진 남해 중부'],['동진 남해 중부','동진 남해 동부']
+  ];
+
+  const LAND_LINKS=[...NON_JAPAN_LAND_LINKS,...japan.landLinks.map(pair=>pair.slice())];
+  const SEA_LINKS=japan.seaLinks.map(pair=>pair.slice());
+  const TERRAIN_RULES=TERRITORIES.map(()=>({kind:'plain',river:false}));
+
+  function routeKey(a,b){return [Number(a),Number(b)].sort((x,y)=>x-y).join('-')}
+  function nameMap(){return new Map(world.territories.map((t,i)=>[String(t?.name||''),i]))}
+  function ensureNeighborSlot(){while(world.neighbors.length<world.territories.length)world.neighbors.push([])}
+  function addNeighbor(a,b){
+    if(!Number.isInteger(a)||!Number.isInteger(b)||a<0||b<0||a===b)return false;
+    ensureNeighborSlot();
+    if(!world.neighbors[a].includes(b))world.neighbors[a].push(b);
+    if(!world.neighbors[b].includes(a))world.neighbors[b].push(a);
+    world.neighbors[a].sort((x,y)=>x-y);
+    world.neighbors[b].sort((x,y)=>x-y);
+    return true;
+  }
+  function addSeaRoute(a,b){
+    if(!Array.isArray(world.seaRoutes))world.seaRoutes=[];
+    const key=routeKey(a,b);
+    if(!world.seaRoutes.some(pair=>Array.isArray(pair)&&pair.length>=2&&routeKey(pair[0],pair[1])===key)){
+      world.seaRoutes.push([Math.min(a,b),Math.max(a,b)]);
+    }
+    return addNeighbor(a,b);
+  }
+  function addNamedLinks(links,sea=false){
+    const ids=nameMap();
+    for(const [from,to] of links){
+      const a=ids.get(from),b=ids.get(to);
+      if(!Number.isInteger(a)||!Number.isInteger(b))continue;
+      if(sea)addSeaRoute(a,b);else addNeighbor(a,b);
+    }
+  }
+
+  for(const entry of TERRITORIES){
+    if(world.territories.some(t=>String(t?.id||'')===entry.id||String(t?.name||'')===entry.name))continue;
+    world.territories.push({
+      id:entry.id,name:entry.name,x:entry.x,y:entry.y,home:entry.home,path:entry.path,
+      resources:Array.isArray(entry.resources)?entry.resources.slice():[],terrainType:entry.terrainType||null,mapExpansion:'v131'
+    });
+    world.neighbors.push([]);
+  }
+
+  world.baseLandPath=BASE_LAND_PATH;
+  world.landPath=BASE_LAND_PATH+TERRITORIES.map(t=>t.path).join('');
+
+  addNamedLinks(LAND_LINKS,false);
+  addNamedLinks(SEA_LINKS,true);
+
+  const seaSet=new Set((world.seaRoutes||[]).map(pair=>routeKey(pair[0],pair[1])));
+  for(let i=0;i<world.territories.length;i++){
+    const territory=world.territories[i];
+    const connected=Array.isArray(world.neighbors[i])?world.neighbors[i].slice().sort((a,b)=>a-b):[];
+    territory.connectedRoutes=connected;
+    territory.connectedSeaRoutes=connected.filter(j=>seaSet.has(routeKey(i,j)));
+  }
+
+  world.minX=Math.min(Number.isFinite(Number(world.minX))?Number(world.minX):-180.5,-180.5);
+  world.minY=Math.min(Number.isFinite(Number(world.minY))?Number(world.minY):-.5,-.5);
+  world.width=Math.max(Number(world.width)||0,1301.25);
+  world.height=Math.max(Number(world.height)||0,1271.0);
+  world.expandedBounds=Object.freeze({minX:-180.5,minY:-.5,maxX:1120.75,maxY:1270.5,width:1301.25,height:1271.0});
+  world.__mapExpansionV125Applied=true;
+
+  function territoryId(name){return nameMap().get(String(name))}
+  function canMoveSeaRoute(a,b){
+    const x=Number(a),y=Number(b);
+    if(!Number.isInteger(x)||!Number.isInteger(y)||x===y)return false;
+    if(!world.territories[x]||!world.territories[y])return false;
+    return seaSet.has(routeKey(x,y));
+  }
+  function connectedRoutes(id){
+    const i=Number(id);
+    return Number.isInteger(i)&&Array.isArray(world.neighbors[i])?world.neighbors[i].slice():[];
+  }
+  function appendTerrainRules(target){
+    if(!target||!Array.isArray(target.areas))return false;
+    for(let i=0;i<TERRAIN_RULES.length;i++){
+      const targetIndex=START_INDEX+i;
+      if(!target.areas[targetIndex])target.areas[targetIndex]={...TERRAIN_RULES[i]};
+    }
+    while(target.areas.length<world.territories.length)target.areas.push({kind:'plain',river:false});
+    return true;
+  }
+
+  global.SAMGUK_MAP_EXPANSION_V125=Object.freeze({
+    version:131,startIndex:START_INDEX,addedCount:world.territories.length-START_INDEX,
+    territoryNames:Object.freeze(TERRITORIES.map(t=>t.name)),
+    landLinks:Object.freeze(LAND_LINKS.map(x=>Object.freeze(x.slice()))),
+    seaLinks:Object.freeze(SEA_LINKS.map(x=>Object.freeze(x.slice()))),
+    terrainRules:Object.freeze(TERRAIN_RULES.map(x=>Object.freeze({...x}))),
+    geometryRevision:'v131-remove-shikoku-to-sea',
+    removedBlueMaskNodes:japan.removedBlueMaskNodes,
+    territoryId,canMoveSeaRoute,connectedRoutes,appendTerrainRules,bounds:world.expandedBounds
+  });
+})(window);
+
+========================================================================================
+FILE: JapanTerrainMaskCanvas.js (FULL REPLACEMENT, NO OMISSION)
+========================================================================================
+(function(global){
+  'use strict';
+
+  const DATA=global.SAMGUK_JAPAN_MAP_DATA_V130;
+  if(!DATA||!DATA.mask)return;
+
+  const state={canvas:null,ctx:null,land:null,sea:null,texture:null,ready:false,raf:0,dpr:1,offscreen:null,offCtx:null,seaCanvas:null,landAlpha:null,seaAlpha:null};
+  const SEA_COLOR='#9ecbd0';
+  const TEXTURE_ALPHA=.34;
+
+  function loadImage(src){
+    return new Promise((resolve,reject)=>{
+      const img=new Image();
+      img.decoding='async';
+      img.onload=()=>resolve(img);
+      img.onerror=()=>reject(new Error(`failed to load ${src}`));
+      img.src=src;
+    });
+  }
+
+  function ensureCanvas(){
+    const viewport=document.getElementById('mapViewport');
+    if(!viewport)return null;
+    let canvas=document.getElementById('japanTerrainMaskCanvas');
+    if(!canvas){
+      canvas=document.createElement('canvas');
+      canvas.id='japanTerrainMaskCanvas';
+      canvas.className='japan-terrain-mask-canvas';
+      canvas.setAttribute('aria-hidden','true');
+      viewport.appendChild(canvas);
+    }
+    state.canvas=canvas;
+    state.ctx=canvas.getContext('2d',{alpha:true,desynchronized:true});
+    resize();
+    return canvas;
+  }
+
+  function resize(){
+    const viewport=document.getElementById('mapViewport'),canvas=state.canvas;
+    if(!viewport||!canvas)return;
+    const dpr=Math.max(1,Math.min(2,Number(global.devicePixelRatio)||1));
+    const w=Math.max(1,viewport.clientWidth||1),h=Math.max(1,viewport.clientHeight||1);
+    const pw=Math.round(w*dpr),ph=Math.round(h*dpr);
+    if(canvas.width!==pw||canvas.height!==ph){canvas.width=pw;canvas.height=ph;}
+    canvas.style.width=`${w}px`;canvas.style.height=`${h}px`;
+    state.dpr=dpr;
+  }
+
+  function buildPrecomposedLand(){
+    const w=DATA.mask.pixelWidth,h=DATA.mask.pixelHeight;
+    const c=document.createElement('canvas');c.width=w;c.height=h;
+    const ctx=c.getContext('2d',{alpha:true});
+    const tile=Math.max(96,Math.round(w*.18));
+    for(let y=0;y<h;y+=tile){
+      for(let x=0;x<w;x+=tile){
+        ctx.drawImage(state.texture,x,y,tile,tile);
+      }
+    }
+    ctx.globalCompositeOperation='destination-in';
+    ctx.drawImage(state.land,0,0,w,h);
+    ctx.globalCompositeOperation='source-over';
+    state.offscreen=c;state.offCtx=ctx;
+
+    const seaCanvas=document.createElement('canvas');seaCanvas.width=w;seaCanvas.height=h;
+    const seaCtx=seaCanvas.getContext('2d',{alpha:true,willReadFrequently:true});
+    seaCtx.fillStyle=SEA_COLOR;seaCtx.fillRect(0,0,w,h);
+    seaCtx.globalCompositeOperation='destination-in';seaCtx.drawImage(state.sea,0,0,w,h);
+    seaCtx.globalCompositeOperation='source-over';state.seaCanvas=seaCanvas;
+
+    const alphaCanvas=document.createElement('canvas');alphaCanvas.width=w;alphaCanvas.height=h;
+    const alphaCtx=alphaCanvas.getContext('2d',{willReadFrequently:true});
+    alphaCtx.drawImage(state.land,0,0,w,h);state.landAlpha=alphaCtx.getImageData(0,0,w,h).data;
+    alphaCtx.clearRect(0,0,w,h);alphaCtx.drawImage(state.sea,0,0,w,h);state.seaAlpha=alphaCtx.getImageData(0,0,w,h).data;
+  }
+
+  function worldToMaskPixel(x,y){
+    const b=DATA.mask.worldBounds;
+    return [
+      (Number(x)-b.x)/b.width*DATA.mask.pixelWidth,
+      (Number(y)-b.y)/b.height*DATA.mask.pixelHeight
+    ];
+  }
+
+  function classAtWorld(x,y){
+    if(!state.ready)return 'unknown';
+    const [px,py]=worldToMaskPixel(x,y);
+    if(px<0||py<0||px>=DATA.mask.pixelWidth||py>=DATA.mask.pixelHeight)return 'outside';
+    const ix=Math.max(0,Math.min(DATA.mask.pixelWidth-1,Math.floor(px)));
+    const iy=Math.max(0,Math.min(DATA.mask.pixelHeight-1,Math.floor(py)));
+    const offset=(iy*DATA.mask.pixelWidth+ix)*4+3;
+    if(state.landAlpha&&state.landAlpha[offset]>32)return 'land';
+    if(state.seaAlpha&&state.seaAlpha[offset]>32)return 'sea';
+    return 'outside';
+  }
+
+  function scheduleDraw(){
+    if(state.raf)return;
+    state.raf=requestAnimationFrame(()=>{state.raf=0;draw();});
+  }
+
+  function draw(){
+    if(!state.ready||!state.ctx||!state.canvas)return;
+    resize();
+    const view=global.SAMGUK_MAP_CAMERA_API?.getView?.();
+    const viewport=document.getElementById('mapViewport');
+    if(!Array.isArray(view)||view.length!==4||!viewport)return;
+    const dpr=state.dpr,cw=state.canvas.width,ch=state.canvas.height;
+    const [vx,vy,vw,vh]=view,b=DATA.mask.worldBounds;
+    const sx=(b.x-vx)/vw*cw,sy=(b.y-vy)/vh*ch,sw=b.width/vw*cw,sh=b.height/vh*ch;
+    const ctx=state.ctx;
+    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cw,ch);
+    ctx.save();
+    ctx.beginPath();ctx.rect(Math.max(0,sx),Math.max(0,sy),Math.max(0,Math.min(cw,sx+sw)-Math.max(0,sx)),Math.max(0,Math.min(ch,sy+sh)-Math.max(0,sy)));ctx.clip();
+
+    // Red mask: accelerated terrain texture overlay. The heavy coastline is already rasterized once.
+    ctx.globalAlpha=TEXTURE_ALPHA;ctx.globalCompositeOperation='multiply';
+    ctx.drawImage(state.offscreen,sx,sy,sw,sh);
+
+    // Blue mask: hard sea restoration. This intentionally covers any SVG polygon that may remain below.
+    ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+    ctx.drawImage(state.seaCanvas,sx,sy,sw,sh);
+    ctx.restore();
+  }
+
+  function bindBlueSeaHitGuard(){
+    const viewport=document.getElementById('mapViewport');
+    if(!viewport)return;
+    viewport.addEventListener('click',event=>{
+      if(!state.ready)return;
+      const p=global.SAMGUK_MAP_CAMERA_API?.clientToWorld?.(event.clientX,event.clientY);
+      if(!Array.isArray(p))return;
+      if(classAtWorld(p[0],p[1])==='sea'){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    },true);
+  }
+
+  async function init(){
+    if(!ensureCanvas())return;
+    try{
+      [state.land,state.sea,state.texture]=await Promise.all([
+        loadImage(DATA.mask.landAlpha),loadImage(DATA.mask.seaAlpha),loadImage('mountain_terrain_texture.png')
+      ]);
+      buildPrecomposedLand();state.ready=true;bindBlueSeaHitGuard();scheduleDraw();
+      document.dispatchEvent(new CustomEvent('samguk:japan-mask-ready'));
+    }catch(error){console.error('[삼국쟁패][v131] Japan terrain mask init failed',error);}
+  }
+
+  document.addEventListener('DOMContentLoaded',init,{once:true});
+  document.addEventListener('samguk:map-view-changed',scheduleDraw,{passive:true});
+  document.addEventListener('samguk:map-rendered',scheduleDraw,{passive:true});
+  global.addEventListener('resize',scheduleDraw,{passive:true});
+
+  global.SAMGUK_JAPAN_MASK_CANVAS=Object.freeze({
+    version:131,enabled:true,worldToMaskPixel,classAtWorld,scheduleDraw,draw,
+    maskSource:DATA.mask.source,landMask:DATA.mask.landAlpha,seaMask:DATA.mask.seaAlpha
+  });
+})(window);
+
+========================================================================================
+BINARY ASSET REPLACEMENTS
+========================================================================================
+assets/map/japan_red_blue_mask_v131.png
+assets/map/japan_land_alpha_v131.png
+assets/map/japan_sea_alpha_v131.png
+
+이 3개 PNG는 v130 왜 시코쿠 Polygon 영역만 변경했습니다.
+- land alpha: 시코쿠 영역 alpha 0
+- sea alpha: 시코쿠 영역 alpha 255
+- red/blue debug mask: 시코쿠 영역 BLUE
+- 기타 픽셀은 변경하지 않음(경계 antialias 제거용 1px fringe 제외)
+
+========================================================================================
+SAVE MIGRATION
+========================================================================================
+game.js 수정 불필요: v128+의 restoreTurnSnapshot()이 이미 stable territoryId 기반으로 확장 영토를 재결합합니다.
+wa_shikoku_expansion은 새 WORLD에 없으므로 저장 행만 폐기되고, 뒤쪽 영토는 stable ID로 재매핑됩니다.
+
+========================================================================================
+PATCH NOTES
+========================================================================================
+[삼국쟁패 v131 패치 노트]
+기준 버전: v130
+목표: 왜 시코쿠 영토 노드 완전 삭제 + 해당 지역 바다 복원
+
+1. 완전 삭제
+- JapanMapDataV130.js에서 name='왜 시코쿠', id='wa_shikoku_expansion' 영토 객체 제거.
+- 왜 시코쿠를 참조하던 LAND_LINKS 2개 제거:
+  * 왜 동부 <-> 왜 시코쿠
+  * 왜 시코쿠 <-> 왜 기이
+- SEA_LINKS에는 원래 시코쿠 참조가 없으며 그대로 유지.
+
+2. 렌더링/마스크 바다 복원
+- world.landPath는 JapanMapData의 territories에서 재생성되므로 시코쿠 path가 더 이상 포함되지 않음.
+- v130 시코쿠 Polygon 영역을 v131 land alpha에서 완전히 제거.
+- 동일 영역을 v131 sea alpha에 100% 불투명 바다 마스크로 등록.
+- source/debug mask에서도 동일 영역을 BLUE로 변경.
+- 1px anti-alias fringe까지 제거하여 주황색/텍스처 잔상이 남지 않게 처리.
+
+3. 다른 왜 영토 무변경 보장
+- 왜 기이 / 왜 규슈 남부 / 왜 동북부 / 왜 극동부 / 왜 중부 동부 및 모든 섬 데이터는 v130 값 그대로 유지.
+- 다른 LAND_LINKS / 모든 SEA_LINKS는 v130과 동일.
+
+4. 저장 데이터 안전성
+- 기존 v128+ game.js의 stable territoryId 복원 로직을 그대로 사용.
+- v130 저장에서 wa_shikoku_expansion 행은 새 WORLD에 stable ID가 없으므로 폐기.
+- 시코쿠 뒤쪽 영토는 stable ID로 새 index를 찾아 재배치되므로 소유권/병력/건물 데이터가 한 칸 밀리지 않음.
+- 시코쿠에 배치되어 있던 장수 territoryId는 기존 복원 로직에서 안전하게 null 처리됨.
+
+5. 캐시 안전성
+- 마스크 파일명을 *_v131.png로 갱신하여 브라우저가 v130 이미지를 캐시 재사용하지 않도록 함.

@@ -1,0 +1,15 @@
+[v79 적용]
+기존 v78 폴더에 패치 ZIP의 파일을 동일 경로로 덮어쓰세요.
+hero_frame.png는 게임 루트(index.html과 같은 폴더)에 있어야 합니다.
+
+변경 파일:
+- PersonnelSystem.js
+- personnel-system.css
+- game.js
+- index.html
+- hero_frame.png
+- java-backend-example/src/main/java/com/samguk/personnel/MyOfficerListService.java
+- java-backend-example/src/main/java/com/samguk/personnel/MyOfficerListController.java
+- java-backend-example/README_MY_OFFICERS_v79.md
+
+적용 후 브라우저 캐시가 남으면 Ctrl+F5로 새로고침하세요.

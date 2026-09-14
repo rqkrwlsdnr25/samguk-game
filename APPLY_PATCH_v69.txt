@@ -1,0 +1,10 @@
+삼국쟁패 v69 패치 적용
+
+v68 전체본 폴더에 다음 파일을 덮어쓰거나 추가하세요.
+- index.html (덮어쓰기)
+- StartMenuManager.js (추가)
+- start-selection-vfx.css (추가)
+- PATCH_NOTES_v69.txt (문서)
+- TEST_RESULTS_v69.txt (문서)
+
+패치 적용 뒤 index.html을 실행하면 시작 세력 선택창이 자동으로 SelectionMode 시네마틱 모드로 전환됩니다.

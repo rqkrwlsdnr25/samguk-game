@@ -1,0 +1,25 @@
+삼국쟁패 v57 패치 적용법
+
+권장: v57 전체본 ZIP을 새 폴더에 압축 해제하여 index.html을 실행하세요.
+
+v56에 패치 ZIP만 적용할 경우 아래 파일을 같은 상대 경로에 덮어씁니다.
+- index.html
+- MapZoomConfig.js
+- SmoothMapZoomController.js
+- WorldMapBoundsController.js
+- GpuMapCamera.js
+- map.js
+- README.md
+- MANIFEST.json
+그리고 신규 파일을 추가합니다.
+- LargeCountryNameZoomFade.js
+- PATCH_NOTES_v57.txt
+- TEST_RESULTS_v57.txt
+- APPLY_PATCH_v57.txt
+
+확인 포인트
+1) + 버튼/휠로 기존 6x보다 훨씬 더 깊게 확대되는지 확인
+2) 1.25x 부근부터 거대 국가명이 부드럽게 투명해지는지 확인
+3) 2.40x 이상에서 거대 국가명이 완전히 사라지는지 확인
+4) 지역명/성/병력 HUD가 그대로 선명한지 확인
+5) 동아시아 전도로 복귀하면 거대 국가명이 다시 나타나는지 확인

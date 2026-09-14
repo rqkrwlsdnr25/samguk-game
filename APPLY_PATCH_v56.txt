@@ -1,0 +1,16 @@
+삼국쟁패 v56 패치 적용법
+
+권장: v56 전체본 ZIP을 새 폴더에 풀어 index.html 실행.
+
+v55에 패치본을 적용하는 경우 아래 파일을 덮어쓰기/추가:
+- index.html
+- map.js
+- README.md
+- MANIFEST.json
+- BorderRenderOptimizer.js
+- border-render-optimizer.css
+- PATCH_NOTES_v56.txt
+- TEST_RESULTS_v56.txt
+- APPLY_PATCH_v56.txt
+
+기존 v55 폴더는 롤백용으로 보존하는 것을 권장한다.

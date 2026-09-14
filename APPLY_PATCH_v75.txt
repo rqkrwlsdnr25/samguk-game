@@ -1,0 +1,9 @@
+삼국쟁패 v75 왕권 UI 클릭 복구 패치
+
+v74 전체본 기준 변경 파일:
+- game.js
+- AuthoritySystem.js
+- authority-system.css
+
+위 3개 파일을 기존 v74 폴더에 덮어쓰면 됩니다.
+PATCH_NOTES_v75.txt는 설명 파일입니다.

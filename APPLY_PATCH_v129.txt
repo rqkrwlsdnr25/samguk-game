@@ -1,0 +1,213 @@
+삼국쟁패 APPLY_PATCH_v129
+목표: 왜(일본 본토) 갈색/주황색 마스크 기준 폴리곤 재정의 + 파란색 마스크 바다 유지
+적용: v128 위에 덮어쓰기
+
+========================================================================================
+FILE: MapExpansionV125.js (FULL REPLACEMENT, NO OMISSION)
+========================================================================================
+(function(global){
+  'use strict';
+
+  const world=global.SAMGUK_WORLD;
+  if(!world||!Array.isArray(world.territories)||!Array.isArray(world.neighbors))return;
+  if(world.__mapExpansionV125Applied)return;
+
+  /*
+   * v129 brown-mask guided refinement for the v125 expansion.
+   *
+   * Core rules enforced by this revision:
+   * - Original atlas coordinates remain untouched.
+   * - Expansion coordinates are appended in the same world-space.
+   * - The user-provided BLUE masking area is pure SEA, not land.
+   * - The old blue-area nodes ('왜 기내 동부', '왜 남부', '왜 남동부') stay fully deleted.
+   * - The remaining Japanese expansion polygons are redefined so only the BROWN/orange mask survives as land.
+   * - Remaining Japanese node centers are moved toward the surviving brown land centers.
+   */
+  const START_INDEX=world.territories.length;
+  const BASE_LAND_PATH=String(world.landPath||'');
+
+  const TERRITORIES=[
+    // ===== 읍루 / 극동 확장 =====
+    {id:'eumnu_far_northeast',name:'읍루 극동 북부',x:1007,y:72,home:7,terrainType:'plain',resources:['wood'],path:'M969.5,0L1038,0L1052,34L1047,78L1034,118L1008,145L969.5,135Z'},
+    {id:'eumnu_far_east_north',name:'읍루 동북 해안',x:1080,y:82,home:7,terrainType:'plain',resources:['herb'],path:'M1038,0L1120,0L1116,55L1108,108L1090,153L1048,177L1008,145L1034,118L1047,78L1052,34Z'},
+    {id:'eumnu_far_east_central',name:'읍루 극동 중부',x:1001,y:226,home:7,terrainType:'plain',resources:['bow'],path:'M969.5,135L1008,145L1048,177L1042,220L1025,261L1000,300L969.5,308Z'},
+    {id:'eumnu_far_east_coast',name:'읍루 동해안',x:1067,y:276,home:7,terrainType:'plain',resources:['wood'],path:'M969.5,308L1000,300L1025,261L1042,220L1048,177L1090,153L1108,190L1117,236L1111,280L1090,320L1054,350L1018,368L969.5,344Z'},
+
+    // ===== 왜 / 일본 본토 동·남부 확장 =====
+    // Only the surviving brown/orange land mask is kept as polygon land.
+    {id:'wa_northeast_expansion',name:'왜 동북부',x:1046,y:974,home:11,terrainType:'plain',resources:['wood'],path:'M969.5,927L1042,922L1078,932L1105,947L1120,972L1116,990L1100,1000L1076,1006L1056,1007L1037,1001L1022,991L1006,983L990,979L979,984L972,994L969.5,1002Z'},
+    {id:'wa_far_east_expansion',name:'왜 극동부',x:1097,y:1017,home:11,terrainType:'plain',resources:['herb'],path:'M1100,1000L1116,990L1120,1008L1118,1030L1111,1048L1098,1061L1084,1064L1077,1055L1070,1038L1072,1021L1082,1009Z'},
+    {id:'wa_central_east_expansion',name:'왜 중부 동부',x:1016,y:1048,home:11,terrainType:'plain',resources:['tachibana'],path:'M969.5,1004L995,1010L1018,1018L1039,1026L1058,1040L1069,1057L1072,1070L1056,1081L1035,1091L1008,1098L985,1090L969.5,1079Z'},
+
+    // ===== 동진 / 강남 남부 확장 =====
+    {id:'dongjin_jiangnan_west',name:'동진 강남 서부',x:-116,y:1169,home:10,terrainType:'plain',resources:['rice'],path:'M-180,1120L-118,1138L-60,1145L-70,1190L-115,1210L-180,1190Z'},
+    {id:'dongjin_jiangnan_central',name:'동진 강남 중부',x:-8,y:1171,home:10,terrainType:'plain',resources:['silk'],path:'M-60,1145L32,1145L74,1138L78,1185L35,1215L-20,1205L-70,1190Z'},
+    {id:'dongjin_jiangnan_east',name:'동진 강남 동부',x:139,y:1174,home:10,terrainType:'plain',resources:['salt'],path:'M74,1138L168,1145L220,1160L205,1205L150,1222L78,1185Z'},
+    {id:'dongjin_southsea_west',name:'동진 남해 서부',x:-121,y:1235,home:10,terrainType:'plain',resources:['rice'],path:'M-180,1190L-115,1210L-70,1190L-55,1240L-80,1260L-180,1260Z'},
+    {id:'dongjin_southsea_central',name:'동진 남해 중부',x:-7,y:1237,home:10,terrainType:'plain',resources:['silk'],path:'M-70,1190L-20,1205L35,1215L45,1260L-80,1260L-55,1240Z'},
+    {id:'dongjin_southsea_east',name:'동진 남해 동부',x:137,y:1240,home:10,terrainType:'plain',resources:['salt'],path:'M35,1215L150,1222L205,1205L220,1245L200,1260L45,1260Z'},
+
+    // ===== 섬 거점 =====
+    {id:'iki_island',name:'이키섬',x:724,y:1048,home:11,terrainType:'plain',resources:['salt'],path:'M716,1040L724,1034L734,1038L738,1047L732,1056L722,1059L714,1052Z'},
+    {id:'goto_islands',name:'오도열도',x:678,y:1186,home:11,terrainType:'plain',resources:['tachibana'],path:'M666,1179L677,1172L689,1176L696,1186L691,1198L680,1204L667,1199L662,1188Z'},
+    {id:'oki_island',name:'오키섬',x:846,y:897,home:11,terrainType:'plain',resources:['herb'],path:'M837,890L846,884L856,889L861,898L855,908L845,912L835,905L832,897Z'}
+  ];
+
+  const LAND_LINKS=[
+    ['연해주 북부','읍루 극동 북부'],['찰하','읍루 극동 북부'],
+    ['읍루 극동 북부','읍루 동북 해안'],['읍루 극동 북부','읍루 극동 중부'],
+    ['동녕','읍루 극동 중부'],['숙신 고토','읍루 극동 중부'],['연해주 남부','읍루 극동 중부'],
+    ['읍루 동북 해안','읍루 동해안'],['읍루 극동 중부','읍루 동해안'],['연해주 남부','읍루 동해안'],
+
+    ['왜 북부','왜 동북부'],['왜 북부 서부','왜 동북부'],['왜 동부 북부','왜 동북부'],
+    ['왜 동북부','왜 극동부'],['왜 동북부','왜 중부 동부'],
+    ['왜 극동부','왜 중부 동부'],['왜 동부 북부','왜 중부 동부'],['왜 동부','왜 중부 동부'],
+
+    ['서주','동진 강남 서부'],['동진 서부','동진 강남 서부'],['동진 남부','동진 강남 서부'],
+    ['동진 남부','동진 강남 중부'],['동진 남동','동진 강남 중부'],['동진 남동','동진 강남 동부'],
+    ['동진 연안','동진 강남 동부'],['동진 강남 서부','동진 강남 중부'],['동진 강남 중부','동진 강남 동부'],
+    ['동진 강남 서부','동진 남해 서부'],['동진 강남 중부','동진 남해 중부'],['동진 강남 동부','동진 남해 동부'],
+    ['동진 남해 서부','동진 남해 중부'],['동진 남해 중부','동진 남해 동부']
+  ];
+
+  const SEA_LINKS=[
+    ['우산','오키섬'],['오키섬','왜 동북부'],
+    ['대마도','이키섬'],['이키섬','왜 서부'],['이키섬','왜 동북부'],
+    ['탐라','오도열도'],['탐라 동부','오도열도'],
+    ['대마도','오도열도'],['오도열도','왜 서부']
+  ];
+
+  const TERRAIN_RULES=TERRITORIES.map(()=>({kind:'plain',river:false}));
+
+  function routeKey(a,b){return [Number(a),Number(b)].sort((x,y)=>x-y).join('-')}
+  function nameMap(){return new Map(world.territories.map((t,i)=>[String(t?.name||''),i]))}
+  function ensureNeighborSlot(){while(world.neighbors.length<world.territories.length)world.neighbors.push([])}
+  function addNeighbor(a,b){
+    if(!Number.isInteger(a)||!Number.isInteger(b)||a<0||b<0||a===b)return false;
+    ensureNeighborSlot();
+    if(!world.neighbors[a].includes(b))world.neighbors[a].push(b);
+    if(!world.neighbors[b].includes(a))world.neighbors[b].push(a);
+    world.neighbors[a].sort((x,y)=>x-y);
+    world.neighbors[b].sort((x,y)=>x-y);
+    return true;
+  }
+  function addSeaRoute(a,b){
+    if(!Array.isArray(world.seaRoutes))world.seaRoutes=[];
+    const key=routeKey(a,b);
+    if(!world.seaRoutes.some(pair=>Array.isArray(pair)&&pair.length>=2&&routeKey(pair[0],pair[1])===key)){
+      world.seaRoutes.push([Math.min(a,b),Math.max(a,b)]);
+    }
+    return addNeighbor(a,b);
+  }
+  function addNamedLinks(links,sea=false){
+    const ids=nameMap();
+    for(const [from,to] of links){
+      const a=ids.get(from),b=ids.get(to);
+      if(!Number.isInteger(a)||!Number.isInteger(b))continue;
+      if(sea)addSeaRoute(a,b); else addNeighbor(a,b);
+    }
+  }
+
+  for(const entry of TERRITORIES){
+    if(world.territories.some(t=>String(t?.id||'')===entry.id||String(t?.name||'')===entry.name))continue;
+    world.territories.push({
+      id:entry.id,
+      name:entry.name,
+      x:entry.x,
+      y:entry.y,
+      home:entry.home,
+      path:entry.path,
+      resources:Array.isArray(entry.resources)?entry.resources.slice():[],
+      terrainType:entry.terrainType||null,
+      mapExpansion:'v129'
+    });
+    world.neighbors.push([]);
+  }
+
+  // Rebuild the physical land silhouette from the original atlas and the refined expansion polygons.
+  world.baseLandPath=BASE_LAND_PATH;
+  world.landPath=BASE_LAND_PATH+TERRITORIES.map(t=>t.path).join('');
+
+  addNamedLinks(LAND_LINKS,false);
+  addNamedLinks(SEA_LINKS,true);
+
+  const seaSet=new Set((world.seaRoutes||[]).map(pair=>routeKey(pair[0],pair[1])));
+  for(let i=0;i<world.territories.length;i++){
+    const territory=world.territories[i];
+    const connected=Array.isArray(world.neighbors[i])?world.neighbors[i].slice().sort((a,b)=>a-b):[];
+    territory.connectedRoutes=connected;
+    territory.connectedSeaRoutes=connected.filter(j=>seaSet.has(routeKey(i,j)));
+  }
+
+  world.minX=Math.min(Number.isFinite(Number(world.minX))?Number(world.minX):-180.5,-180.5);
+  world.minY=Math.min(Number.isFinite(Number(world.minY))?Number(world.minY):-.5,-.5);
+  world.width=Math.max(Number(world.width)||0,1301.25);
+  world.height=Math.max(Number(world.height)||0,1261.25);
+  world.expandedBounds=Object.freeze({minX:-180.5,minY:-.5,maxX:1120.75,maxY:1260.75,width:1301.25,height:1261.25});
+  world.__mapExpansionV125Applied=true;
+
+  function territoryId(name){return nameMap().get(String(name))}
+  function canMoveSeaRoute(a,b){
+    const x=Number(a),y=Number(b);
+    if(!Number.isInteger(x)||!Number.isInteger(y)||x===y)return false;
+    if(!world.territories[x]||!world.territories[y])return false;
+    return seaSet.has(routeKey(x,y));
+  }
+  function connectedRoutes(id){
+    const i=Number(id);
+    return Number.isInteger(i)&&Array.isArray(world.neighbors[i])?world.neighbors[i].slice():[];
+  }
+  function appendTerrainRules(target){
+    if(!target||!Array.isArray(target.areas))return false;
+    for(let i=0;i<TERRAIN_RULES.length;i++){
+      const targetIndex=START_INDEX+i;
+      if(!target.areas[targetIndex])target.areas[targetIndex]={...TERRAIN_RULES[i]};
+    }
+    while(target.areas.length<world.territories.length)target.areas.push({kind:'plain',river:false});
+    return true;
+  }
+
+  const REMOVED_BLUE_MASK_NODES=Object.freeze(['왜 기내 동부','왜 남부','왜 남동부']);
+
+  global.SAMGUK_MAP_EXPANSION_V125=Object.freeze({
+    version:129,
+    startIndex:START_INDEX,
+    addedCount:world.territories.length-START_INDEX,
+    territoryNames:Object.freeze(TERRITORIES.map(t=>t.name)),
+    landLinks:Object.freeze(LAND_LINKS.map(x=>Object.freeze(x.slice()))),
+    seaLinks:Object.freeze(SEA_LINKS.map(x=>Object.freeze(x.slice()))),
+    terrainRules:Object.freeze(TERRAIN_RULES.map(x=>Object.freeze({...x}))),
+    geometryRevision:'v129-brown-mask-japan-polygon-refine',
+    removedBlueMaskNodes:REMOVED_BLUE_MASK_NODES,
+    territoryId,
+    canMoveSeaRoute,
+    connectedRoutes,
+    appendTerrainRules,
+    bounds:world.expandedBounds
+  });
+})(window);
+
+========================================================================================
+FILE: PATCH_NOTES_v129.txt (NEW FILE)
+========================================================================================
+[삼국쟁패 v129 패치 노트]
+- 기준 버전: v128
+- 목적: 일본 본토(왜) 확장 폴리곤을 갈색/주황색 마스크 기준으로 재정의.
+
+핵심 수정
+1) 파란색 바다 영역 유지
+- '왜 기내 동부', '왜 남부', '왜 남동부'는 계속 삭제 상태 유지.
+- 파란색 마스크 영역에는 육지 폴리곤을 추가하지 않음.
+
+2) 갈색 육지 폴리곤 정밀 재정의
+- '왜 동북부', '왜 극동부', '왜 중부 동부'의 path를 새로 작성.
+- 기존 v128보다 경계를 더 안쪽으로 조여 갈색 육지 영역만 남도록 조정.
+
+3) 노드 중심 재배치
+- 왜 동북부 center -> (1046, 974)
+- 왜 극동부 center -> (1097, 1017)
+- 왜 중부 동부 center -> (1016, 1048)
+
+4) 렌더링 규칙 유지
+- 왜 본토의 산악/황토 시각 텍스처는 기존 map.js 로직 그대로 적용.
+- 전투/자원 로직용 terrainType은 plain 유지.

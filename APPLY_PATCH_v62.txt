@@ -1,0 +1,9 @@
+v62 패치 적용
+
+1. v61 전체본을 백업합니다.
+2. 패치 ZIP의 파일을 게임 루트에 덮어씁니다.
+3. index.html, DiplomacyTradeSystem.js를 반드시 교체합니다.
+4. DiplomacyStrategicManager.js와 diplomacy-strategic-mode.css를 새로 추가합니다.
+5. 브라우저 캐시를 강력 새로고침(Ctrl+F5)합니다.
+
+권장: 누적 패치 충돌을 피하려면 v62 전체본을 새 폴더에서 실행하세요.
